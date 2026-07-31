@@ -10,21 +10,21 @@ const { tags, total } = Astro.props;
 ---
 
 <div class="flex flex-wrap items-center gap-2" data-tag-filter>
-  <button
-    type="button"
-    data-tag=""
-    aria-pressed="true"
-    class="filter-chip"
-  >
+  <button type="button" data-tag="" aria-pressed="true" class="chip chip-md">
     Todas
-    <span class="filter-count">{total}</span>
+    <span class="chip-count">{total}</span>
   </button>
 
   {
     tags.map((tag) => (
-      <button type="button" data-tag={tag.slug} aria-pressed="false" class="filter-chip">
+      <button
+        type="button"
+        data-tag={tag.slug}
+        aria-pressed="false"
+        class="chip chip-md"
+      >
         {tag.name}
-        <span class="filter-count">{tag.count}</span>
+        <span class="chip-count">{tag.count}</span>
       </button>
     ))
   }

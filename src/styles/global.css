@@ -99,7 +99,15 @@
   }
 
   .stat-value {
-    @apply font-serif text-4xl leading-none tabular-nums transition-colors group-hover:text-accent sm:text-5xl dark:group-hover:text-accent-dark;
+    @apply font-serif text-4xl leading-none tabular-nums transition-colors sm:text-5xl;
+  }
+
+  .stat:hover .stat-value {
+    @apply text-accent;
+  }
+
+  .dark .stat:hover .stat-value {
+    @apply text-accent-dark;
   }
 
   .stat-label {
@@ -129,7 +137,15 @@
   }
 
   .entry-link {
-    @apply underline-offset-4 decoration-accent/0 transition-all before:absolute before:inset-0 group-hover:underline group-hover:decoration-accent/60 dark:group-hover:decoration-accent-dark/60;
+    @apply underline-offset-4 decoration-accent/0 transition-all before:absolute before:inset-0;
+  }
+
+  .entry:hover .entry-link {
+    @apply underline decoration-accent/60;
+  }
+
+  .dark .entry:hover .entry-link {
+    @apply decoration-accent-dark/60;
   }
 
   .entry-byline {
@@ -148,11 +164,21 @@
   }
 
   .row-title {
-    @apply font-serif text-lg leading-snug text-pretty transition-colors group-hover:text-accent dark:group-hover:text-accent-dark;
+    @apply font-serif text-lg leading-snug text-pretty transition-colors;
   }
 
   .row-name {
-    @apply font-serif text-2xl leading-tight transition-colors group-hover:text-accent dark:group-hover:text-accent-dark;
+    @apply font-serif text-2xl leading-tight transition-colors;
+  }
+
+  .row:hover .row-title,
+  .row:hover .row-name {
+    @apply text-accent;
+  }
+
+  .dark .row:hover .row-title,
+  .dark .row:hover .row-name {
+    @apply text-accent-dark;
   }
 
   .row-aside {
@@ -166,8 +192,7 @@
   /* ---------------------------------------------------------------------
      Chips: navegables (tag) y de filtro (botón con estado).
      --------------------------------------------------------------------- */
-  .chip,
-  .filter-chip {
+  .chip {
     @apply inline-flex items-baseline gap-1.5 rounded-full border border-line transition-colors;
     @apply hover:border-accent/40 hover:bg-accent/5 hover:text-accent;
     @apply dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:bg-accent-dark/10 dark:hover:text-accent-dark;
@@ -177,9 +202,22 @@
     @apply px-2 py-0.5 text-xs;
   }
 
-  .chip-md,
-  .filter-chip {
+  .chip-md {
     @apply px-2.5 py-1 text-sm;
+  }
+
+  /* Un chip que además es botón de filtro: mismo chip, con estado. */
+  button.chip {
+    @apply cursor-pointer;
+  }
+
+  .chip[aria-pressed='true'] {
+    @apply border-accent bg-accent text-paper hover:text-paper;
+    @apply dark:border-accent-dark dark:bg-accent-dark dark:text-paper-dark dark:hover:text-paper-dark;
+  }
+
+  .chip-count {
+    @apply text-xs tabular-nums opacity-60;
   }
 
   /* ---------------------------------------------------------------------
@@ -213,19 +251,6 @@
     @apply prose-invert;
     @apply prose-a:text-accent-dark prose-a:decoration-accent-dark/40;
     @apply prose-code:bg-line-dark/60;
-  }
-
-  .filter-chip {
-    @apply cursor-pointer;
-  }
-
-  .filter-chip[aria-pressed='true'] {
-    @apply border-accent bg-accent text-paper hover:text-paper;
-    @apply dark:border-accent-dark dark:bg-accent-dark dark:text-paper-dark dark:hover:text-paper-dark;
-  }
-
-  .filter-count {
-    @apply text-xs tabular-nums opacity-60;
   }
 
   /* Cita en bloque: markdown `> texto`, con `<cite>` opcional para la fuente. */

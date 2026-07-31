@@ -11,7 +11,7 @@ const { item } = Astro.props;
 const tagSlugs = item.tags.map(slugifyTag).join(' ');
 ---
 
-<li class="row group" data-entry-tags={tagSlugs}>
+<li class="row" data-entry-tags={tagSlugs}>
   <a href={item.href} class="block py-4">
     <h3 class="row-title">{item.title}</h3>
 

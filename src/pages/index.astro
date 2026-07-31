@@ -36,7 +36,7 @@ const stats = [
     <dl class="stat-band">
       {
         stats.map(({ href, count, label }, i) => (
-          <a href={href} class={`stat group ${i === 0 ? 'pr-6' : 'px-6'}`}>
+          <a href={href} class={`stat ${i === 0 ? 'pr-6' : 'px-6'}`}>
             <dt class="stat-label">{label}</dt>
             <dd class="stat-value">{count}</dd>
           </a>

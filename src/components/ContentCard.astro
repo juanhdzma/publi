@@ -11,7 +11,7 @@ type Props = {
 const { item, showKind = false } = Astro.props;
 ---
 
-<article class="entry group">
+<article class="entry">
   <div class="meta-row">
     {showKind && <span class="meta-kind">{KIND_LABEL[item.kind]}</span>}
     <time datetime={item.publishedAt.toISOString()}>{formatDate(item.publishedAt)}</time>
