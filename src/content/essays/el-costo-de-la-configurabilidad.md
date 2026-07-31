@@ -3,6 +3,13 @@ title: "El costo de la configurabilidad"
 summary: "Cada flag que agregás duplica los estados posibles de tu sistema. Nadie testea 2^12 combinaciones."
 publishedAt: 2026-07-27
 tags: ["software", "diseño", "decisiones"]
+quotes:
+  - text: "Los flags no se suman, se multiplican. Doce booleanos son 4.096 estados posibles."
+    featured: true
+  - text: "Un flag suele ser una decisión que no quisiste tomar."
+  - text: "There should be one — and preferably only one — obvious way to do it."
+    source: "Tim Peters"
+  - text: "Agregar un flag toma cinco minutos; sacarlo, meses de coordinación."
 references:
   - title: "PEP 20 — The Zen of Python"
     author: "Tim Peters"

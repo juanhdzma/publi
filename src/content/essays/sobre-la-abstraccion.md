@@ -3,6 +3,18 @@ title: "Sobre la abstracción prematura"
 summary: "Toda abstracción es una apuesta sobre el futuro. La mayoría se pierde."
 publishedAt: 2026-07-30
 tags: ["software", "diseño"]
+quotes:
+  - text: "Código repetido que es fácil de borrar le gana a código compartido que es imposible de mover."
+    featured: true
+  - text: "Abstraer con un punto es dibujar una recta con un solo dato."
+  - text: "Duplication is far cheaper than the wrong abstraction."
+    source: "Sandi Metz"
+  - text: "Si la respuesta honesta a \"¿van a cambiar juntos siempre?\" es \"no sé\", la respuesta es no."
+references:
+  - title: "The Wrong Abstraction"
+    author: "Sandi Metz"
+    year: "2016"
+    url: "https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction"
 ---
 
 Escribir una abstracción es predecir. Decís: *esto va a cambiar de esta forma y no de

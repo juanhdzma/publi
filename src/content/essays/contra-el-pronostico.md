@@ -3,6 +3,13 @@ title: "Contra el pronóstico"
 summary: "Estimar fechas de software no falla por falta de disciplina. Falla porque estás promediando una distribución sin cola derecha acotada."
 publishedAt: 2026-07-14
 tags: ["software", "gestión", "decisiones", "riesgo"]
+quotes:
+  - text: "Vos estimás la moda —el caso que imaginás cuando cerrás los ojos— y después vivís la media."
+    featured: true
+  - text: "El mejor caso está acotado por el trabajo real. El peor caso no está acotado por nada."
+  - text: "Descomponer no arregla la asimetría: le agrega confianza."
+  - text: "\"Entre dos y seis semanas\" es información honesta. \"Cuatro semanas\" es ficción con una cifra significativa de más."
+  - text: "Ninguna de las tres mejora la precisión del pronóstico. Las tres reducen lo que depende de que el pronóstico acierte."
 ---
 
 Toda estimación de software que vi tiene la misma forma: alguien dice "dos semanas", y

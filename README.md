@@ -30,15 +30,21 @@ El resumen en markdown.
 
 Hay tres mecanismos, se pueden combinar.
 
-**1. Cita destacada** — va en el frontmatter, se renderiza grande entre el header y el cuerpo.
-Una por entrada.
+**1. Citas de la entrada** — lista en el frontmatter. La marcada con `featured: true` se
+renderiza grande entre el header y el cuerpo; el resto va en una sección al final. Todas
+aparecen además en `/quotes/`.
 
 ```yaml
-quote:
-  text: "La cita."
-  source: "Autor u obra"   # opcional
-  page: "cap. 2"           # opcional
+quotes:
+  - text: "La cita que va grande arriba."
+    page: "cap. 2"          # opcional
+    featured: true          # opcional, una por entrada
+  - text: "Otra cita."
+    source: "Otro autor"    # opcional; por defecto es el autor del libro
 ```
+
+`source` solo hace falta cuando la frase no es del autor de la entrada — por ejemplo si en
+un ensayo tuyo citás a otra persona.
 
 **2. Cita en el cuerpo** — blockquote de markdown. El `<cite>` es opcional y agrega el guión
 solo.

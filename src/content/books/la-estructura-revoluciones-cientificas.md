@@ -5,10 +5,18 @@ summary: "La ciencia no avanza acumulando verdades. Avanza a los golpes, cuando 
 publishedAt: 2026-07-05
 rating: 4
 tags: ["ciencia", "filosofía", "clásicos"]
-quote:
-  text: "Las revoluciones científicas se consideran aquí como aquellos episodios de desarrollo no acumulativo en los que un paradigma antiguo es reemplazado por otro incompatible."
-  source: "Thomas S. Kuhn"
-  page: "cap. IX"
+quotes:
+  - text: "Las revoluciones científicas se consideran aquí como aquellos episodios de desarrollo no acumulativo en los que un paradigma antiguo es reemplazado por otro incompatible."
+    page: "cap. IX"
+    featured: true
+  - text: "Los científicos trabajan a partir de modelos adquiridos por la educación y por la exposición posterior a la literatura, muchas veces sin saber del todo qué características les dieron a esos modelos el estatus de paradigma."
+    page: "cap. V"
+  - text: "El descubrimiento comienza con la conciencia de una anomalía."
+    page: "cap. VI"
+  - text: "Después de una revolución los científicos trabajan en un mundo distinto."
+    page: "cap. X"
+  - text: "La ciencia normal no se propone descubrir novedades, y de hecho tiende a suprimir las que amenazan sus fundamentos."
+    page: "cap. V"
 references:
   - title: "The Structure of Scientific Revolutions"
     author: "Thomas S. Kuhn"

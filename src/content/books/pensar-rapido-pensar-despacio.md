@@ -5,9 +5,19 @@ summary: "Dos sistemas conviven en tu cabeza: uno rápido e intuitivo, otro lent
 publishedAt: 2026-07-24
 rating: 5
 tags: ["psicología", "decisiones", "ciencia"]
-quote:
-  text: "Una manera confiable de hacer que la gente crea en algo falso es la repetición frecuente, porque la familiaridad no se distingue con facilidad de la verdad."
-  source: "Daniel Kahneman"
+quotes:
+  - text: "Una manera confiable de hacer que la gente crea en algo falso es la repetición frecuente, porque la familiaridad no se distingue con facilidad de la verdad."
+    featured: true
+  - text: "Nada en la vida es tan importante como uno cree que es mientras está pensando en ello."
+    page: "cap. 38"
+  - text: "El Sistema 1 es radicalmente insensible a la calidad y la cantidad de la información en que basa sus impresiones."
+    page: "cap. 7"
+  - text: "Una mente ocupada y sin recursos es mucho más propensa a tomar decisiones egoístas."
+    page: "cap. 3"
+  - text: "La confianza que la gente tiene en sus creencias depende sobre todo de la calidad de la historia que puede contar sobre lo que ve, aunque vea poco."
+    page: "cap. 24"
+  - text: "Somos ciegos a lo obvio, y también somos ciegos a nuestra ceguera."
+    page: "introducción"
 references:
   - title: "Thinking, Fast and Slow"
     author: "Daniel Kahneman"

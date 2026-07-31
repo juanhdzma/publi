@@ -3,6 +3,12 @@ title: "Leer para olvidar"
 summary: "Vas a olvidar el 95% de lo que leas. Escribir el resumen no es para acordarte: es para descubrir si entendiste."
 publishedAt: 2026-07-21
 tags: ["lectura", "escritura", "psicología"]
+quotes:
+  - text: "El valor del resumen no está en el archivo que queda: está en los veinte minutos incómodos de producirlo."
+    featured: true
+  - text: "La fluidez se siente igual que comprender, y no lo es."
+  - text: "Leer entrena reconocimiento. Escribir exige recuperación, que es lo único que deja marca."
+  - text: "Lo que sobrevive no son citas ni datos: son criterios."
 ---
 
 Terminás un libro de trescientas páginas y a los seis meses te queda una idea, tal vez dos.

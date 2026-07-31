@@ -5,6 +5,28 @@ summary: "Cambiar la unidad de selección del individuo al gen reordena toda la 
 publishedAt: 2026-07-11
 rating: 4
 tags: ["ciencia", "biología", "evolución"]
+quotes:
+  - text: "Somos máquinas de supervivencia, vehículos autómatas programados a ciegas para preservar las moléculas egoístas conocidas como genes."
+    page: "prefacio"
+    featured: true
+  - text: "Los genes no son conscientes ni tienen propósito. Solo son buenos o malos copiándose a sí mismos, y eso alcanza."
+    page: "cap. 2"
+  - text: "Un cuerpo es la manera que tiene un gen de hacer otro gen."
+    page: "cap. 3"
+  - text: "Un gen que hace que un animal salve a dos hermanos a costa de su vida se propaga, aunque el animal muera."
+    page: "cap. 6"
+  - text: "Así como los genes se propagan saltando de cuerpo en cuerpo, los memes se propagan saltando de cerebro en cerebro."
+    page: "cap. 11"
+  - text: "Somos los únicos en la Tierra capaces de rebelarnos contra la tiranía de los replicadores egoístas."
+    page: "cap. 11"
+references:
+  - title: "The Selfish Gene"
+    author: "Richard Dawkins"
+    year: "1976"
+  - title: "The Genetical Evolution of Social Behaviour"
+    author: "W. D. Hamilton"
+    year: "1964"
+    note: "El paper del que sale la selección por parentesco que Dawkins divulga."
 ---
 
 ## El cambio de perspectiva

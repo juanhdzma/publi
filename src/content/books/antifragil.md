@@ -5,6 +5,28 @@ summary: "Lo contrario de frágil no es robusto: es lo que mejora con el desorde
 publishedAt: 2026-06-28
 rating: 3
 tags: ["decisiones", "riesgo", "filosofía"]
+quotes:
+  - text: "El viento apaga una vela y aviva un fuego. Con la aleatoriedad pasa lo mismo: querés ser el fuego y desear el viento."
+    page: "prólogo"
+    featured: true
+  - text: "Lo antifrágil está más allá de lo resiliente o lo robusto. Lo resiliente aguanta los golpes y sigue igual; lo antifrágil mejora."
+    page: "prólogo"
+  - text: "Sabemos mucho más sobre qué está mal que sobre qué está bien."
+    page: "libro II"
+  - text: "Nunca le preguntes a nadie su opinión, su pronóstico o su recomendación. Preguntale qué tiene en su portafolio."
+    page: "libro VII"
+  - text: "La ausencia de evidencia no es evidencia de ausencia, y sin embargo la tratamos así todo el tiempo."
+    page: "libro III"
+  - text: "Lo que no me mata, mata a otros y me hace más fuerte a mí."
+    page: "libro IV"
+references:
+  - title: "Antifragile: Things That Gain from Disorder"
+    author: "Nassim Nicholas Taleb"
+    year: "2012"
+  - title: "The Black Swan"
+    author: "Nassim Nicholas Taleb"
+    year: "2007"
+    note: "El libro anterior; Antifrágil es la respuesta constructiva a ese diagnóstico."
 ---
 
 ## La tríada

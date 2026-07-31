@@ -6,13 +6,14 @@ const quote = z.object({
   text: z.string(),
   source: z.string().optional(),
   page: z.string().optional(),
+  featured: z.boolean().default(false),
 });
 
 const reference = z.object({
   title: z.string(),
   author: z.string().optional(),
   year: z.string().optional(),
-  url: z.string().url().optional(),
+  url: z.url().optional(),
   note: z.string().optional(),
 });
 
@@ -22,7 +23,7 @@ const shared = {
   publishedAt: z.coerce.date(),
   tags: z.array(z.string()).default([]),
   draft: z.boolean().default(false),
-  quote: quote.optional(),
+  quotes: z.array(quote).default([]),
   references: z.array(reference).default([]),
 };
 

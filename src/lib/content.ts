@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import { SITE } from '../config';
 
 export type Kind = 'books' | 'essays';
 
@@ -26,6 +27,7 @@ export type ContentItem = {
   publishedAt: Date;
   tags: string[];
   readingMinutes: number;
+  quotes: Quote[];
   author?: string;
   rating?: number;
 };
@@ -35,6 +37,19 @@ export type TagSummary = {
   slug: string;
   count: number;
   kinds: Kind[];
+};
+
+export type Quote = {
+  text: string;
+  page?: string;
+  featured: boolean;
+  /** Quién dijo la frase. Por defecto el autor del libro, o el del ensayo. */
+  attribution: string;
+  /** De dónde salió: título de la entrada que la contiene. */
+  origin: string;
+  originHref: string;
+  kind: Kind;
+  tags: string[];
 };
 
 export function slugifyTag(tag: string): string {
@@ -64,19 +79,39 @@ export async function getPublished(kind: Kind): Promise<ContentItem[]> {
   const entries = await getCollection(kind, ({ data }: any) => !data.draft);
 
   return entries
-    .map((entry: any) => ({
-      kind,
-      id: entry.id,
-      href: `${KIND_PATH[kind]}/${entry.id}/`,
-      title: entry.data.title,
-      summary: entry.data.summary,
-      publishedAt: entry.data.publishedAt,
-      tags: entry.data.tags,
-      readingMinutes: readingMinutes(entry.body),
-      author: entry.data.author,
-      rating: entry.data.rating,
-    }))
+    .map((entry: any) => {
+      const href = `${KIND_PATH[kind]}/${entry.id}/`;
+      const defaultAttribution = entry.data.author ?? SITE.author;
+
+      return {
+        kind,
+        id: entry.id,
+        href,
+        title: entry.data.title,
+        summary: entry.data.summary,
+        publishedAt: entry.data.publishedAt,
+        tags: entry.data.tags,
+        readingMinutes: readingMinutes(entry.body),
+        author: entry.data.author,
+        rating: entry.data.rating,
+        quotes: entry.data.quotes.map((q: any) => ({
+          text: q.text,
+          page: q.page,
+          featured: q.featured,
+          attribution: q.source ?? defaultAttribution,
+          origin: entry.data.title,
+          originHref: href,
+          kind,
+          tags: entry.data.tags,
+        })),
+      };
+    })
     .sort(byNewest);
+}
+
+export async function getAllQuotes(): Promise<Quote[]> {
+  const items = await getAllPublished();
+  return items.flatMap((item) => item.quotes);
 }
 
 export async function getAllPublished(): Promise<ContentItem[]> {

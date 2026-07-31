@@ -4,9 +4,9 @@ import Rating from '../components/Rating.astro';
 import TagList from '../components/TagList.astro';
 import PullQuote from '../components/PullQuote.astro';
 import References from '../components/References.astro';
-import { KIND_PATH, KIND_PLURAL, formatDate, type Kind } from '../lib/content';
+import QuoteList from '../components/QuoteList.astro';
+import { KIND_PATH, KIND_PLURAL, formatDate, type Kind, type Quote } from '../lib/content';
 
-type Quote = { text: string; source?: string; page?: string };
 type Reference = {
   title: string;
   author?: string;
@@ -23,9 +23,9 @@ type Props = {
   tags: string[];
   readingMinutes: number;
   references: Reference[];
+  quotes: Quote[];
   author?: string;
   rating?: number;
-  quote?: Quote;
 };
 
 const {
@@ -36,10 +36,13 @@ const {
   tags,
   readingMinutes,
   references,
+  quotes,
   author,
   rating,
-  quote,
 } = Astro.props;
+
+const featured = quotes.find((q) => q.featured);
+const rest = quotes.filter((q) => q !== featured);
 ---
 
 <BaseLayout title={title} description={summary}>
@@ -79,11 +82,21 @@ const {
       </div>
     </header>
 
-    {quote && <PullQuote text={quote.text} source={quote.source} page={quote.page} />}
+    {
+      featured && (
+        <PullQuote
+          text={featured.text}
+          source={featured.attribution}
+          page={featured.page}
+        />
+      )
+    }
 
     <div class="prose-publi mt-9">
       <slot />
     </div>
+
+    <QuoteList quotes={rest} />
 
     <References references={references} />
   </article>

@@ -5,10 +5,20 @@ summary: "Cómo un primate irrelevante de la sabana africana terminó dominando 
 publishedAt: 2026-07-30
 rating: 4
 tags: ["historia", "antropología"]
-quote:
-  text: "No hay dioses en el universo, no hay naciones, no hay dinero, no hay derechos humanos, no hay leyes y no hay justicia fuera de la imaginación común de los seres humanos."
-  source: "Sapiens"
-  page: "cap. 2"
+quotes:
+  - text: "No hay dioses en el universo, no hay naciones, no hay dinero, no hay derechos humanos, no hay leyes y no hay justicia fuera de la imaginación común de los seres humanos."
+    page: "cap. 2"
+    featured: true
+  - text: "Buscamos domesticar el trigo y fue el trigo el que nos domesticó a nosotros."
+    page: "cap. 5"
+  - text: "La revolución agrícola fue el mayor fraude de la historia."
+    page: "cap. 5"
+  - text: "Nunca sabremos qué se sentía al ser neandertal, pero sabemos que dejaron de existir cuando aparecimos nosotros."
+    page: "cap. 1"
+  - text: "El dinero es el sistema de confianza mutua más universal y más eficiente que se haya inventado."
+    page: "cap. 10"
+  - text: "La cultura tiende a argumentar que solo prohíbe lo que es antinatural. Pero desde una perspectiva biológica, nada es antinatural."
+    page: "cap. 8"
 references:
   - title: "Sapiens: De animales a dioses"
     author: "Yuval Noah Harari"

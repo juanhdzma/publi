@@ -3,8 +3,13 @@ title: "La evolución no optimiza, satisface"
 summary: "El nervio laríngeo recurrente de la jirafa mide cuatro metros para recorrer quince centímetros. Tu codebase también."
 publishedAt: 2026-07-08
 tags: ["biología", "software", "evolución"]
-quote:
-  text: "La selección natural no busca el mejor diseño posible. Busca cualquier variante que funcione un poco mejor que la anterior y que se pueda alcanzar con un cambio chico."
+quotes:
+  - text: "La selección natural no busca el mejor diseño posible. Busca cualquier variante que funcione un poco mejor que la anterior y que se pueda alcanzar con un cambio chico."
+    featured: true
+  - text: "Preguntar \"¿por qué lo hicieron así?\" asume un diseñador que nunca existió."
+  - text: "Las cosas raras de un sistema viejo no son decisiones: son fósiles."
+  - text: "Los odd things de la naturaleza son la prueba de la evolución: caminos que un diseñador sensato nunca habría tomado."
+    source: "Stephen Jay Gould"
 references:
   - title: "The Panda's Thumb"
     author: "Stephen Jay Gould"

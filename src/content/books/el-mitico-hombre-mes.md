@@ -5,6 +5,29 @@ summary: "Agregar gente a un proyecto atrasado lo atrasa más. Cincuenta años d
 publishedAt: 2026-07-18
 rating: 5
 tags: ["software", "gestión", "clásicos"]
+quotes:
+  - text: "Agregar gente a un proyecto de software atrasado lo atrasa más."
+    page: "cap. 2"
+    featured: true
+  - text: "Todos los programadores son optimistas. Todo va a andar bien, piensan, y esta vez sí."
+    page: "cap. 2"
+  - text: "El hombre-mes como unidad para medir el tamaño de un trabajo es un mito peligroso y engañoso."
+    page: "cap. 2"
+  - text: "El segundo es el sistema más peligroso que un hombre diseña en su vida."
+    page: "cap. 5"
+  - text: "Muéstrame tus diagramas de flujo y escondeme tus tablas, y voy a seguir sin entender nada. Muéstrame tus tablas y por lo general no voy a necesitar tus diagramas: van a ser obvios."
+    page: "cap. 9"
+  - text: "No hay una sola novedad, ni en tecnología ni en técnica de gestión, que por sí sola prometa siquiera un orden de magnitud de mejora en productividad, confiabilidad o simplicidad."
+    page: "No Silver Bullet"
+references:
+  - title: "The Mythical Man-Month"
+    author: "Frederick P. Brooks Jr."
+    year: "1975"
+    note: "La edición aniversario de 1995 suma No Silver Bullet."
+  - title: "No Silver Bullet — Essence and Accident in Software Engineering"
+    author: "Frederick P. Brooks Jr."
+    year: "1986"
+    url: "https://worrydream.com/refs/Brooks_1986_-_No_Silver_Bullet.pdf"
 ---
 
 ## La ley de Brooks
