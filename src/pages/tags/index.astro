@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAllTags, KIND_PLURAL } from '../../lib/content';
+
+const tags = await getAllTags();
+---
+
+<BaseLayout title="Categorías" description="Todas las categorías del sitio.">
+  <h1 class="text-3xl font-semibold tracking-tight">Categorías</h1>
+  <p class="mt-3 text-ink-muted dark:text-ink-muted-dark">
+    {tags.length} categorías en total. Una entrada puede estar en varias.
+  </p>
+
+  {
+    tags.length === 0 ? (
+      <p class="mt-8 text-ink-muted dark:text-ink-muted-dark">Todavía no hay categorías.</p>
+    ) : (
+      <ul class="mt-8 grid gap-2 sm:grid-cols-2">
+        {tags.map((tag) => (
+          <li>
+            <a
+              href={`/tags/${tag.slug}/`}
+              class="group flex items-baseline justify-between gap-3 rounded-lg border border-line px-4 py-3 transition-colors hover:border-accent/40 hover:bg-accent/5 dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:bg-accent-dark/10"
+            >
+              <span class="min-w-0">
+                <span class="block truncate font-medium group-hover:text-accent dark:group-hover:text-accent-dark">
+                  {tag.name}
+                </span>
+                <span class="mt-0.5 block text-xs text-ink-muted dark:text-ink-muted-dark">
+                  {tag.kinds.map((k) => KIND_PLURAL[k]).join(' · ')}
+                </span>
+              </span>
+
+              <span class="shrink-0 rounded-full bg-line/50 px-2 py-0.5 text-xs tabular-nums text-ink-muted dark:bg-line-dark/60 dark:text-ink-muted-dark">
+                {tag.count}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</BaseLayout>

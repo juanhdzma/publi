@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContentCard from '../../components/ContentCard.astro';
+import { getAllTags, getByTag } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const tags = await getAllTags();
+
+  return Promise.all(
+    tags.map(async (tag) => ({
+      params: { tag: tag.slug },
+      props: { name: tag.name, items: await getByTag(tag.slug) },
+    })),
+  );
+}
+
+const { name, items } = Astro.props;
+---
+
+<BaseLayout title={name} description={`Entradas en la categoría ${name}.`}>
+  <a
+    href="/tags/"
+    class="text-sm text-ink-muted transition-colors hover:text-ink dark:text-ink-muted-dark dark:hover:text-ink-dark"
+  >
+    ← Categorías
+  </a>
+
+  <h1 class="mt-6 text-3xl font-semibold tracking-tight">{name}</h1>
+  <p class="mt-3 text-ink-muted dark:text-ink-muted-dark">
+    {items.length} {items.length === 1 ? 'entrada' : 'entradas'}
+  </p>
+
+  <div class="mt-8">
+    {items.map((item) => <ContentCard item={item} showKind />)}
+  </div>
+</BaseLayout>

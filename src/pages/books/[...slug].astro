@@ -1,16 +1,19 @@
 ---
 import { getCollection, render } from 'astro:content';
 import ProseLayout from '../../layouts/ProseLayout.astro';
+import { getPublished } from '../../lib/content';
 
 export async function getStaticPaths() {
+  const items = await getPublished('books');
   const entries = await getCollection('books', ({ data }: any) => !data.draft);
+
   return entries.map((entry: any) => ({
     params: { slug: entry.id },
-    props: { entry },
+    props: { entry, item: items.find((i) => i.id === entry.id)! },
   }));
 }
 
-const { entry } = Astro.props;
+const { entry, item } = Astro.props;
 const { Content } = await render(entry);
 ---
 
@@ -20,6 +23,7 @@ const { Content } = await render(entry);
   summary={entry.data.summary}
   publishedAt={entry.data.publishedAt}
   tags={entry.data.tags}
+  readingMinutes={item.readingMinutes}
   author={entry.data.author}
   rating={entry.data.rating}
 >

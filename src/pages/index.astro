@@ -1,29 +1,87 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContentCard from '../components/ContentCard.astro';
-import { getAllPublished } from '../lib/content';
+import { getAllPublished, getAllTags } from '../lib/content';
 import { SITE } from '../config';
 
-const items = (await getAllPublished()).slice(0, 10);
+const items = await getAllPublished();
+const latest = items.slice(0, 8);
+const tags = (await getAllTags()).slice(0, 8);
+
+const counts = {
+  books: items.filter((i) => i.kind === 'books').length,
+  essays: items.filter((i) => i.kind === 'essays').length,
+};
 ---
 
 <BaseLayout>
   <section>
-    <h1 class="text-3xl font-semibold tracking-tight">{SITE.title}</h1>
-    <p class="mt-3 text-ink-muted dark:text-ink-muted-dark">{SITE.description}</p>
+    <h1 class="text-4xl font-semibold tracking-tight">{SITE.title}</h1>
+    <p class="mt-4 text-lg leading-relaxed text-pretty text-ink-muted dark:text-ink-muted-dark">
+      {SITE.description}
+    </p>
+
+    <div class="mt-6 flex flex-wrap gap-2 text-sm">
+      <a
+        href="/books/"
+        class="rounded-lg border border-line px-3 py-1.5 transition-colors hover:border-accent/40 hover:text-accent dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:text-accent-dark"
+      >
+        {counts.books} libros
+      </a>
+      <a
+        href="/essays/"
+        class="rounded-lg border border-line px-3 py-1.5 transition-colors hover:border-accent/40 hover:text-accent dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:text-accent-dark"
+      >
+        {counts.essays} ensayos
+      </a>
+    </div>
   </section>
 
-  <section class="mt-10">
+  {
+    tags.length > 0 && (
+      <section class="mt-12">
+        <div class="flex items-baseline justify-between gap-4">
+          <h2 class="text-sm font-medium tracking-wide text-ink-muted uppercase dark:text-ink-muted-dark">
+            Categorías
+          </h2>
+          <a
+            href="/tags/"
+            class="text-sm text-ink-muted transition-colors hover:text-accent dark:text-ink-muted-dark dark:hover:text-accent-dark"
+          >
+            Ver todas
+          </a>
+        </div>
+
+        <ul class="mt-4 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <li>
+              <a
+                href={`/tags/${tag.slug}/`}
+                class="inline-flex items-baseline gap-1.5 rounded-full border border-line px-3 py-1 text-sm transition-colors hover:border-accent/40 hover:bg-accent/5 hover:text-accent dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:bg-accent-dark/10 dark:hover:text-accent-dark"
+              >
+                {tag.name}
+                <span class="text-xs tabular-nums text-ink-muted dark:text-ink-muted-dark">
+                  {tag.count}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section class="mt-12">
     <h2 class="text-sm font-medium tracking-wide text-ink-muted uppercase dark:text-ink-muted-dark">
       Lo último
     </h2>
 
     <div class="mt-2">
-      {items.map((item) => <ContentCard item={item} showKind />)}
+      {latest.map((item) => <ContentCard item={item} showKind />)}
     </div>
 
     {
-      items.length === 0 && (
+      latest.length === 0 && (
         <p class="mt-6 text-ink-muted dark:text-ink-muted-dark">
           Todavía no hay nada publicado.
         </p>

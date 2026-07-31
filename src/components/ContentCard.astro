@@ -1,4 +1,6 @@
 ---
+import Rating from './Rating.astro';
+import TagList from './TagList.astro';
 import { KIND_LABEL, formatDate, type ContentItem } from '../lib/content';
 
 type Props = {
@@ -9,31 +11,45 @@ type Props = {
 const { item, showKind = false } = Astro.props;
 ---
 
-<article class="group border-b border-line py-6 last:border-0 dark:border-line-dark">
-  <a href={item.href} class="block">
-    <div class="flex items-baseline gap-3 text-xs text-ink-muted dark:text-ink-muted-dark">
-      <time datetime={item.publishedAt.toISOString()}>{formatDate(item.publishedAt)}</time>
-      {
-        showKind && (
-          <span class="rounded-full border border-line px-2 py-0.5 dark:border-line-dark">
-            {KIND_LABEL[item.kind]}
-          </span>
-        )
-      }
-    </div>
-
-    <h2 class="mt-2 font-semibold tracking-tight group-hover:text-accent dark:group-hover:text-accent-dark">
-      {item.title}
-    </h2>
-
+<article
+  class="group relative border-b border-line py-7 last:border-0 dark:border-line-dark"
+>
+  <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-ink-muted dark:text-ink-muted-dark">
     {
-      item.author && (
-        <p class="mt-0.5 text-sm text-ink-muted dark:text-ink-muted-dark">{item.author}</p>
+      showKind && (
+        <span class="font-medium tracking-wide text-accent uppercase dark:text-accent-dark">
+          {KIND_LABEL[item.kind]}
+        </span>
       )
     }
+    <time datetime={item.publishedAt.toISOString()}>{formatDate(item.publishedAt)}</time>
+    <span aria-hidden="true">·</span>
+    <span>{item.readingMinutes} min</span>
+  </div>
 
-    <p class="mt-2 text-sm leading-relaxed text-ink-muted dark:text-ink-muted-dark">
-      {item.summary}
-    </p>
-  </a>
+  <h3 class="mt-2 text-lg font-semibold tracking-tight text-balance">
+    <a
+      href={item.href}
+      class="transition-colors before:absolute before:inset-0 group-hover:text-accent dark:group-hover:text-accent-dark"
+    >
+      {item.title}
+    </a>
+  </h3>
+
+  {
+    item.author && (
+      <p class="mt-1 flex items-center gap-2 text-sm text-ink-muted dark:text-ink-muted-dark">
+        <span>{item.author}</span>
+        {item.rating && <Rating value={item.rating} />}
+      </p>
+    )
+  }
+
+  <p class="mt-2 leading-relaxed text-pretty text-ink-muted dark:text-ink-muted-dark">
+    {item.summary}
+  </p>
+
+  <div class="relative z-10 mt-3">
+    <TagList tags={item.tags} />
+  </div>
 </article>

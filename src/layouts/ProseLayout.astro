@@ -1,5 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import Rating from '../components/Rating.astro';
+import TagList from '../components/TagList.astro';
 import { KIND_PATH, KIND_PLURAL, formatDate, type Kind } from '../lib/content';
 
 type Props = {
@@ -8,53 +10,63 @@ type Props = {
   summary: string;
   publishedAt: Date;
   tags: string[];
+  readingMinutes: number;
   author?: string;
   rating?: number;
 };
 
-const { kind, title, summary, publishedAt, tags, author, rating } = Astro.props;
+const { kind, title, summary, publishedAt, tags, readingMinutes, author, rating } =
+  Astro.props;
 ---
 
 <BaseLayout title={title} description={summary}>
   <a
     href={`${KIND_PATH[kind]}/`}
-    class="text-sm text-ink-muted transition-colors hover:text-ink dark:text-ink-muted-dark dark:hover:text-ink-dark"
+    class="inline-flex items-center gap-1.5 text-sm text-ink-muted transition-colors hover:text-ink dark:text-ink-muted-dark dark:hover:text-ink-dark"
   >
-    ← {KIND_PLURAL[kind]}
+    <span aria-hidden="true">←</span>
+    {KIND_PLURAL[kind]}
   </a>
 
-  <header class="mt-6 border-b border-line pb-6 dark:border-line-dark">
-    <h1 class="text-3xl font-semibold tracking-tight text-balance">{title}</h1>
+  <article>
+    <header class="mt-6 border-b border-line pb-7 dark:border-line-dark">
+      <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-ink-muted dark:text-ink-muted-dark">
+        <time datetime={publishedAt.toISOString()}>{formatDate(publishedAt)}</time>
+        <span aria-hidden="true">·</span>
+        <span>{readingMinutes} min de lectura</span>
+      </div>
 
-    {author && <p class="mt-2 text-ink-muted dark:text-ink-muted-dark">{author}</p>}
-
-    <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-ink-muted dark:text-ink-muted-dark">
-      <time datetime={publishedAt.toISOString()}>{formatDate(publishedAt)}</time>
+      <h1 class="mt-3 text-4xl font-semibold tracking-tight text-balance">{title}</h1>
 
       {
-        rating && (
-          <span aria-label={`${rating} de 5`} title={`${rating} de 5`}>
-            {'★'.repeat(rating)}
-            <span class="opacity-30">{'★'.repeat(5 - rating)}</span>
-          </span>
+        author && (
+          <p class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-ink-muted dark:text-ink-muted-dark">
+            <span>{author}</span>
+            {rating && <Rating value={rating} />}
+          </p>
         )
       }
 
-      {
-        tags.length > 0 && (
-          <ul class="flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <li class="rounded-full border border-line px-2 py-0.5 text-xs dark:border-line-dark">
-                {tag}
-              </li>
-            ))}
-          </ul>
-        )
-      }
+      <p class="mt-4 text-lg leading-relaxed text-pretty text-ink-muted dark:text-ink-muted-dark">
+        {summary}
+      </p>
+
+      <div class="mt-5">
+        <TagList tags={tags} />
+      </div>
+    </header>
+
+    <div class="prose-publi mt-9">
+      <slot />
     </div>
-  </header>
+  </article>
 
-  <div class="prose-publi mt-8">
-    <slot />
-  </div>
+  <nav class="mt-14 border-t border-line pt-6 dark:border-line-dark">
+    <a
+      href={`${KIND_PATH[kind]}/`}
+      class="text-sm text-ink-muted transition-colors hover:text-ink dark:text-ink-muted-dark dark:hover:text-ink-dark"
+    >
+      <span aria-hidden="true">←</span> Ver todos los {KIND_PLURAL[kind].toLowerCase()}
+    </a>
+  </nav>
 </BaseLayout>

@@ -4,4 +4,4 @@ services:
     container_name: publi
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8002:80"

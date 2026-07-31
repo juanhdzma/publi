@@ -1,0 +1,29 @@
+---
+import { tagHref } from '../lib/content';
+
+type Props = {
+  tags: string[];
+  size?: 'sm' | 'md';
+};
+
+const { tags, size = 'sm' } = Astro.props;
+
+const sizing = size === 'sm' ? 'px-2 py-0.5 text-xs' : 'px-2.5 py-1 text-sm';
+---
+
+{
+  tags.length > 0 && (
+    <ul class="flex flex-wrap gap-1.5">
+      {tags.map((tag) => (
+        <li>
+          <a
+            href={tagHref(tag)}
+            class={`inline-block rounded-full border border-line text-ink-muted transition-colors hover:border-accent/40 hover:bg-accent/5 hover:text-accent dark:border-line-dark dark:text-ink-muted-dark dark:hover:border-accent-dark/40 dark:hover:bg-accent-dark/10 dark:hover:text-accent-dark ${sizing}`}
+          >
+            {tag}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}

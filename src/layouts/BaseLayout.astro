@@ -16,6 +16,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 const nav = [
   { href: '/books/', label: 'Libros' },
   { href: '/essays/', label: 'Ensayos' },
+  { href: '/tags/', label: 'Categorías' },
 ];
 
 const path = Astro.url.pathname;
@@ -52,19 +53,24 @@ const path = Astro.url.pathname;
   </head>
 
   <body class="flex min-h-full flex-col">
-    <header class="border-b border-line dark:border-line-dark">
-      <div class="mx-auto flex max-w-2xl items-center justify-between gap-6 px-6 py-5">
-        <a href="/" class="font-semibold tracking-tight hover:text-accent dark:hover:text-accent-dark">
+    <header
+      class="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur-md dark:border-line-dark dark:bg-paper-dark/85"
+    >
+      <div class="mx-auto flex max-w-2xl items-center justify-between gap-4 px-6 py-4">
+        <a
+          href="/"
+          class="font-semibold tracking-tight transition-colors hover:text-accent dark:hover:text-accent-dark"
+        >
           {SITE.title}
         </a>
 
-        <nav class="flex items-center gap-1 text-sm">
+        <nav class="flex items-center gap-0.5 text-sm">
           {
             nav.map(({ href, label }) => (
               <a
                 href={href}
                 aria-current={path.startsWith(href) ? 'page' : undefined}
-                class="rounded-md px-2.5 py-1.5 text-ink-muted transition-colors hover:text-ink aria-[current]:text-ink aria-[current]:font-medium dark:text-ink-muted-dark dark:hover:text-ink-dark dark:aria-[current]:text-ink-dark"
+                class="rounded-md px-2 py-1.5 text-ink-muted transition-colors hover:text-ink aria-[current]:font-medium aria-[current]:text-ink dark:text-ink-muted-dark dark:hover:text-ink-dark dark:aria-[current]:text-ink-dark"
               >
                 {label}
               </a>
