@@ -7,17 +7,17 @@
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
 
-  --color-ink: oklch(0.22 0.01 260);
-  --color-ink-muted: oklch(0.52 0.01 260);
-  --color-paper: oklch(0.99 0.003 90);
-  --color-line: oklch(0.9 0.005 260);
-  --color-accent: oklch(0.52 0.16 250);
+  --color-ink: oklch(0.19 0.012 55);
+  --color-ink-muted: oklch(0.5 0.015 55);
+  --color-paper: oklch(0.985 0.008 85);
+  --color-line: oklch(0.89 0.012 70);
+  --color-accent: oklch(0.5 0.15 35);
 
-  --color-ink-dark: oklch(0.92 0.008 260);
-  --color-ink-muted-dark: oklch(0.66 0.012 260);
-  --color-paper-dark: oklch(0.19 0.012 260);
-  --color-line-dark: oklch(0.31 0.012 260);
-  --color-accent-dark: oklch(0.76 0.13 245);
+  --color-ink-dark: oklch(0.93 0.008 75);
+  --color-ink-muted-dark: oklch(0.65 0.014 70);
+  --color-paper-dark: oklch(0.17 0.008 60);
+  --color-line-dark: oklch(0.3 0.012 65);
+  --color-accent-dark: oklch(0.74 0.13 45);
 }
 
 @layer base {
@@ -32,6 +32,10 @@
 
   .dark body {
     @apply bg-paper-dark text-ink-dark;
+  }
+
+  ::selection {
+    @apply bg-accent/20 dark:bg-accent-dark/25;
   }
 
   :focus-visible {

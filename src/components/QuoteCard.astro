@@ -3,45 +3,49 @@ import { KIND_LABEL, type Quote } from '../lib/content';
 
 type Props = {
   quote: Quote;
-  showOrigin?: boolean;
 };
 
-const { quote, showOrigin = true } = Astro.props;
+const { quote } = Astro.props;
 
 const locator = [quote.origin, quote.page].filter(Boolean).join(', ');
+const linked = Boolean(quote.originHref);
 ---
 
 <figure
-  class="group relative flex break-inside-avoid flex-col rounded-xl border border-line p-5 transition-colors hover:border-accent/40 dark:border-line-dark dark:hover:border-accent-dark/40"
+  class="group relative mb-10 break-inside-avoid border-t-2 border-ink/10 pt-5 dark:border-ink-dark/15"
 >
-  <span
-    class="font-serif text-4xl leading-none text-accent/25 select-none dark:text-accent-dark/25"
-    aria-hidden="true">&ldquo;</span
-  >
-
-  <blockquote class="mt-1 grow font-serif text-lg leading-snug text-pretty">
+  <blockquote class="font-serif text-xl leading-snug text-pretty">
     {quote.text}
   </blockquote>
 
-  <figcaption class="mt-4 text-sm">
-    <cite class="block font-sans font-medium not-italic">{quote.attribution}</cite>
+  <figcaption class="mt-3.5 text-sm">
+    <cite class="block font-medium not-italic">{quote.attribution}</cite>
 
     {
-      showOrigin && (
+      locator && linked && (
         <a
           href={quote.originHref}
-          class="mt-0.5 block text-ink-muted transition-colors before:absolute before:inset-0 before:rounded-xl hover:text-accent dark:text-ink-muted-dark dark:hover:text-accent-dark"
+          rel={quote.external ? 'noopener noreferrer' : undefined}
+          class="mt-1 inline-flex items-center gap-1.5 text-ink-muted transition-colors before:absolute before:inset-0 hover:text-accent dark:text-ink-muted-dark dark:hover:text-accent-dark"
         >
-          <span class="text-xs tracking-wide uppercase">{KIND_LABEL[quote.kind]}</span>
-          <span class="mx-1 text-xs" aria-hidden="true">·</span>
-          {locator}
+          {quote.kind && (
+            <span class="text-[0.7rem] tracking-[0.08em] uppercase">
+              {KIND_LABEL[quote.kind]}
+            </span>
+          )}
+          <span>{locator}</span>
+          {quote.external && (
+            <span class="text-xs" aria-hidden="true">
+              ↗
+            </span>
+          )}
         </a>
       )
     }
 
     {
-      !showOrigin && quote.page && (
-        <span class="mt-0.5 block text-ink-muted dark:text-ink-muted-dark">{quote.page}</span>
+      locator && !linked && (
+        <span class="mt-1 block text-ink-muted dark:text-ink-muted-dark">{locator}</span>
       )
     }
   </figcaption>

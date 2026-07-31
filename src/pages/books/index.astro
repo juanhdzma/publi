@@ -13,7 +13,7 @@ const tags = [...new Set(items.flatMap((item) => item.tags))].sort((a, b) =>
 
 <BaseLayout title="Libros" description="Resúmenes de libros.">
   <header class="border-b border-line pb-6 dark:border-line-dark">
-    <h1 class="text-4xl font-semibold tracking-tight">Libros</h1>
+    <h1 class="font-serif text-4xl tracking-tight sm:text-5xl">Libros</h1>
     <p class="mt-4 text-lg leading-relaxed text-ink-muted dark:text-ink-muted-dark">
       Resúmenes de lo que voy leyendo. {items.length} en total.
     </p>

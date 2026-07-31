@@ -43,12 +43,16 @@ export type Quote = {
   text: string;
   page?: string;
   featured: boolean;
+  publishedAt: Date;
   /** Quién dijo la frase. Por defecto el autor del libro, o el del ensayo. */
   attribution: string;
-  /** De dónde salió: título de la entrada que la contiene. */
-  origin: string;
-  originHref: string;
-  kind: Kind;
+  /** De dónde salió: la entrada que la contiene, o la obra en una cita suelta. */
+  origin?: string;
+  originHref?: string;
+  /** true cuando originHref apunta fuera del sitio. */
+  external?: boolean;
+  /** undefined en las citas sueltas, que no pertenecen a ninguna entrada. */
+  kind?: Kind;
   tags: string[];
 };
 
@@ -98,6 +102,7 @@ export async function getPublished(kind: Kind): Promise<ContentItem[]> {
           text: q.text,
           page: q.page,
           featured: q.featured,
+          publishedAt: entry.data.publishedAt,
           attribution: q.source ?? defaultAttribution,
           origin: entry.data.title,
           originHref: href,
@@ -109,9 +114,31 @@ export async function getPublished(kind: Kind): Promise<ContentItem[]> {
     .sort(byNewest);
 }
 
+/** Citas sueltas: viven en su propia colección, sin entrada detrás. */
+export async function getStandaloneQuotes(): Promise<Quote[]> {
+  const entries = await getCollection('quotes', ({ data }: any) => !data.draft);
+
+  return entries.map((entry: any) => ({
+    text: entry.data.text,
+    featured: false,
+    publishedAt: entry.data.publishedAt,
+    attribution: entry.data.author,
+    origin: entry.data.source,
+    originHref: entry.data.url,
+    external: Boolean(entry.data.url),
+    tags: entry.data.tags,
+  }));
+}
+
 export async function getAllQuotes(): Promise<Quote[]> {
-  const items = await getAllPublished();
-  return items.flatMap((item) => item.quotes);
+  const [items, standalone] = await Promise.all([
+    getAllPublished(),
+    getStandaloneQuotes(),
+  ]);
+
+  return [...items.flatMap((item) => item.quotes), ...standalone].sort(
+    (a, b) => b.publishedAt.valueOf() - a.publishedAt.valueOf(),
+  );
 }
 
 export async function getAllPublished(): Promise<ContentItem[]> {

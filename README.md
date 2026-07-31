@@ -46,6 +46,20 @@ quotes:
 `source` solo hace falta cuando la frase no es del autor de la entrada — por ejemplo si en
 un ensayo tuyo citás a otra persona.
 
+**Cita suelta** — cuando no viene de ningún libro ni ensayo del sitio, va en su propio
+archivo en `src/content/quotes/<slug>.md`. Aparece en `/quotes/` junto a las demás.
+
+```yaml
+---
+text: "La simplicidad es un prerrequisito de la confiabilidad."
+author: "Edsger W. Dijkstra"
+source: "EWD498"          # opcional, la obra
+url: "https://..."        # opcional, vuelve la fuente un link externo
+publishedAt: 2026-07-31
+tags: ["software"]        # opcional
+---
+```
+
 **2. Cita en el cuerpo** — blockquote de markdown. El `<cite>` es opcional y agrega el guión
 solo.
 
@@ -116,7 +130,8 @@ src/
 ├── lib/content.ts       queries, filtrado de drafts, orden por fecha
 ├── content/
 │   ├── books/           ← resúmenes
-│   └── essays/          ← ensayos
+│   ├── essays/          ← ensayos
+│   └── quotes/          ← citas sueltas, una por archivo
 ├── layouts/             BaseLayout (chrome) · ProseLayout (lectura)
 ├── components/          ContentCard · ThemeToggle
 └── pages/               home, listados, [...slug], tags, 404

@@ -41,4 +41,18 @@ const essays = defineCollection({
   schema: z.object(shared),
 });
 
-export const collections = { books, essays };
+/** Citas sueltas, sin libro ni ensayo detrás. */
+const quotes = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/quotes' }),
+  schema: z.object({
+    text: z.string(),
+    author: z.string(),
+    source: z.string().optional(),
+    url: z.url().optional(),
+    publishedAt: z.coerce.date(),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { books, essays, quotes };
