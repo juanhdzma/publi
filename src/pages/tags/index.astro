@@ -3,22 +3,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAllTags, KIND_PLURAL } from '../../lib/content';
 
 const tags = await getAllTags();
-
-const max = Math.max(...tags.map((tag) => tag.count), 1);
-
-/** Los más usados pesan más. Como vienen ordenados, el tamaño baja parejo. */
-function scale(count: number): string {
-  const ratio = count / max;
-  if (ratio > 0.7) return 'text-4xl';
-  if (ratio > 0.3) return 'text-3xl';
-  return 'text-2xl';
-}
 ---
 
 <BaseLayout title="Categorías" description="Todas las categorías del sitio.">
-  <header class="border-b border-line pb-7 dark:border-line-dark">
-    <h1 class="font-serif text-4xl tracking-tight sm:text-5xl">Categorías</h1>
-    <p class="mt-4 max-w-[55ch] text-lg leading-relaxed text-ink-muted dark:text-ink-muted-dark">
+  <header class="page-header">
+    <h1 class="page-title">Categorías</h1>
+    <p class="page-intro">
       {tags.length} categorías. Una entrada puede estar en varias, así que los números suman
       más que el total de entradas.
     </p>
@@ -30,24 +20,18 @@ function scale(count: number): string {
     ) : (
       <ul class="mt-4">
         {tags.map((tag) => (
-          <li class="group border-b border-line last:border-0 dark:border-line-dark">
+          <li class="row group">
             <a
               href={`/tags/${tag.slug}/`}
               class="flex items-baseline justify-between gap-6 py-4"
             >
-              <span
-                class={`font-serif leading-tight transition-colors group-hover:text-accent dark:group-hover:text-accent-dark ${scale(tag.count)}`}
-              >
-                {tag.name}
-              </span>
+              <span class="row-name">{tag.name}</span>
 
               <span class="flex shrink-0 items-baseline gap-4">
-                <span class="hidden text-xs tracking-[0.08em] text-ink-muted uppercase sm:inline dark:text-ink-muted-dark">
+                <span class="row-aside">
                   {tag.kinds.map((kind) => KIND_PLURAL[kind]).join(' · ')}
                 </span>
-                <span class="w-8 text-right font-serif text-xl tabular-nums text-ink-muted dark:text-ink-muted-dark">
-                  {tag.count}
-                </span>
+                <span class="row-count">{tag.count}</span>
               </span>
             </a>
           </li>

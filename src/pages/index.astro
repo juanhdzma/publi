@@ -33,21 +33,12 @@ const stats = [
   <section>
     <h1 class="sr-only">{SITE.title} — {SITE.tagline}</h1>
 
-    <dl
-      class="grid grid-cols-3 divide-x divide-line border-y border-line dark:divide-line-dark dark:border-line-dark"
-    >
+    <dl class="stat-band">
       {
         stats.map(({ href, count, label }, i) => (
-          <a
-            href={href}
-            class={`group flex flex-col-reverse gap-1 py-6 transition-colors hover:bg-accent/[0.04] dark:hover:bg-accent-dark/[0.07] ${i === 0 ? 'pr-6' : 'px-6'}`}
-          >
-            <dt class="text-sm tracking-wide text-ink-muted dark:text-ink-muted-dark">
-              {label}
-            </dt>
-            <dd class="font-serif text-4xl leading-none tabular-nums transition-colors group-hover:text-accent sm:text-5xl dark:group-hover:text-accent-dark">
-              {count}
-            </dd>
+          <a href={href} class={`stat group ${i === 0 ? 'pr-6' : 'px-6'}`}>
+            <dt class="stat-label">{label}</dt>
+            <dd class="stat-value">{count}</dd>
           </a>
         ))
       }
@@ -83,7 +74,7 @@ const stats = [
       {
         columns.map(({ kind, title, items }) => (
           <div>
-            <h3 class="border-b border-line pb-2 text-xs font-semibold tracking-[0.12em] text-ink-muted uppercase dark:border-line-dark dark:text-ink-muted-dark">
+            <h3 class="section-title-sub border-b border-line pb-2 dark:border-line-dark">
               <a
                 href={`${KIND_PATH[kind]}/`}
                 class="transition-colors hover:text-accent dark:hover:text-accent-dark"

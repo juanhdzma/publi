@@ -11,16 +11,11 @@ const { item } = Astro.props;
 const tagSlugs = item.tags.map(slugifyTag).join(' ');
 ---
 
-<li
-  class="group relative border-b border-line last:border-0 dark:border-line-dark"
-  data-entry-tags={tagSlugs}
->
+<li class="row group" data-entry-tags={tagSlugs}>
   <a href={item.href} class="block py-4">
-    <h3 class="font-serif text-lg leading-snug text-pretty transition-colors group-hover:text-accent dark:group-hover:text-accent-dark">
-      {item.title}
-    </h3>
+    <h3 class="row-title">{item.title}</h3>
 
-    <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-muted dark:text-ink-muted-dark">
+    <div class="meta-row mt-1">
       {
         item.author && (
           <>

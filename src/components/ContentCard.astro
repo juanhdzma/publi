@@ -11,41 +11,28 @@ type Props = {
 const { item, showKind = false } = Astro.props;
 ---
 
-<article class="group relative border-t-2 border-ink/10 pt-4 dark:border-ink-dark/15">
-  <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-ink-muted dark:text-ink-muted-dark">
-    {
-      showKind && (
-        <span class="font-medium tracking-[0.08em] text-accent uppercase dark:text-accent-dark">
-          {KIND_LABEL[item.kind]}
-        </span>
-      )
-    }
+<article class="entry group">
+  <div class="meta-row">
+    {showKind && <span class="meta-kind">{KIND_LABEL[item.kind]}</span>}
     <time datetime={item.publishedAt.toISOString()}>{formatDate(item.publishedAt)}</time>
     <span aria-hidden="true">·</span>
     <span>{item.readingMinutes} min</span>
   </div>
 
-  <h3 class="mt-2 font-serif text-2xl leading-tight text-balance">
-    <a
-      href={item.href}
-      class="decoration-accent/0 underline-offset-4 transition-all before:absolute before:inset-0 group-hover:decoration-accent/60 group-hover:underline dark:group-hover:decoration-accent-dark/60"
-    >
-      {item.title}
-    </a>
+  <h3 class="entry-title">
+    <a href={item.href} class="entry-link">{item.title}</a>
   </h3>
 
   {
     item.author && (
-      <p class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-muted dark:text-ink-muted-dark">
+      <p class="entry-byline">
         <span>{item.author}</span>
         {item.rating && <Rating value={item.rating} />}
       </p>
     )
   }
 
-  <p class="mt-2.5 leading-relaxed text-pretty text-ink-muted dark:text-ink-muted-dark">
-    {item.summary}
-  </p>
+  <p class="entry-summary">{item.summary}</p>
 
   <div class="relative z-10 mt-3.5">
     <TagList tags={item.tags} />

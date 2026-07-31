@@ -11,22 +11,18 @@ const locator = [quote.origin, quote.page].filter(Boolean).join(', ');
 const linked = Boolean(quote.originHref);
 ---
 
-<figure
-  class="group relative mb-10 break-inside-avoid border-t-2 border-ink/10 pt-5 dark:border-ink-dark/15"
->
-  <blockquote class="font-serif text-xl leading-snug text-pretty">
-    {quote.text}
-  </blockquote>
+<figure class="quote group">
+  <blockquote class="quote-text">{quote.text}</blockquote>
 
   <figcaption class="mt-3.5 text-sm">
-    <cite class="block font-medium not-italic">{quote.attribution}</cite>
+    <cite class="quote-author">{quote.attribution}</cite>
 
     {
       locator && linked && (
         <a
           href={quote.originHref}
           rel={quote.external ? 'noopener noreferrer' : undefined}
-          class="mt-1 inline-flex items-center gap-1.5 text-ink-muted transition-colors before:absolute before:inset-0 hover:text-accent dark:text-ink-muted-dark dark:hover:text-accent-dark"
+          class="quote-origin"
         >
           {quote.kind && (
             <span class="text-[0.7rem] tracking-[0.08em] uppercase">

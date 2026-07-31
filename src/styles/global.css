@@ -52,6 +52,155 @@
 }
 
 @layer components {
+  /* ---------------------------------------------------------------------
+     Cabecera de página: el bloque de título que abre libros, ensayos,
+     citas, categorías y cada tag.
+     --------------------------------------------------------------------- */
+  .page-header {
+    @apply border-b border-line pb-7 dark:border-line-dark;
+  }
+
+  .page-title {
+    @apply font-serif text-4xl tracking-tight text-balance sm:text-5xl;
+  }
+
+  .page-intro {
+    @apply mt-4 max-w-[55ch] text-lg leading-relaxed text-pretty text-ink-muted dark:text-ink-muted-dark;
+  }
+
+  /* ---------------------------------------------------------------------
+     Encabezado de sección dentro de una página.
+     --------------------------------------------------------------------- */
+  .section-header {
+    @apply flex items-baseline justify-between gap-4 border-b border-line pb-2 dark:border-line-dark;
+  }
+
+  .section-title {
+    @apply text-sm font-semibold tracking-[0.12em] text-ink uppercase dark:text-ink-dark;
+  }
+
+  .section-title-sub {
+    @apply text-xs font-semibold tracking-[0.12em] text-ink-muted uppercase dark:text-ink-muted-dark;
+  }
+
+  .section-link {
+    @apply shrink-0 text-sm text-ink-muted transition-colors hover:text-accent dark:text-ink-muted-dark dark:hover:text-accent-dark;
+  }
+
+  /* ---------------------------------------------------------------------
+     Banda de contadores que abre el home.
+     --------------------------------------------------------------------- */
+  .stat-band {
+    @apply grid grid-cols-3 divide-x divide-line border-y border-line dark:divide-line-dark dark:border-line-dark;
+  }
+
+  .stat {
+    @apply flex flex-col-reverse gap-1 py-6 transition-colors hover:bg-accent/[0.04] dark:hover:bg-accent-dark/[0.07];
+  }
+
+  .stat-value {
+    @apply font-serif text-4xl leading-none tabular-nums transition-colors group-hover:text-accent sm:text-5xl dark:group-hover:text-accent-dark;
+  }
+
+  .stat-label {
+    @apply text-sm tracking-wide text-ink-muted dark:text-ink-muted-dark;
+  }
+
+  /* ---------------------------------------------------------------------
+     Metadatos: fecha, duración, tipo de entrada.
+     --------------------------------------------------------------------- */
+  .meta-row {
+    @apply flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-ink-muted dark:text-ink-muted-dark;
+  }
+
+  .meta-kind {
+    @apply font-medium tracking-[0.08em] text-accent uppercase dark:text-accent-dark;
+  }
+
+  /* ---------------------------------------------------------------------
+     Entrada completa: la tarjeta de los listados y de "lo más reciente".
+     --------------------------------------------------------------------- */
+  .entry {
+    @apply relative border-t-2 border-ink/10 pt-4 dark:border-ink-dark/15;
+  }
+
+  .entry-title {
+    @apply mt-2 font-serif text-2xl leading-tight text-balance;
+  }
+
+  .entry-link {
+    @apply underline-offset-4 decoration-accent/0 transition-all before:absolute before:inset-0 group-hover:underline group-hover:decoration-accent/60 dark:group-hover:decoration-accent-dark/60;
+  }
+
+  .entry-byline {
+    @apply mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-muted dark:text-ink-muted-dark;
+  }
+
+  .entry-summary {
+    @apply mt-2.5 leading-relaxed text-pretty text-ink-muted dark:text-ink-muted-dark;
+  }
+
+  /* ---------------------------------------------------------------------
+     Fila compacta: listas de dos columnas y el índice de categorías.
+     --------------------------------------------------------------------- */
+  .row {
+    @apply relative border-b border-line last:border-0 dark:border-line-dark;
+  }
+
+  .row-title {
+    @apply font-serif text-lg leading-snug text-pretty transition-colors group-hover:text-accent dark:group-hover:text-accent-dark;
+  }
+
+  .row-name {
+    @apply font-serif text-2xl leading-tight transition-colors group-hover:text-accent dark:group-hover:text-accent-dark;
+  }
+
+  .row-aside {
+    @apply hidden text-xs tracking-[0.08em] text-ink-muted uppercase sm:inline dark:text-ink-muted-dark;
+  }
+
+  .row-count {
+    @apply w-8 text-right font-serif text-xl tabular-nums text-ink-muted dark:text-ink-muted-dark;
+  }
+
+  /* ---------------------------------------------------------------------
+     Chips: navegables (tag) y de filtro (botón con estado).
+     --------------------------------------------------------------------- */
+  .chip,
+  .filter-chip {
+    @apply inline-flex items-baseline gap-1.5 rounded-full border border-line transition-colors;
+    @apply hover:border-accent/40 hover:bg-accent/5 hover:text-accent;
+    @apply dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:bg-accent-dark/10 dark:hover:text-accent-dark;
+  }
+
+  .chip-sm {
+    @apply px-2 py-0.5 text-xs;
+  }
+
+  .chip-md,
+  .filter-chip {
+    @apply px-2.5 py-1 text-sm;
+  }
+
+  /* ---------------------------------------------------------------------
+     Cita suelta en la grilla de /quotes/.
+     --------------------------------------------------------------------- */
+  .quote {
+    @apply relative mb-10 break-inside-avoid border-t-2 border-ink/10 pt-5 dark:border-ink-dark/15;
+  }
+
+  .quote-text {
+    @apply font-serif text-xl leading-snug text-pretty;
+  }
+
+  .quote-author {
+    @apply block font-medium not-italic;
+  }
+
+  .quote-origin {
+    @apply mt-1 inline-flex items-center gap-1.5 text-ink-muted transition-colors before:absolute before:inset-0 hover:text-accent dark:text-ink-muted-dark dark:hover:text-accent-dark;
+  }
+
   .prose-publi {
     @apply prose prose-neutral prose-lg max-w-[68ch];
     @apply prose-headings:font-semibold prose-headings:tracking-tight;
@@ -67,9 +216,7 @@
   }
 
   .filter-chip {
-    @apply inline-flex cursor-pointer items-baseline gap-1.5 rounded-full border border-line px-3 py-1 text-sm transition-colors;
-    @apply hover:border-accent/40 hover:text-accent;
-    @apply dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:text-accent-dark;
+    @apply cursor-pointer;
   }
 
   .filter-chip[aria-pressed='true'] {
