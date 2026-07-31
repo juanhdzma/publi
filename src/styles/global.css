@@ -190,6 +190,35 @@
   }
 
   /* ---------------------------------------------------------------------
+     Nube de categorías. La página solo pasa --weight (0 a 1); el rango de
+     tamaños se define acá, así que la escala completa se cambia en un lugar.
+     --------------------------------------------------------------------- */
+  .tag-cloud {
+    @apply flex flex-wrap items-baseline justify-center gap-x-7 gap-y-4;
+  }
+
+  .cloud-tag {
+    --weight: 0;
+    --cloud-min: 1.375rem;
+    --cloud-range: 2.5rem;
+
+    font-size: calc(var(--cloud-min) + var(--weight) * var(--cloud-range));
+    @apply font-serif leading-none transition-colors;
+  }
+
+  .cloud-tag:hover {
+    @apply text-accent;
+  }
+
+  .dark .cloud-tag:hover {
+    @apply text-accent-dark;
+  }
+
+  .cloud-count {
+    @apply align-super text-xs tabular-nums text-ink-muted dark:text-ink-muted-dark;
+  }
+
+  /* ---------------------------------------------------------------------
      Chips: navegables (tag) y de filtro (botón con estado).
      --------------------------------------------------------------------- */
   .chip {
