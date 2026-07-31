@@ -3,6 +3,12 @@ import '../styles/global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import { SITE } from '../config';
 
+/* Solo los subsets latin en peso normal: son los únicos que un lector en
+   español baja al entrar, y precargarlos evita el flash con la font de
+   fallback. Los demás subsets e itálicas los pide el navegador si hacen falta. */
+import serifFont from '@fontsource-variable/source-serif-4/files/source-serif-4-latin-wght-normal.woff2?url';
+import sansFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+
 type Props = {
   title?: string;
   description?: string;
@@ -30,6 +36,9 @@ const path = Astro.url.pathname;
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+
+    <link rel="preload" href={serifFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={sansFont} as="font" type="font/woff2" crossorigin />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

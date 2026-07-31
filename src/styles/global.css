@@ -1,11 +1,20 @@
 @import "tailwindcss";
+
+/* Fonts self-hosted: Vite las empaqueta en /_astro/, sin pedidos externos.
+   Las variantes `wght` traen solo el eje de peso — pesan la mitad que las
+   `opsz`, que además cargan el eje óptico que no usamos. */
+@import "@fontsource-variable/source-serif-4/wght.css";
+@import "@fontsource-variable/source-serif-4/wght-italic.css";
+@import "@fontsource-variable/inter/wght.css";
+@import "@fontsource-variable/inter/wght-italic.css";
+
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-serif: "Source Serif 4 Variable", "Iowan Old Style", Palatino, Georgia, serif;
 
   --color-ink: oklch(0.19 0.012 55);
   --color-ink-muted: oklch(0.5 0.015 55);
