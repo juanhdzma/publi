@@ -13,15 +13,17 @@ import '@fontsource-variable/newsreader/wght.css';
 import '@fontsource-variable/bodoni-moda/wght.css';
 import '@fontsource-variable/lora/wght.css';
 
+/* Comillas simples: el stack se inyecta en style="..." desde JS, y con dobles
+   el atributo se corta en la primera y la font nunca se aplica. */
 const FONTS = [
-  { name: 'Source Serif 4', stack: '"Source Serif 4 Variable", serif' },
-  { name: 'EB Garamond', stack: '"EB Garamond Variable", serif' },
-  { name: 'Cormorant Garamond', stack: '"Cormorant Garamond Variable", serif' },
-  { name: 'Playfair Display', stack: '"Playfair Display Variable", serif' },
-  { name: 'Crimson Pro', stack: '"Crimson Pro Variable", serif' },
-  { name: 'Newsreader', stack: '"Newsreader Variable", serif' },
-  { name: 'Bodoni Moda', stack: '"Bodoni Moda Variable", serif' },
-  { name: 'Lora', stack: '"Lora Variable", serif' },
+  { name: 'Source Serif 4', stack: "'Source Serif 4 Variable', serif" },
+  { name: 'EB Garamond', stack: "'EB Garamond Variable', serif" },
+  { name: 'Cormorant Garamond', stack: "'Cormorant Garamond Variable', serif" },
+  { name: 'Playfair Display', stack: "'Playfair Display Variable', serif" },
+  { name: 'Crimson Pro', stack: "'Crimson Pro Variable', serif" },
+  { name: 'Newsreader', stack: "'Newsreader Variable', serif" },
+  { name: 'Bodoni Moda', stack: "'Bodoni Moda Variable', serif" },
+  { name: 'Lora', stack: "'Lora Variable', serif" },
 ];
 ---
 
