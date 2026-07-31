@@ -1,0 +1,76 @@
+---
+import type { TagSummary } from '../lib/content';
+
+type Props = {
+  tags: TagSummary[];
+  total: number;
+};
+
+const { tags, total } = Astro.props;
+---
+
+<div class="flex flex-wrap items-center gap-2" data-tag-filter>
+  <button
+    type="button"
+    data-tag=""
+    aria-pressed="true"
+    class="filter-chip"
+  >
+    Todas
+    <span class="filter-count">{total}</span>
+  </button>
+
+  {
+    tags.map((tag) => (
+      <button type="button" data-tag={tag.slug} aria-pressed="false" class="filter-chip">
+        {tag.name}
+        <span class="filter-count">{tag.count}</span>
+      </button>
+    ))
+  }
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-tag-filter]');
+
+  if (root) {
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('button[data-tag]')];
+    const items = [...document.querySelectorAll<HTMLElement>('[data-entry-tags]')];
+    const lists = [...document.querySelectorAll<HTMLElement>('[data-filterable]')];
+    const active = new Set<string>();
+
+    const isPressed = (button: HTMLButtonElement) =>
+      button.dataset.tag === '' ? active.size === 0 : active.has(button.dataset.tag!);
+
+    function apply() {
+      for (const item of items) {
+        const tags = (item.dataset.entryTags ?? '').split(' ').filter(Boolean);
+        item.hidden = active.size > 0 && !tags.some((tag) => active.has(tag));
+      }
+
+      for (const list of lists) {
+        const visible = [...list.querySelectorAll<HTMLElement>('[data-entry-tags]')].filter(
+          (item) => !item.hidden,
+        ).length;
+
+        list.dataset.visible = String(visible);
+        const empty = list.parentElement?.querySelector<HTMLElement>('[data-empty]');
+        if (empty) empty.hidden = visible > 0;
+      }
+
+      for (const button of buttons) {
+        button.setAttribute('aria-pressed', String(isPressed(button)));
+      }
+    }
+
+    for (const button of buttons) {
+      button.addEventListener('click', () => {
+        const tag = button.dataset.tag!;
+        if (tag === '') active.clear();
+        else if (active.has(tag)) active.delete(tag);
+        else active.add(tag);
+        apply();
+      });
+    }
+  }
+</script>

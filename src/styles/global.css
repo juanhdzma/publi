@@ -38,6 +38,10 @@
     @apply bg-accent/20 dark:bg-accent-dark/25;
   }
 
+  [hidden] {
+    display: none !important;
+  }
+
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-accent;
   }
@@ -60,6 +64,21 @@
     @apply prose-invert;
     @apply prose-a:text-accent-dark prose-a:decoration-accent-dark/40;
     @apply prose-code:bg-line-dark/60;
+  }
+
+  .filter-chip {
+    @apply inline-flex cursor-pointer items-baseline gap-1.5 rounded-full border border-line px-3 py-1 text-sm transition-colors;
+    @apply hover:border-accent/40 hover:text-accent;
+    @apply dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:text-accent-dark;
+  }
+
+  .filter-chip[aria-pressed='true'] {
+    @apply border-accent bg-accent text-paper hover:text-paper;
+    @apply dark:border-accent-dark dark:bg-accent-dark dark:text-paper-dark dark:hover:text-paper-dark;
+  }
+
+  .filter-count {
+    @apply text-xs tabular-nums opacity-60;
   }
 
   /* Cita en bloque: markdown `> texto`, con `<cite>` opcional para la fuente. */

@@ -1,15 +1,20 @@
 ---
 import Rating from './Rating.astro';
-import { formatDate, type ContentItem } from '../lib/content';
+import { formatDate, slugifyTag, type ContentItem } from '../lib/content';
 
 type Props = {
   item: ContentItem;
 };
 
 const { item } = Astro.props;
+
+const tagSlugs = item.tags.map(slugifyTag).join(' ');
 ---
 
-<li class="group relative border-b border-line last:border-0 dark:border-line-dark">
+<li
+  class="group relative border-b border-line last:border-0 dark:border-line-dark"
+  data-entry-tags={tagSlugs}
+>
   <a href={item.href} class="block py-4">
     <h3 class="font-serif text-lg leading-snug text-pretty transition-colors group-hover:text-accent dark:group-hover:text-accent-dark">
       {item.title}

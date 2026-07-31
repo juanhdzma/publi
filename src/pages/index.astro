@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ContentCard from '../components/ContentCard.astro';
 import ContentRow from '../components/ContentRow.astro';
 import SectionHeader from '../components/SectionHeader.astro';
+import TagFilter from '../components/TagFilter.astro';
 import { getAllPublished, getPublished, getAllTags, KIND_PATH } from '../lib/content';
 import { SITE } from '../config';
 
@@ -53,30 +54,6 @@ const stats = [
     </dl>
   </section>
 
-  {
-    topTags.length > 0 && (
-      <section class="mt-10">
-        <SectionHeader title="Categorías" href="/tags/" />
-
-        <ul class="mt-4 flex flex-wrap gap-2">
-          {topTags.map((tag) => (
-            <li>
-              <a
-                href={`/tags/${tag.slug}/`}
-                class="inline-flex items-baseline gap-1.5 rounded-full border border-line px-3 py-1 text-sm transition-colors hover:border-accent/40 hover:bg-accent/5 hover:text-accent dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:bg-accent-dark/10 dark:hover:text-accent-dark"
-              >
-                {tag.name}
-                <span class="text-xs tabular-nums text-ink-muted dark:text-ink-muted-dark">
-                  {tag.count}
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )
-  }
-
   <section class="mt-10">
     <SectionHeader title="Lo más reciente" />
 
@@ -95,29 +72,42 @@ const stats = [
     }
   </section>
 
-  <div class="mt-12 grid gap-x-10 gap-y-12 sm:grid-cols-2">
-    {
-      columns.map(({ kind, title, items }) => (
-        <section>
-          <SectionHeader
-            title={title}
-            href={`${KIND_PATH[kind]}/`}
-            linkLabel="Ver todos"
-          />
+  <section class="mt-14">
+    <SectionHeader title="Todo el archivo" href="/tags/" linkLabel="Ver categorías" />
 
-          {items.length === 0 ? (
-            <p class="mt-4 text-sm text-ink-muted dark:text-ink-muted-dark">
-              Todavía no hay {title.toLowerCase()}.
-            </p>
-          ) : (
-            <ul class="mt-1">
+    <div class="mt-5">
+      <TagFilter tags={topTags} total={all.length} />
+    </div>
+
+    <div class="mt-8 grid gap-x-10 gap-y-12 sm:grid-cols-2">
+      {
+        columns.map(({ kind, title, items }) => (
+          <div>
+            <h3 class="border-b border-line pb-2 text-xs font-semibold tracking-[0.12em] text-ink-muted uppercase dark:border-line-dark dark:text-ink-muted-dark">
+              <a
+                href={`${KIND_PATH[kind]}/`}
+                class="transition-colors hover:text-accent dark:hover:text-accent-dark"
+              >
+                {title}
+              </a>
+            </h3>
+
+            <ul class="mt-1" data-filterable>
               {items.map((item) => (
                 <ContentRow item={item} />
               ))}
             </ul>
-          )}
-        </section>
-      ))
-    }
-  </div>
+
+            <p
+              class="mt-4 text-sm text-ink-muted dark:text-ink-muted-dark"
+              data-empty
+              hidden={items.length > 0}
+            >
+              Nada en {title.toLowerCase()} con este filtro.
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
 </BaseLayout>
