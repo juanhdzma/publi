@@ -1,23 +1,30 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContentCard from '../components/ContentCard.astro';
-import { getAllPublished, getAllTags } from '../lib/content';
+import ContentRow from '../components/ContentRow.astro';
+import { getAllPublished, getPublished, getAllTags, KIND_PATH } from '../lib/content';
 import { SITE } from '../config';
 
-const items = await getAllPublished();
-const latest = items.slice(0, 8);
-const tags = (await getAllTags()).slice(0, 8);
+const [all, books, essays, tags] = await Promise.all([
+  getAllPublished(),
+  getPublished('books'),
+  getPublished('essays'),
+  getAllTags(),
+]);
 
-const counts = {
-  books: items.filter((i) => i.kind === 'books').length,
-  essays: items.filter((i) => i.kind === 'essays').length,
-};
+const latest = all.slice(0, 4);
+const topTags = tags.slice(0, 8);
+
+const columns = [
+  { kind: 'books' as const, title: 'Libros', items: books },
+  { kind: 'essays' as const, title: 'Ensayos', items: essays },
+];
 ---
 
 <BaseLayout>
   <section>
     <h1 class="text-4xl font-semibold tracking-tight">{SITE.title}</h1>
-    <p class="mt-4 text-lg leading-relaxed text-pretty text-ink-muted dark:text-ink-muted-dark">
+    <p class="mt-4 max-w-[60ch] text-lg leading-relaxed text-pretty text-ink-muted dark:text-ink-muted-dark">
       {SITE.description}
     </p>
 
@@ -26,19 +33,19 @@ const counts = {
         href="/books/"
         class="rounded-lg border border-line px-3 py-1.5 transition-colors hover:border-accent/40 hover:text-accent dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:text-accent-dark"
       >
-        {counts.books} libros
+        {books.length} libros
       </a>
       <a
         href="/essays/"
         class="rounded-lg border border-line px-3 py-1.5 transition-colors hover:border-accent/40 hover:text-accent dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:text-accent-dark"
       >
-        {counts.essays} ensayos
+        {essays.length} ensayos
       </a>
     </div>
   </section>
 
   {
-    tags.length > 0 && (
+    topTags.length > 0 && (
       <section class="mt-12">
         <div class="flex items-baseline justify-between gap-4">
           <h2 class="text-sm font-medium tracking-wide text-ink-muted uppercase dark:text-ink-muted-dark">
@@ -53,7 +60,7 @@ const counts = {
         </div>
 
         <ul class="mt-4 flex flex-wrap gap-2">
-          {tags.map((tag) => (
+          {topTags.map((tag) => (
             <li>
               <a
                 href={`/tags/${tag.slug}/`}
@@ -73,19 +80,53 @@ const counts = {
 
   <section class="mt-12">
     <h2 class="text-sm font-medium tracking-wide text-ink-muted uppercase dark:text-ink-muted-dark">
-      Lo último
+      Lo más reciente
     </h2>
 
-    <div class="mt-4 grid gap-4 sm:grid-cols-2">
-      {latest.map((item) => <ContentCard item={item} showKind />)}
-    </div>
-
     {
-      latest.length === 0 && (
-        <p class="mt-6 text-ink-muted dark:text-ink-muted-dark">
+      latest.length === 0 ? (
+        <p class="mt-4 text-ink-muted dark:text-ink-muted-dark">
           Todavía no hay nada publicado.
         </p>
+      ) : (
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+          {latest.map((item) => (
+            <ContentCard item={item} showKind />
+          ))}
+        </div>
       )
     }
   </section>
+
+  <div class="mt-14 grid gap-x-10 gap-y-12 sm:grid-cols-2">
+    {
+      columns.map(({ kind, title, items }) => (
+        <section>
+          <div class="flex items-baseline justify-between gap-4 border-b border-line pb-2 dark:border-line-dark">
+            <h2 class="text-sm font-medium tracking-wide text-ink-muted uppercase dark:text-ink-muted-dark">
+              {title}
+            </h2>
+            <a
+              href={`${KIND_PATH[kind]}/`}
+              class="text-sm text-ink-muted transition-colors hover:text-accent dark:text-ink-muted-dark dark:hover:text-accent-dark"
+            >
+              Ver todos
+            </a>
+          </div>
+
+          {items.length === 0 ? (
+            <p class="mt-4 text-sm text-ink-muted dark:text-ink-muted-dark">
+              Todavía no hay {title.toLowerCase()}.
+            </p>
+          ) : (
+            <ul class="mt-1">
+              {items.map((item) => (
+                <ContentRow item={item} />
+              ))}
+            </ul>
+          )}
+        </section>
+      ))
+    }
+  </div>
 </BaseLayout>

@@ -1,0 +1,33 @@
+---
+import Rating from './Rating.astro';
+import { formatDate, type ContentItem } from '../lib/content';
+
+type Props = {
+  item: ContentItem;
+};
+
+const { item } = Astro.props;
+---
+
+<li class="group relative border-b border-line last:border-0 dark:border-line-dark">
+  <a href={item.href} class="block py-3.5">
+    <h3 class="font-medium tracking-tight text-pretty transition-colors group-hover:text-accent dark:group-hover:text-accent-dark">
+      {item.title}
+    </h3>
+
+    <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-muted dark:text-ink-muted-dark">
+      {
+        item.author && (
+          <>
+            <span class="truncate">{item.author}</span>
+            <span aria-hidden="true">·</span>
+          </>
+        )
+      }
+      <time datetime={item.publishedAt.toISOString()}>{formatDate(item.publishedAt)}</time>
+      <span aria-hidden="true">·</span>
+      <span>{item.readingMinutes} min</span>
+      {item.rating && <Rating value={item.rating} />}
+    </div>
+  </a>
+</li>
