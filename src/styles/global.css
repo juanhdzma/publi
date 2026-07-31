@@ -245,6 +245,24 @@
   }
 
   /* ---------------------------------------------------------------------
+     TEMPORAL — torneo de tipografías en /type/. Borrar junto con la página
+     cuando esté elegida la serif.
+     --------------------------------------------------------------------- */
+  .duel {
+    @apply grid gap-4 sm:grid-cols-2;
+  }
+
+  .duel-side {
+    @apply cursor-pointer rounded-xl border border-line p-6 text-left transition-colors;
+    @apply hover:border-accent hover:bg-accent/[0.04];
+    @apply dark:border-line-dark dark:hover:border-accent-dark dark:hover:bg-accent-dark/[0.07];
+  }
+
+  .duel-badge {
+    @apply text-xs font-semibold tracking-[0.12em] text-ink-muted uppercase dark:text-ink-muted-dark;
+  }
+
+  /* ---------------------------------------------------------------------
      Chips: navegables (tag) y de filtro (botón con estado).
      --------------------------------------------------------------------- */
   .chip {

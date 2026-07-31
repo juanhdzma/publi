@@ -1,0 +1,144 @@
+---
+/**
+ * TEMPORAL — torneo para elegir la serif del sitio. Borrar junto con las
+ * clases .duel* de global.css y las fonts perdedoras cuando esté decidido.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+import '@fontsource-variable/eb-garamond/wght.css';
+import '@fontsource-variable/cormorant-garamond/wght.css';
+import '@fontsource-variable/playfair-display/wght.css';
+import '@fontsource-variable/crimson-pro/wght.css';
+import '@fontsource-variable/newsreader/wght.css';
+import '@fontsource-variable/bodoni-moda/wght.css';
+import '@fontsource-variable/lora/wght.css';
+
+const FONTS = [
+  { name: 'Source Serif 4', stack: '"Source Serif 4 Variable", serif' },
+  { name: 'EB Garamond', stack: '"EB Garamond Variable", serif' },
+  { name: 'Cormorant Garamond', stack: '"Cormorant Garamond Variable", serif' },
+  { name: 'Playfair Display', stack: '"Playfair Display Variable", serif' },
+  { name: 'Crimson Pro', stack: '"Crimson Pro Variable", serif' },
+  { name: 'Newsreader', stack: '"Newsreader Variable", serif' },
+  { name: 'Bodoni Moda', stack: '"Bodoni Moda Variable", serif' },
+  { name: 'Lora', stack: '"Lora Variable", serif' },
+];
+---
+
+<BaseLayout title="Torneo de tipografías" description="Elegir la serif del sitio.">
+  <header class="page-header">
+    <h1 class="page-title">Torneo</h1>
+    <p class="page-intro">
+      Ocho serifs, de a dos. Clickeá la que te guste más y avanza sola hasta que quede una.
+      Los nombres están ocultos a propósito: elegís mirando, no leyendo etiquetas.
+    </p>
+  </header>
+
+  <div id="stage" class="mt-10">
+    <div class="flex items-baseline justify-between gap-4">
+      <p id="progress" class="duel-badge"></p>
+      <button
+        id="restart"
+        type="button"
+        class="section-link cursor-pointer"
+        hidden
+      >
+        Empezar de nuevo
+      </button>
+    </div>
+
+    <div id="duel" class="duel mt-4"></div>
+
+    <div id="result" class="mt-10" hidden></div>
+  </div>
+</BaseLayout>
+
+<script is:inline define:vars={{ FONTS }}>
+  const duel = document.getElementById('duel');
+  const progress = document.getElementById('progress');
+  const result = document.getElementById('result');
+  const restart = document.getElementById('restart');
+
+  const specimen = (stack) => `
+    <div style="font-family:${stack}">
+      <p class="text-4xl leading-[1.05] tracking-tight sm:text-5xl">Categorías</p>
+      <p class="mt-4 text-xl leading-tight sm:text-2xl">
+        La estructura de las revoluciones científicas
+      </p>
+      <p class="mt-3 text-lg leading-snug italic">
+        «Buscamos domesticar el trigo y fue el trigo el que nos domesticó.»
+      </p>
+      <p class="mt-3 leading-relaxed text-ink-muted dark:text-ink-muted-dark">
+        Harari sostiene que el Homo sapiens no dominó el mundo por ser más fuerte, sino por
+        poder cooperar en grupos grandes y flexibles.
+      </p>
+    </div>`;
+
+  let contenders, winners, index, round, totalRounds;
+
+  function start() {
+    contenders = [...FONTS];
+    winners = [];
+    index = 0;
+    round = 1;
+    totalRounds = Math.log2(FONTS.length);
+    result.hidden = true;
+    duel.hidden = false;
+    restart.hidden = true;
+    render();
+  }
+
+  function render() {
+    if (contenders.length === 1) return finish(contenders[0]);
+
+    if (index >= contenders.length) {
+      contenders = winners;
+      winners = [];
+      index = 0;
+      round += 1;
+      return render();
+    }
+
+    const [left, right] = [contenders[index], contenders[index + 1]];
+    const duelsThisRound = contenders.length / 2;
+    const current = index / 2 + 1;
+    const label =
+      contenders.length === 2 ? 'Final' : `Ronda ${round} de ${totalRounds}`;
+
+    progress.textContent =
+      contenders.length === 2 ? label : `${label} · duelo ${current} de ${duelsThisRound}`;
+
+    duel.innerHTML = [left, right]
+      .map(
+        (font, i) =>
+          `<button type="button" class="duel-side" data-side="${i}">${specimen(font.stack)}</button>`,
+      )
+      .join('');
+
+    for (const button of duel.querySelectorAll('button[data-side]')) {
+      button.addEventListener('click', () => {
+        winners.push(button.dataset.side === '0' ? left : right);
+        index += 2;
+        render();
+      });
+    }
+  }
+
+  function finish(font) {
+    duel.hidden = true;
+    progress.textContent = 'Ganadora';
+    restart.hidden = false;
+    result.hidden = false;
+    result.innerHTML = `
+      <p class="page-title" style="font-family:${font.stack}">${font.name}</p>
+      <p class="page-intro">
+        Decímelo y la dejo como la serif del sitio.
+      </p>
+      <div class="mt-8 border-t-2 border-ink/10 pt-5 dark:border-ink-dark/15">
+        ${specimen(font.stack)}
+      </div>`;
+  }
+
+  restart.addEventListener('click', start);
+  start();
+</script>
