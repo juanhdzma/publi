@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContentCard from '../components/ContentCard.astro';
 import ContentRow from '../components/ContentRow.astro';
+import SectionHeader from '../components/SectionHeader.astro';
 import { getAllPublished, getPublished, getAllTags, KIND_PATH } from '../lib/content';
 import { SITE } from '../config';
 
@@ -19,44 +20,45 @@ const columns = [
   { kind: 'books' as const, title: 'Libros', items: books },
   { kind: 'essays' as const, title: 'Ensayos', items: essays },
 ];
+
+const stats = [
+  { href: '/books/', count: books.length, label: 'libros' },
+  { href: '/essays/', count: essays.length, label: 'ensayos' },
+  { href: '/tags/', count: tags.length, label: 'categorías' },
+];
 ---
 
 <BaseLayout>
-  <section>
-    <h1 class="max-w-[24ch] text-3xl font-semibold tracking-tight text-balance">
-      {SITE.description}
+  <section class="border-b border-line pb-8 dark:border-line-dark">
+    <h1 class="max-w-[20ch] text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+      {SITE.tagline}
     </h1>
 
-    <div class="mt-5 flex flex-wrap gap-2 text-sm">
-      <a
-        href="/books/"
-        class="rounded-lg border border-line px-3 py-1.5 transition-colors hover:border-accent/40 hover:text-accent dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:text-accent-dark"
-      >
-        {books.length} libros
-      </a>
-      <a
-        href="/essays/"
-        class="rounded-lg border border-line px-3 py-1.5 transition-colors hover:border-accent/40 hover:text-accent dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:text-accent-dark"
-      >
-        {essays.length} ensayos
-      </a>
-    </div>
+    <dl class="mt-7 flex flex-wrap gap-x-10 gap-y-4">
+      {
+        stats.map(({ href, count, label }) => (
+          <div>
+            <dt class="sr-only">{label}</dt>
+            <dd>
+              <a href={href} class="group block">
+                <span class="block text-2xl font-semibold tabular-nums transition-colors group-hover:text-accent dark:group-hover:text-accent-dark">
+                  {count}
+                </span>
+                <span class="mt-0.5 block text-sm text-ink-muted dark:text-ink-muted-dark">
+                  {label}
+                </span>
+              </a>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
   </section>
 
   {
     topTags.length > 0 && (
       <section class="mt-10">
-        <div class="flex items-baseline justify-between gap-4">
-          <h2 class="text-sm font-medium tracking-wide text-ink-muted uppercase dark:text-ink-muted-dark">
-            Categorías
-          </h2>
-          <a
-            href="/tags/"
-            class="text-sm text-ink-muted transition-colors hover:text-accent dark:text-ink-muted-dark dark:hover:text-accent-dark"
-          >
-            Ver todas
-          </a>
-        </div>
+        <SectionHeader title="Categorías" href="/tags/" />
 
         <ul class="mt-4 flex flex-wrap gap-2">
           {topTags.map((tag) => (
@@ -78,9 +80,7 @@ const columns = [
   }
 
   <section class="mt-10">
-    <h2 class="text-sm font-medium tracking-wide text-ink-muted uppercase dark:text-ink-muted-dark">
-      Lo más reciente
-    </h2>
+    <SectionHeader title="Lo más reciente" />
 
     {
       latest.length === 0 ? (
@@ -88,7 +88,7 @@ const columns = [
           Todavía no hay nada publicado.
         </p>
       ) : (
-        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div class="mt-5 grid gap-4 sm:grid-cols-2">
           {latest.map((item) => (
             <ContentCard item={item} showKind />
           ))}
@@ -101,17 +101,11 @@ const columns = [
     {
       columns.map(({ kind, title, items }) => (
         <section>
-          <div class="flex items-baseline justify-between gap-4 border-b border-line pb-2 dark:border-line-dark">
-            <h2 class="text-sm font-medium tracking-wide text-ink-muted uppercase dark:text-ink-muted-dark">
-              {title}
-            </h2>
-            <a
-              href={`${KIND_PATH[kind]}/`}
-              class="text-sm text-ink-muted transition-colors hover:text-accent dark:text-ink-muted-dark dark:hover:text-accent-dark"
-            >
-              Ver todos
-            </a>
-          </div>
+          <SectionHeader
+            title={title}
+            href={`${KIND_PATH[kind]}/`}
+            linkLabel="Ver todos"
+          />
 
           {items.length === 0 ? (
             <p class="mt-4 text-sm text-ink-muted dark:text-ink-muted-dark">

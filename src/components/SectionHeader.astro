@@ -1,0 +1,28 @@
+---
+type Props = {
+  title: string;
+  href?: string;
+  linkLabel?: string;
+};
+
+const { title, href, linkLabel = 'Ver todas' } = Astro.props;
+---
+
+<div
+  class="flex items-baseline justify-between gap-4 border-b border-line pb-2 dark:border-line-dark"
+>
+  <h2 class="text-sm font-medium tracking-wide text-ink-muted uppercase dark:text-ink-muted-dark">
+    {title}
+  </h2>
+
+  {
+    href && (
+      <a
+        href={href}
+        class="shrink-0 text-sm text-ink-muted transition-colors hover:text-accent dark:text-ink-muted-dark dark:hover:text-accent-dark"
+      >
+        {linkLabel}
+      </a>
+    )
+  }
+</div>

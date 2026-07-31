@@ -25,10 +25,12 @@ const { name, items } = Astro.props;
     ← Categorías
   </a>
 
-  <h1 class="mt-6 text-3xl font-semibold tracking-tight">{name}</h1>
-  <p class="mt-3 text-ink-muted dark:text-ink-muted-dark">
-    {items.length} {items.length === 1 ? 'entrada' : 'entradas'}
-  </p>
+  <header class="mt-6 border-b border-line pb-6 dark:border-line-dark">
+    <h1 class="text-4xl font-semibold tracking-tight">{name}</h1>
+    <p class="mt-3 text-ink-muted dark:text-ink-muted-dark">
+      {items.length} {items.length === 1 ? 'entrada' : 'entradas'}
+    </p>
+  </header>
 
   <div class="mt-8 grid gap-4 sm:grid-cols-2">
     {items.map((item) => <ContentCard item={item} showKind />)}
