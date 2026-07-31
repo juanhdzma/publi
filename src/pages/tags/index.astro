@@ -3,38 +3,51 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAllTags, KIND_PLURAL } from '../../lib/content';
 
 const tags = await getAllTags();
+
+const max = Math.max(...tags.map((tag) => tag.count), 1);
+
+/** Los más usados pesan más. Como vienen ordenados, el tamaño baja parejo. */
+function scale(count: number): string {
+  const ratio = count / max;
+  if (ratio > 0.7) return 'text-4xl';
+  if (ratio > 0.3) return 'text-3xl';
+  return 'text-2xl';
+}
 ---
 
 <BaseLayout title="Categorías" description="Todas las categorías del sitio.">
-  <header class="border-b border-line pb-6 dark:border-line-dark">
+  <header class="border-b border-line pb-7 dark:border-line-dark">
     <h1 class="font-serif text-4xl tracking-tight sm:text-5xl">Categorías</h1>
-    <p class="mt-3 text-ink-muted dark:text-ink-muted-dark">
-      {tags.length} categorías en total. Una entrada puede estar en varias.
+    <p class="mt-4 max-w-[55ch] text-lg leading-relaxed text-ink-muted dark:text-ink-muted-dark">
+      {tags.length} categorías. Una entrada puede estar en varias, así que los números suman
+      más que el total de entradas.
     </p>
   </header>
 
   {
     tags.length === 0 ? (
-      <p class="mt-8 text-ink-muted dark:text-ink-muted-dark">Todavía no hay categorías.</p>
+      <p class="mt-10 text-ink-muted dark:text-ink-muted-dark">Todavía no hay categorías.</p>
     ) : (
-      <ul class="mt-8 grid gap-2 sm:grid-cols-2">
+      <ul class="mt-4">
         {tags.map((tag) => (
-          <li>
+          <li class="group border-b border-line last:border-0 dark:border-line-dark">
             <a
               href={`/tags/${tag.slug}/`}
-              class="group flex items-baseline justify-between gap-3 rounded-lg border border-line px-4 py-3 transition-colors hover:border-accent/40 hover:bg-accent/5 dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:bg-accent-dark/10"
+              class="flex items-baseline justify-between gap-6 py-4"
             >
-              <span class="min-w-0">
-                <span class="block truncate font-medium group-hover:text-accent dark:group-hover:text-accent-dark">
-                  {tag.name}
-                </span>
-                <span class="mt-0.5 block text-xs text-ink-muted dark:text-ink-muted-dark">
-                  {tag.kinds.map((k) => KIND_PLURAL[k]).join(' · ')}
-                </span>
+              <span
+                class={`font-serif leading-tight transition-colors group-hover:text-accent dark:group-hover:text-accent-dark ${scale(tag.count)}`}
+              >
+                {tag.name}
               </span>
 
-              <span class="shrink-0 rounded-full bg-line/50 px-2 py-0.5 text-xs tabular-nums text-ink-muted dark:bg-line-dark/60 dark:text-ink-muted-dark">
-                {tag.count}
+              <span class="flex shrink-0 items-baseline gap-4">
+                <span class="hidden text-xs tracking-[0.08em] text-ink-muted uppercase sm:inline dark:text-ink-muted-dark">
+                  {tag.kinds.map((kind) => KIND_PLURAL[kind]).join(' · ')}
+                </span>
+                <span class="w-8 text-right font-serif text-xl tabular-nums text-ink-muted dark:text-ink-muted-dark">
+                  {tag.count}
+                </span>
               </span>
             </a>
           </li>
