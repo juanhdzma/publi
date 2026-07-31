@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContentCard from '../components/ContentCard.astro';
+import { getAllPublished } from '../lib/content';
+import { SITE } from '../config';
+
+const items = (await getAllPublished()).slice(0, 10);
+---
+
+<BaseLayout>
+  <section>
+    <h1 class="text-3xl font-semibold tracking-tight">{SITE.title}</h1>
+    <p class="mt-3 text-ink-muted dark:text-ink-muted-dark">{SITE.description}</p>
+  </section>
+
+  <section class="mt-10">
+    <h2 class="text-sm font-medium tracking-wide text-ink-muted uppercase dark:text-ink-muted-dark">
+      Lo último
+    </h2>
+
+    <div class="mt-2">
+      {items.map((item) => <ContentCard item={item} showKind />)}
+    </div>
+
+    {
+      items.length === 0 && (
+        <p class="mt-6 text-ink-muted dark:text-ink-muted-dark">
+          Todavía no hay nada publicado.
+        </p>
+      )
+    }
+  </section>
+</BaseLayout>

@@ -1,0 +1,60 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { KIND_PATH, KIND_PLURAL, formatDate, type Kind } from '../lib/content';
+
+type Props = {
+  kind: Kind;
+  title: string;
+  summary: string;
+  publishedAt: Date;
+  tags: string[];
+  author?: string;
+  rating?: number;
+};
+
+const { kind, title, summary, publishedAt, tags, author, rating } = Astro.props;
+---
+
+<BaseLayout title={title} description={summary}>
+  <a
+    href={`${KIND_PATH[kind]}/`}
+    class="text-sm text-ink-muted transition-colors hover:text-ink dark:text-ink-muted-dark dark:hover:text-ink-dark"
+  >
+    ← {KIND_PLURAL[kind]}
+  </a>
+
+  <header class="mt-6 border-b border-line pb-6 dark:border-line-dark">
+    <h1 class="text-3xl font-semibold tracking-tight text-balance">{title}</h1>
+
+    {author && <p class="mt-2 text-ink-muted dark:text-ink-muted-dark">{author}</p>}
+
+    <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-ink-muted dark:text-ink-muted-dark">
+      <time datetime={publishedAt.toISOString()}>{formatDate(publishedAt)}</time>
+
+      {
+        rating && (
+          <span aria-label={`${rating} de 5`} title={`${rating} de 5`}>
+            {'★'.repeat(rating)}
+            <span class="opacity-30">{'★'.repeat(5 - rating)}</span>
+          </span>
+        )
+      }
+
+      {
+        tags.length > 0 && (
+          <ul class="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <li class="rounded-full border border-line px-2 py-0.5 text-xs dark:border-line-dark">
+                {tag}
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </header>
+
+  <div class="prose-publi mt-8">
+    <slot />
+  </div>
+</BaseLayout>

@@ -1,0 +1,7 @@
+services:
+  publi:
+    image: ghcr.io/juanhdzma/publi:latest
+    container_name: publi
+    restart: unless-stopped
+    ports:
+      - "8080:80"

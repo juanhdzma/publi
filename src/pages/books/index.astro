@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContentCard from '../../components/ContentCard.astro';
+import { getPublished } from '../../lib/content';
+
+const items = await getPublished('books');
+---
+
+<BaseLayout title="Libros" description="Resúmenes de libros.">
+  <h1 class="text-3xl font-semibold tracking-tight">Libros</h1>
+  <p class="mt-3 text-ink-muted dark:text-ink-muted-dark">
+    Resúmenes de lo que voy leyendo.
+  </p>
+
+  <div class="mt-8">
+    {items.map((item) => <ContentCard item={item} />)}
+  </div>
+
+  {
+    items.length === 0 && (
+      <p class="mt-8 text-ink-muted dark:text-ink-muted-dark">Todavía no hay libros.</p>
+    )
+  }
+</BaseLayout>

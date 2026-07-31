@@ -1,0 +1,89 @@
+---
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import { SITE } from '../config';
+
+type Props = {
+  title?: string;
+  description?: string;
+};
+
+const { title, description = SITE.description } = Astro.props;
+
+const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+
+const nav = [
+  { href: '/books/', label: 'Libros' },
+  { href: '/essays/', label: 'Ensayos' },
+];
+
+const path = Astro.url.pathname;
+---
+
+<html lang="es" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+    <meta name="theme-color" content="#fcfcfa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1c1d21" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const dark = stored
+        ? stored === 'dark'
+        : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.toggle('dark', dark);
+    </script>
+  </head>
+
+  <body class="flex min-h-full flex-col">
+    <header class="border-b border-line dark:border-line-dark">
+      <div class="mx-auto flex max-w-2xl items-center justify-between gap-6 px-6 py-5">
+        <a href="/" class="font-semibold tracking-tight hover:text-accent dark:hover:text-accent-dark">
+          {SITE.title}
+        </a>
+
+        <nav class="flex items-center gap-1 text-sm">
+          {
+            nav.map(({ href, label }) => (
+              <a
+                href={href}
+                aria-current={path.startsWith(href) ? 'page' : undefined}
+                class="rounded-md px-2.5 py-1.5 text-ink-muted transition-colors hover:text-ink aria-[current]:text-ink aria-[current]:font-medium dark:text-ink-muted-dark dark:hover:text-ink-dark dark:aria-[current]:text-ink-dark"
+              >
+                {label}
+              </a>
+            ))
+          }
+          <ThemeToggle />
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-2xl flex-1 px-6 py-12">
+      <slot />
+    </main>
+
+    <footer class="border-t border-line dark:border-line-dark">
+      <div class="mx-auto flex max-w-2xl items-center justify-between gap-4 px-6 py-6 text-sm text-ink-muted dark:text-ink-muted-dark">
+        <span>{SITE.author}</span>
+        <a href="/rss.xml" class="hover:text-ink dark:hover:text-ink-dark">RSS</a>
+      </div>
+    </footer>
+  </body>
+</html>

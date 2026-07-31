@@ -1,0 +1,68 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+
+  --color-ink: oklch(0.22 0.01 260);
+  --color-ink-muted: oklch(0.52 0.01 260);
+  --color-paper: oklch(0.99 0.003 90);
+  --color-line: oklch(0.9 0.005 260);
+  --color-accent: oklch(0.52 0.16 250);
+
+  --color-ink-dark: oklch(0.92 0.008 260);
+  --color-ink-muted-dark: oklch(0.66 0.012 260);
+  --color-paper-dark: oklch(0.19 0.012 260);
+  --color-line-dark: oklch(0.31 0.012 260);
+  --color-accent-dark: oklch(0.76 0.13 245);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+  }
+
+  .dark body {
+    @apply bg-paper-dark text-ink-dark;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+
+  .dark :focus-visible {
+    @apply outline-accent-dark;
+  }
+}
+
+@layer components {
+  .prose-publi {
+    @apply prose prose-neutral max-w-none;
+    @apply prose-headings:font-semibold prose-headings:tracking-tight;
+    @apply prose-a:text-accent prose-a:decoration-accent/40;
+    @apply prose-blockquote:border-l-accent/50 prose-blockquote:not-italic;
+    @apply prose-code:before:content-none prose-code:after:content-none;
+    @apply prose-code:rounded prose-code:bg-line/40 prose-code:px-1.5 prose-code:py-0.5;
+  }
+
+  .dark .prose-publi {
+    @apply prose-invert;
+    @apply prose-a:text-accent-dark prose-a:decoration-accent-dark/40;
+    @apply prose-blockquote:border-l-accent-dark/50;
+    @apply prose-code:bg-line-dark/60;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

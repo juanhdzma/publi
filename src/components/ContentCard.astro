@@ -1,0 +1,39 @@
+---
+import { KIND_LABEL, formatDate, type ContentItem } from '../lib/content';
+
+type Props = {
+  item: ContentItem;
+  showKind?: boolean;
+};
+
+const { item, showKind = false } = Astro.props;
+---
+
+<article class="group border-b border-line py-6 last:border-0 dark:border-line-dark">
+  <a href={item.href} class="block">
+    <div class="flex items-baseline gap-3 text-xs text-ink-muted dark:text-ink-muted-dark">
+      <time datetime={item.publishedAt.toISOString()}>{formatDate(item.publishedAt)}</time>
+      {
+        showKind && (
+          <span class="rounded-full border border-line px-2 py-0.5 dark:border-line-dark">
+            {KIND_LABEL[item.kind]}
+          </span>
+        )
+      }
+    </div>
+
+    <h2 class="mt-2 font-semibold tracking-tight group-hover:text-accent dark:group-hover:text-accent-dark">
+      {item.title}
+    </h2>
+
+    {
+      item.author && (
+        <p class="mt-0.5 text-sm text-ink-muted dark:text-ink-muted-dark">{item.author}</p>
+      )
+    }
+
+    <p class="mt-2 text-sm leading-relaxed text-ink-muted dark:text-ink-muted-dark">
+      {item.summary}
+    </p>
+  </a>
+</article>
