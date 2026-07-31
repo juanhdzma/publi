@@ -14,7 +14,7 @@ Un archivo markdown en la carpeta que corresponda. El nombre del archivo es la U
 ---
 title: "Sapiens"
 author: "Yuval Noah Harari"
-summary: "Una línea, aparece en el listado y en el RSS."
+summary: "Una línea, aparece en los listados."
 publishedAt: 2026-07-30
 rating: 4          # opcional, 1-5
 tags: ["historia"] # opcional
@@ -73,8 +73,8 @@ references:
 `git push` a `main` y el Action buildea y publica la imagen.
 
 Si a un archivo le falta un campo requerido **el build falla** nombrando el archivo y el campo,
-así que un `.md` mal formado nunca llega a producción. `draft: true` lo excluye de listados,
-rutas y RSS.
+así que un `.md` mal formado nunca llega a producción. `draft: true` lo excluye de listados
+y rutas.
 
 ## Desarrollo
 
@@ -97,7 +97,7 @@ docker build -t publi --build-arg SITE_URL=https://tu-dominio .
 docker run -p 8080:80 publi
 ```
 
-`SITE_URL` define las URLs absolutas del RSS, el sitemap y los `<link rel="canonical">`.
+`SITE_URL` define las URLs absolutas del sitemap y los `<link rel="canonical">`.
 En GitHub se configura como **repository variable** (`Settings → Secrets and variables →
 Actions → Variables`), no como secret. Sin ese valor el build usa `http://localhost:4321`.
 
@@ -113,5 +113,5 @@ src/
 │   └── essays/          ← ensayos
 ├── layouts/             BaseLayout (chrome) · ProseLayout (lectura)
 ├── components/          ContentCard · ThemeToggle
-└── pages/               home, listados, [...slug], rss.xml, 404
+└── pages/               home, listados, [...slug], tags, 404
 ```

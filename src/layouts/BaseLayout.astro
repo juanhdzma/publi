@@ -32,7 +32,6 @@ const path = Astro.url.pathname;
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
     <meta name="theme-color" content="#fcfcfa" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1c1d21" media="(prefers-color-scheme: dark)" />
 
@@ -86,9 +85,8 @@ const path = Astro.url.pathname;
     </main>
 
     <footer class="border-t border-line dark:border-line-dark">
-      <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-6 text-sm text-ink-muted dark:text-ink-muted-dark">
+      <div class="mx-auto max-w-5xl px-6 py-6 text-sm text-ink-muted dark:text-ink-muted-dark">
         <span>{SITE.author}</span>
-        <a href="/rss.xml" class="hover:text-ink dark:hover:text-ink-dark">RSS</a>
       </div>
     </footer>
   </body>
