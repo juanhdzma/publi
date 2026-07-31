@@ -194,7 +194,7 @@
      tamaños se define acá, así que la escala completa se cambia en un lugar.
      --------------------------------------------------------------------- */
   .tag-cloud {
-    @apply flex flex-wrap items-baseline justify-center gap-x-7 gap-y-4;
+    @apply flex flex-wrap items-baseline gap-x-7 gap-y-4;
   }
 
   .cloud-tag {
@@ -216,6 +216,23 @@
 
   .cloud-count {
     @apply align-super text-xs tabular-nums text-ink-muted dark:text-ink-muted-dark;
+  }
+
+  /* El header es sticky: sin esto el ancla deja el título tapado. */
+  .tag-section {
+    scroll-margin-top: 5rem;
+  }
+
+  .tag-section-title {
+    @apply flex items-baseline justify-between gap-4 border-b border-line pb-2 dark:border-line-dark;
+  }
+
+  .tag-section-name {
+    @apply font-serif text-2xl leading-tight;
+  }
+
+  .tag-section-count {
+    @apply shrink-0 text-sm tabular-nums text-ink-muted dark:text-ink-muted-dark;
   }
 
   /* ---------------------------------------------------------------------
