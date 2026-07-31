@@ -3,6 +3,22 @@ title: "La evolución no optimiza, satisface"
 summary: "El nervio laríngeo recurrente de la jirafa mide cuatro metros para recorrer quince centímetros. Tu codebase también."
 publishedAt: 2026-07-08
 tags: ["biología", "software", "evolución"]
+quote:
+  text: "La selección natural no busca el mejor diseño posible. Busca cualquier variante que funcione un poco mejor que la anterior y que se pueda alcanzar con un cambio chico."
+references:
+  - title: "The Panda's Thumb"
+    author: "Stephen Jay Gould"
+    year: "1980"
+    note: "El ensayo canónico sobre por qué la imperfección es la mejor evidencia de la evolución."
+  - title: "Your Inner Fish"
+    author: "Neil Shubin"
+    year: "2008"
+    note: "De dónde viene el nervio laríngeo recurrente, con el detalle anatómico."
+  - title: "Big Ball of Mud"
+    author: "Brian Foote y Joseph Yoder"
+    year: "1997"
+    url: "http://www.laputan.org/mud/"
+    note: "La versión software del mismo fenómeno."
 ---
 
 En la jirafa, el nervio laríngeo recurrente sale del cerebro, baja por el cuello entero,

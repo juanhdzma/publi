@@ -12,7 +12,7 @@ const { item, showKind = false } = Astro.props;
 ---
 
 <article
-  class="group relative border-b border-line py-7 last:border-0 dark:border-line-dark"
+  class="group relative flex h-full flex-col rounded-xl border border-line p-5 transition-colors hover:border-accent/40 hover:bg-accent/[0.03] dark:border-line-dark dark:hover:border-accent-dark/40 dark:hover:bg-accent-dark/[0.06]"
 >
   <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-ink-muted dark:text-ink-muted-dark">
     {
@@ -27,10 +27,10 @@ const { item, showKind = false } = Astro.props;
     <span>{item.readingMinutes} min</span>
   </div>
 
-  <h3 class="mt-2 text-lg font-semibold tracking-tight text-balance">
+  <h3 class="mt-2.5 text-lg font-semibold tracking-tight text-balance">
     <a
       href={item.href}
-      class="transition-colors before:absolute before:inset-0 group-hover:text-accent dark:group-hover:text-accent-dark"
+      class="transition-colors before:absolute before:inset-0 before:rounded-xl group-hover:text-accent dark:group-hover:text-accent-dark"
     >
       {item.title}
     </a>
@@ -38,18 +38,18 @@ const { item, showKind = false } = Astro.props;
 
   {
     item.author && (
-      <p class="mt-1 flex items-center gap-2 text-sm text-ink-muted dark:text-ink-muted-dark">
+      <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-muted dark:text-ink-muted-dark">
         <span>{item.author}</span>
         {item.rating && <Rating value={item.rating} />}
       </p>
     )
   }
 
-  <p class="mt-2 leading-relaxed text-pretty text-ink-muted dark:text-ink-muted-dark">
+  <p class="mt-2.5 grow text-sm leading-relaxed text-pretty text-ink-muted dark:text-ink-muted-dark">
     {item.summary}
   </p>
 
-  <div class="relative z-10 mt-3">
+  <div class="relative z-10 mt-4">
     <TagList tags={item.tags} />
   </div>
 </article>

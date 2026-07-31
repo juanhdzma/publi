@@ -30,7 +30,7 @@ const { name, items } = Astro.props;
     {items.length} {items.length === 1 ? 'entrada' : 'entradas'}
   </p>
 
-  <div class="mt-8">
+  <div class="mt-8 grid gap-4 sm:grid-cols-2">
     {items.map((item) => <ContentCard item={item} showKind />)}
   </div>
 </BaseLayout>

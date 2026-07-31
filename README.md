@@ -26,6 +26,50 @@ El resumen en markdown.
 
 **Ensayo** → `src/content/essays/<slug>.md` — mismos campos, sin `author` ni `rating`.
 
+### Citas
+
+Hay tres mecanismos, se pueden combinar.
+
+**1. Cita destacada** — va en el frontmatter, se renderiza grande entre el header y el cuerpo.
+Una por entrada.
+
+```yaml
+quote:
+  text: "La cita."
+  source: "Autor u obra"   # opcional
+  page: "cap. 2"           # opcional
+```
+
+**2. Cita en el cuerpo** — blockquote de markdown. El `<cite>` es opcional y agrega el guión
+solo.
+
+```markdown
+> El texto citado.
+>
+> <cite>Autor, Obra</cite>
+```
+
+**3. Notas al pie** — sintaxis GFM, se numeran y enlazan solas.
+
+```markdown
+Una afirmación que necesita matiz.[^1]
+
+[^1]: El matiz.
+```
+
+### Referencias
+
+Lista de fuentes al final de la entrada. Solo `title` es obligatorio.
+
+```yaml
+references:
+  - title: "Thinking, Fast and Slow"
+    author: "Daniel Kahneman"
+    year: "2011"
+    url: "https://..."      # opcional, vuelve el título un link
+    note: "Por qué importa"  # opcional
+```
+
 `git push` a `main` y el Action buildea y publica la imagen.
 
 Si a un archivo le falta un campo requerido **el build falla** nombrando el archivo y el campo,

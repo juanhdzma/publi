@@ -2,7 +2,18 @@
 import BaseLayout from './BaseLayout.astro';
 import Rating from '../components/Rating.astro';
 import TagList from '../components/TagList.astro';
+import PullQuote from '../components/PullQuote.astro';
+import References from '../components/References.astro';
 import { KIND_PATH, KIND_PLURAL, formatDate, type Kind } from '../lib/content';
+
+type Quote = { text: string; source?: string; page?: string };
+type Reference = {
+  title: string;
+  author?: string;
+  year?: string;
+  url?: string;
+  note?: string;
+};
 
 type Props = {
   kind: Kind;
@@ -11,12 +22,24 @@ type Props = {
   publishedAt: Date;
   tags: string[];
   readingMinutes: number;
+  references: Reference[];
   author?: string;
   rating?: number;
+  quote?: Quote;
 };
 
-const { kind, title, summary, publishedAt, tags, readingMinutes, author, rating } =
-  Astro.props;
+const {
+  kind,
+  title,
+  summary,
+  publishedAt,
+  tags,
+  readingMinutes,
+  references,
+  author,
+  rating,
+  quote,
+} = Astro.props;
 ---
 
 <BaseLayout title={title} description={summary}>
@@ -28,7 +51,7 @@ const { kind, title, summary, publishedAt, tags, readingMinutes, author, rating 
     {KIND_PLURAL[kind]}
   </a>
 
-  <article>
+  <article class="mx-auto max-w-[68ch]">
     <header class="mt-6 border-b border-line pb-7 dark:border-line-dark">
       <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-ink-muted dark:text-ink-muted-dark">
         <time datetime={publishedAt.toISOString()}>{formatDate(publishedAt)}</time>
@@ -56,12 +79,16 @@ const { kind, title, summary, publishedAt, tags, readingMinutes, author, rating 
       </div>
     </header>
 
+    {quote && <PullQuote text={quote.text} source={quote.source} page={quote.page} />}
+
     <div class="prose-publi mt-9">
       <slot />
     </div>
+
+    <References references={references} />
   </article>
 
-  <nav class="mt-14 border-t border-line pt-6 dark:border-line-dark">
+  <nav class="mx-auto mt-14 max-w-[68ch] border-t border-line pt-6 dark:border-line-dark">
     <a
       href={`${KIND_PATH[kind]}/`}
       class="text-sm text-ink-muted transition-colors hover:text-ink dark:text-ink-muted-dark dark:hover:text-ink-dark"

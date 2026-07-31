@@ -3,6 +3,16 @@ title: "El costo de la configurabilidad"
 summary: "Cada flag que agregás duplica los estados posibles de tu sistema. Nadie testea 2^12 combinaciones."
 publishedAt: 2026-07-27
 tags: ["software", "diseño", "decisiones"]
+references:
+  - title: "PEP 20 — The Zen of Python"
+    author: "Tim Peters"
+    year: "2004"
+    url: "https://peps.python.org/pep-0020/"
+  - title: "Feature Toggles (aka Feature Flags)"
+    author: "Pete Hodgson"
+    year: "2017"
+    url: "https://martinfowler.com/articles/feature-toggles.html"
+    note: "Argumenta el caso contrario: cuándo el flag sí vale la pena."
 ---
 
 Un flag de configuración parece gratis. Es una línea en un YAML, un `if` en el código, y
@@ -22,6 +32,12 @@ A veces eso está bien: hay diferencias reales de entorno que ningún default cu
 mayoría de los flags que vi nacieron de una discusión empatada en un PR, no de una necesidad
 del usuario. El flag no resolvió el desacuerdo: lo congeló en el código y le puso costo de
 mantenimiento perpetuo.
+
+No es una idea nueva. La guía de estilo de Python la comprimió en una línea:
+
+> There should be one — and preferably only one — obvious way to do it.
+>
+> <cite>Tim Peters, The Zen of Python</cite>
 
 ## Lo que cuesta de verdad
 

@@ -5,6 +5,18 @@ summary: "La ciencia no avanza acumulando verdades. Avanza a los golpes, cuando 
 publishedAt: 2026-07-05
 rating: 4
 tags: ["ciencia", "filosofía", "clásicos"]
+quote:
+  text: "Las revoluciones científicas se consideran aquí como aquellos episodios de desarrollo no acumulativo en los que un paradigma antiguo es reemplazado por otro incompatible."
+  source: "Thomas S. Kuhn"
+  page: "cap. IX"
+references:
+  - title: "The Structure of Scientific Revolutions"
+    author: "Thomas S. Kuhn"
+    year: "1962"
+  - title: "Falsification and the Methodology of Scientific Research Programmes"
+    author: "Imre Lakatos"
+    year: "1970"
+    note: "La respuesta más útil a Kuhn: intenta rescatar la racionalidad del cambio teórico."
 ---
 
 ## Ciencia normal
@@ -36,9 +48,6 @@ Que "paradigma" se convirtió en una palabra de PowerPoint y perdió el filo que
 El argumento real es más incómodo: si la aceptación de una teoría depende también de
 factores sociales y generacionales, la imagen de la ciencia como progreso lineal hacia la
 verdad no se sostiene.
-
-> "Las revoluciones científicas se consideran aquí como aquellos episodios de desarrollo no
-> acumulativo en los que un paradigma antiguo es reemplazado por otro incompatible."
 
 ## Crítica
 

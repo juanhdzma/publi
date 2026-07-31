@@ -45,10 +45,9 @@
 
 @layer components {
   .prose-publi {
-    @apply prose prose-neutral max-w-none;
+    @apply prose prose-neutral prose-lg max-w-[68ch];
     @apply prose-headings:font-semibold prose-headings:tracking-tight;
     @apply prose-a:text-accent prose-a:decoration-accent/40;
-    @apply prose-blockquote:border-l-accent/50 prose-blockquote:not-italic;
     @apply prose-code:before:content-none prose-code:after:content-none;
     @apply prose-code:rounded prose-code:bg-line/40 prose-code:px-1.5 prose-code:py-0.5;
   }
@@ -56,8 +55,67 @@
   .dark .prose-publi {
     @apply prose-invert;
     @apply prose-a:text-accent-dark prose-a:decoration-accent-dark/40;
-    @apply prose-blockquote:border-l-accent-dark/50;
     @apply prose-code:bg-line-dark/60;
+  }
+
+  /* Cita en bloque: markdown `> texto`, con `<cite>` opcional para la fuente. */
+  .prose-publi blockquote {
+    @apply relative rounded-r-lg border-l-2 border-accent/50 bg-accent/[0.04] py-1 pr-5 pl-6 font-serif not-italic;
+  }
+
+  .dark .prose-publi blockquote {
+    @apply border-accent-dark/50 bg-accent-dark/[0.07];
+  }
+
+  .prose-publi blockquote p:first-of-type::before,
+  .prose-publi blockquote p:last-of-type::after {
+    content: none;
+  }
+
+  .prose-publi blockquote cite {
+    @apply mt-2 block font-sans text-sm text-ink-muted not-italic;
+  }
+
+  .dark .prose-publi blockquote cite {
+    @apply text-ink-muted-dark;
+  }
+
+  .prose-publi blockquote cite::before {
+    content: '— ';
+  }
+
+  /* Footnotes de GFM: `texto[^1]` + `[^1]: la nota`. */
+  .prose-publi .footnotes {
+    @apply mt-14 border-t border-line pt-6 text-base;
+  }
+
+  .dark .prose-publi .footnotes {
+    @apply border-line-dark;
+  }
+
+  .prose-publi .footnotes h2 {
+    @apply text-sm font-medium tracking-wide text-ink-muted uppercase;
+  }
+
+  .dark .prose-publi .footnotes h2 {
+    @apply text-ink-muted-dark;
+  }
+
+  .prose-publi .footnotes li {
+    @apply text-ink-muted;
+  }
+
+  .dark .prose-publi .footnotes li {
+    @apply text-ink-muted-dark;
+  }
+
+  .prose-publi [data-footnote-ref] {
+    @apply rounded px-0.5 no-underline;
+  }
+
+  .prose-publi [data-footnote-ref]:target,
+  .prose-publi li:target {
+    @apply bg-accent/15 dark:bg-accent-dark/25;
   }
 }
 

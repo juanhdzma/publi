@@ -5,6 +5,22 @@ summary: "Dos sistemas conviven en tu cabeza: uno rápido e intuitivo, otro lent
 publishedAt: 2026-07-24
 rating: 5
 tags: ["psicología", "decisiones", "ciencia"]
+quote:
+  text: "Una manera confiable de hacer que la gente crea en algo falso es la repetición frecuente, porque la familiaridad no se distingue con facilidad de la verdad."
+  source: "Daniel Kahneman"
+references:
+  - title: "Thinking, Fast and Slow"
+    author: "Daniel Kahneman"
+    year: "2011"
+  - title: "Judgment under Uncertainty: Heuristics and Biases"
+    author: "Amos Tversky y Daniel Kahneman"
+    year: "1974"
+    note: "El paper original en Science donde aparecen anclaje y disponibilidad."
+  - title: "Reconstruction of a Train Wreck: How Priming Research Went off the Rails"
+    author: "Ulrich Schimmack"
+    year: "2017"
+    url: "https://replicationindex.com/2017/02/02/reconstruction-of-a-train-wreck-how-priming-research-went-of-the-rails/"
+    note: "El análisis de replicabilidad que golpeó el capítulo 4."
 ---
 
 ## Los dos sistemas
@@ -35,9 +51,6 @@ Que la introspección no sirve para detectar tus propios sesgos. Los ves en otro
 vos, y saber que existen no te inmuniza. La única defensa práctica es estructural: checklists,
 criterios definidos antes de mirar los datos, decisiones importantes tomadas dos veces en
 días distintos.
-
-> "Una manera confiable de hacer que la gente crea en algo falso es la repetición
-> frecuente, porque la familiaridad no se distingue con facilidad de la verdad."
 
 ## Crítica
 
