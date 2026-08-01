@@ -17,10 +17,12 @@ type Props = {
 const { title, description = SITE.description } = Astro.props;
 
 const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const base = Astro.site ?? Astro.url;
+const canonical = new URL(Astro.url.pathname, base);
 
 /* Las redes no resuelven rutas relativas: la preview necesita URL absoluta. */
-const ogImage = new URL('/og.png', Astro.site ?? Astro.url);
+const ogImage = new URL('/og.png', base);
+const feed = new URL('/rss.xml', base);
 
 const nav = [
   { href: '/books/', label: 'Libros' },
@@ -39,6 +41,12 @@ const path = Astro.url.pathname;
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${SITE.title} — ${SITE.tagline}`}
+      href={feed}
+    />
 
     <link rel="preload" href={serifFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={sansFont} as="font" type="font/woff2" crossorigin />
