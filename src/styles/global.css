@@ -2,11 +2,11 @@
 
 /* Fonts self-hosted: Vite las empaqueta en /_astro/, sin pedidos externos.
    Las variantes `wght` traen solo el eje de peso — pesan la mitad que las
-   `opsz`, que además cargan el eje óptico que no usamos. */
-@import "@fontsource-variable/crimson-pro/wght.css";
-@import "@fontsource-variable/crimson-pro/wght-italic.css";
-@import "@fontsource-variable/inter/wght.css";
-@import "@fontsource-variable/inter/wght-italic.css";
+   `opsz`, que además cargan el eje óptico que no usamos.
+
+   fonts.css lo genera `npm run fonts` desde los CSS de fontsource, quedándose
+   con los subsets latin. No editarlo a mano. */
+@import "./fonts.css";
 
 @plugin "@tailwindcss/typography";
 
