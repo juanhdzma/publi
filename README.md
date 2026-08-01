@@ -238,10 +238,14 @@ Las tres primeras son endpoints (`src/pages/*.ts`), no archivos en `public/`: ne
 
 ## Deploy
 
-Push a `main` → el Action corre `astro check` + `astro build`, buildea la imagen y la sube a
+El flujo es commit directo a `main` — sin ramas ni PRs. Push a `main` → el Action corre
+`astro check` + `astro build` + el chequeo de `fonts.css`, buildea la imagen y la sube a
 `ghcr.io/juanhdzma/publi:latest` → Portainer hace pull.
 
-Los PRs contra `main` corren los mismos checks pero no publican imagen.
+**Pushear es deployar.** No hay paso intermedio ni aprobación.
+
+El workflow también corre en PRs contra `main`, sin publicar imagen, por si alguna vez hace
+falta validar algo antes de mergear.
 
 ```sh
 docker build -t publi --build-arg SITE_URL=https://tu-dominio .

@@ -53,6 +53,11 @@ El container tiene healthcheck. Esperar a que resuelva antes de dar algo por bue
 until [ "$(docker inspect publi --format '{{.State.Health.Status}}')" != "starting" ]; do sleep 2; done
 ```
 
+**Al comparar contra lo que se ve en el browser, forzar recarga.** El HTML recién ahora sale
+con `no-cache`; las copias que el browser guardó antes siguen ahí hasta que revalide, y un
+render viejo se confunde fácil con un bug. Ya pasó: una captura mostraba un layout que el
+container no estaba sirviendo. `curl` no miente, el browser sí.
+
 ---
 
 ## Estilos: todo en `global.css`
@@ -146,6 +151,11 @@ corresponde.
 - **Cero comentarios** salvo que expliquen un porqué no obvio. Los que hay marcan cosas como
   el `scroll-margin-top` por el header sticky.
 - Commits en **Conventional Commits**, cuerpo en español explicando el porqué, no el qué.
+- **Todo va directo a `main`.** Sin feature branches ni PRs: es repo de una persona y el
+  deploy sale de un push a `main`. Un pedido de "commits separados" son varios commits en
+  `main`, no una rama.
+- **Commitear sí, pushear solo si lo piden.** El push a `main` dispara build de imagen y
+  deploy a Portainer.
 - Los slugs de tags normalizan acentos (`biología` → `biologia`) vía `slugifyTag`.
 
 ---
@@ -161,6 +171,10 @@ corresponde.
 - El filtro esconde filas con `[hidden]`, y `:last-child` **es estructural**: no salta las
   escondidas. Por eso el borde de la última fila se resuelve con
   `.row:not([hidden]):not(:has(~ .row:not([hidden])))` y no con `last:border-0`.
+- **`/quotes/` es multicol (`columns-2`), no grid.** Ahí el margen inferior del último
+  elemento de una columna se arrastra al tope de la siguiente y la desalinea, así que el
+  separador de `.quote` es `pb-10` y no `mb-10`. Vale para cualquier hijo que se agregue a
+  ese contenedor: espaciar con padding.
 - **Los headings salen por prop, no fijos.** `ContentCard` y `ContentRow` reciben `level`
   porque cuelgan de encabezados distintos según la página. Si los ponés fijos, alguna página
   salta de `h1` a `h3`.
