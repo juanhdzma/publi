@@ -35,7 +35,10 @@ export type ContentItem = {
 export type TagSummary = {
   name: string;
   slug: string;
+  /** Entradas (libros + ensayos) con este tag. */
   count: number;
+  /** Citas sueltas con este tag. Un tag puede existir solo por citas. */
+  quoteCount: number;
   kinds: Kind[];
 };
 
@@ -118,16 +121,18 @@ export async function getPublished(kind: Kind): Promise<ContentItem[]> {
 export async function getStandaloneQuotes(): Promise<Quote[]> {
   const entries = await getCollection('quotes', ({ data }: any) => !data.draft);
 
-  return entries.map((entry: any) => ({
-    text: entry.data.text,
-    featured: false,
-    publishedAt: entry.data.publishedAt,
-    attribution: entry.data.author,
-    origin: entry.data.source,
-    originHref: entry.data.url,
-    external: Boolean(entry.data.url),
-    tags: entry.data.tags,
-  }));
+  return entries
+    .map((entry: any) => ({
+      text: entry.data.text,
+      featured: false,
+      publishedAt: entry.data.publishedAt,
+      attribution: entry.data.author,
+      origin: entry.data.source,
+      originHref: entry.data.url,
+      external: Boolean(entry.data.url),
+      tags: entry.data.tags,
+    }))
+    .sort((a, b) => b.publishedAt.valueOf() - a.publishedAt.valueOf());
 }
 
 export async function getAllQuotes(): Promise<Quote[]> {
@@ -149,32 +154,51 @@ export async function getAllPublished(): Promise<ContentItem[]> {
   return [...books, ...essays].sort(byNewest);
 }
 
+export function tagTotal(tag: TagSummary): number {
+  return tag.count + tag.quoteCount;
+}
+
 export async function getAllTags(): Promise<TagSummary[]> {
-  const items = await getAllPublished();
+  const [items, quotes] = await Promise.all([getAllPublished(), getStandaloneQuotes()]);
   const bySlug = new Map<string, TagSummary>();
+
+  const ensure = (tag: string) => {
+    const slug = slugifyTag(tag);
+    let summary = bySlug.get(slug);
+
+    if (!summary) {
+      summary = { name: tag, slug, count: 0, quoteCount: 0, kinds: [] };
+      bySlug.set(slug, summary);
+    }
+
+    return summary;
+  };
 
   for (const item of items) {
     for (const tag of item.tags) {
-      const slug = slugifyTag(tag);
-      const existing = bySlug.get(slug);
-
-      if (existing) {
-        existing.count += 1;
-        if (!existing.kinds.includes(item.kind)) existing.kinds.push(item.kind);
-      } else {
-        bySlug.set(slug, { name: tag, slug, count: 1, kinds: [item.kind] });
-      }
+      const summary = ensure(tag);
+      summary.count += 1;
+      if (!summary.kinds.includes(item.kind)) summary.kinds.push(item.kind);
     }
   }
 
+  for (const quote of quotes) {
+    for (const tag of quote.tags) ensure(tag).quoteCount += 1;
+  }
+
   return [...bySlug.values()].sort(
-    (a, b) => b.count - a.count || a.name.localeCompare(b.name, 'es'),
+    (a, b) => tagTotal(b) - tagTotal(a) || a.name.localeCompare(b.name, 'es'),
   );
 }
 
 export async function getByTag(slug: string): Promise<ContentItem[]> {
   const items = await getAllPublished();
   return items.filter((item) => item.tags.some((tag) => slugifyTag(tag) === slug));
+}
+
+export async function getQuotesByTag(slug: string): Promise<Quote[]> {
+  const quotes = await getStandaloneQuotes();
+  return quotes.filter((quote) => quote.tags.some((tag) => slugifyTag(tag) === slug));
 }
 
 export function formatDate(date: Date): string {

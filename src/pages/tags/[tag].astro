@@ -1,20 +1,35 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContentCard from '../../components/ContentCard.astro';
-import { getAllTags, getByTag } from '../../lib/content';
+import QuoteCard from '../../components/QuoteCard.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import { getAllTags, getByTag, getQuotesByTag } from '../../lib/content';
 
 export async function getStaticPaths() {
   const tags = await getAllTags();
 
   return Promise.all(
-    tags.map(async (tag) => ({
-      params: { tag: tag.slug },
-      props: { name: tag.name, items: await getByTag(tag.slug) },
-    })),
+    tags.map(async (tag) => {
+      const [items, quotes] = await Promise.all([
+        getByTag(tag.slug),
+        getQuotesByTag(tag.slug),
+      ]);
+
+      return { params: { tag: tag.slug }, props: { name: tag.name, items, quotes } };
+    }),
   );
 }
 
-const { name, items } = Astro.props;
+const { name, items, quotes } = Astro.props;
+
+const parts = [
+  items.length > 0 && `${items.length} ${items.length === 1 ? 'entrada' : 'entradas'}`,
+  quotes.length > 0 && `${quotes.length} ${quotes.length === 1 ? 'cita' : 'citas'}`,
+].filter(Boolean);
+
+/* Con los dos bloques hace falta un encabezado que los separe, y las tarjetas
+   bajan un nivel. Con uno solo, el h1 ya alcanza. */
+const split = items.length > 0 && quotes.length > 0;
 ---
 
 <BaseLayout title={name} description={`Entradas en la categoría ${name}.`}>
@@ -22,13 +37,34 @@ const { name, items } = Astro.props;
 
   <header class="page-header mt-6">
     <h1 class="page-title">{name}</h1>
-    <p class="page-intro">
-      {items.length}
-      {items.length === 1 ? 'entrada' : 'entradas'}
-    </p>
+    <p class="page-intro">{parts.join(' · ')}</p>
   </header>
 
-  <div class="mt-8 grid gap-4 sm:grid-cols-2">
-    {items.map((item) => <ContentCard item={item} showKind />)}
-  </div>
+  {
+    items.length > 0 && (
+      <section class="mt-8">
+        {split && <SectionHeader title="Entradas" />}
+
+        <div class:list={['grid gap-4 sm:grid-cols-2', split && 'mt-5']}>
+          {items.map((item) => (
+            <ContentCard item={item} showKind level={split ? 3 : 2} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    quotes.length > 0 && (
+      <section class:list={[items.length > 0 ? 'mt-14' : 'mt-8']}>
+        {split && <SectionHeader title="Citas" href="/quotes/" linkLabel="Ver todas" />}
+
+        <div class="mt-5 gap-x-12 sm:columns-2">
+          {quotes.map((quote) => (
+            <QuoteCard quote={quote} />
+          ))}
+        </div>
+      </section>
+    )
+  }
 </BaseLayout>

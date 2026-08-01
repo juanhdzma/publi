@@ -1,4 +1,5 @@
 ---
+import TagList from './TagList.astro';
 import { KIND_LABEL, type Quote } from '../lib/content';
 
 type Props = {
@@ -45,4 +46,12 @@ const linked = Boolean(quote.originHref);
       )
     }
   </figcaption>
+
+  {
+    quote.tags.length > 0 && (
+      <div class="relative z-10 mt-3">
+        <TagList tags={quote.tags} />
+      </div>
+    )
+  }
 </figure>
