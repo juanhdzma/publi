@@ -185,9 +185,9 @@ docker run -p 8002:80 publi
 
 ### Detrás de un reverse proxy
 
-Nginx escucha en el **80** dentro del container. El `8002:80` del compose solo publica el
-puerto en el host, así que un proxy en la misma red de Docker apunta a **`publi:80`** —
-`publi:8002` no responde. Si el acceso es solo vía proxy, el `ports:` es opcional.
+Nginx escucha en el **80** dentro del container, así que un proxy en la misma red de Docker
+apunta a `publi:80`. El `ports:` del compose solo publica el puerto en el host y es opcional
+si el acceso es únicamente vía proxy.
 
 ### SITE_URL
 
