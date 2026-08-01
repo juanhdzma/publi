@@ -108,6 +108,8 @@ const path = Astro.url.pathname;
   </head>
 
   <body class="flex min-h-full flex-col">
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+
     <header
       class="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur-md dark:border-line-dark dark:bg-paper-dark/85"
     >
@@ -134,7 +136,7 @@ const path = Astro.url.pathname;
       </div>
     </header>
 
-    <main class="mx-auto w-full max-w-5xl flex-1 px-6 py-12">
+    <main id="main" class="main mx-auto w-full max-w-5xl flex-1 px-6 py-12">
       <slot />
     </main>
 

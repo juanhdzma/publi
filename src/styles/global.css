@@ -62,6 +62,24 @@
 
 @layer components {
   /* ---------------------------------------------------------------------
+     Salto al contenido: primer tabulable de la página, visible solo con
+     foco de teclado.
+     --------------------------------------------------------------------- */
+  .skip-link {
+    @apply fixed top-4 left-4 z-50 -translate-y-20 rounded-md border border-line bg-paper px-4 py-2 text-sm transition-transform;
+    @apply dark:border-line-dark dark:bg-paper-dark;
+  }
+
+  .skip-link:focus-visible {
+    @apply translate-y-0;
+  }
+
+  /* El header sticky taparía el arranque del contenido al saltar. */
+  .main {
+    scroll-margin-top: 5rem;
+  }
+
+  /* ---------------------------------------------------------------------
      Cabecera de página: el bloque de título que abre libros, ensayos,
      citas, categorías y cada tag.
      --------------------------------------------------------------------- */
