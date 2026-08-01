@@ -78,6 +78,18 @@
   }
 
   /* ---------------------------------------------------------------------
+     Marca del header.
+     --------------------------------------------------------------------- */
+  .site-brand {
+    @apply flex items-center gap-2.5 font-semibold tracking-tight transition-colors;
+    @apply hover:text-accent dark:hover:text-accent-dark;
+  }
+
+  .site-mark {
+    @apply size-[30px] shrink-0 rounded-md ring-1 ring-line dark:ring-line-dark;
+  }
+
+  /* ---------------------------------------------------------------------
      Encabezado de sección dentro de una página.
      --------------------------------------------------------------------- */
   .section-header {

@@ -19,6 +19,9 @@ const { title, description = SITE.description } = Astro.props;
 const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 
+/* Las redes no resuelven rutas relativas: la preview necesita URL absoluta. */
+const ogImage = new URL('/og.png', Astro.site ?? Astro.url);
+
 const nav = [
   { href: '/books/', label: 'Libros' },
   { href: '/essays/', label: 'Ensayos' },
@@ -51,7 +54,12 @@ const path = Astro.url.pathname;
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`Logo de ${SITE.title}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
 
     <script is:inline>
       const stored = localStorage.getItem('theme');
@@ -67,10 +75,8 @@ const path = Astro.url.pathname;
       class="sticky top-0 z-20 border-b border-line bg-paper/85 backdrop-blur-md dark:border-line-dark dark:bg-paper-dark/85"
     >
       <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
-        <a
-          href="/"
-          class="font-semibold tracking-tight transition-colors hover:text-accent dark:hover:text-accent-dark"
-        >
+        <a href="/" class="site-brand">
+          <img src="/favicon.svg" alt="" width="30" height="30" class="site-mark" />
           {SITE.title}
         </a>
 
