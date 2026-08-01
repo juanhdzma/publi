@@ -45,7 +45,7 @@ const featured = quotes.find((q) => q.featured);
 const rest = quotes.filter((q) => q !== featured);
 ---
 
-<BaseLayout title={title} description={summary}>
+<BaseLayout title={title} description={summary} type="article" publishedAt={publishedAt}>
   <a href={`${KIND_PATH[kind]}/`} class="section-link">
     <span aria-hidden="true">←</span>
     {KIND_PLURAL[kind]}

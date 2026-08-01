@@ -12,9 +12,17 @@ import sansFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.w
 type Props = {
   title?: string;
   description?: string;
+  /** `article` en las entradas; el resto del sitio es `website`. */
+  type?: 'website' | 'article';
+  publishedAt?: Date;
 };
 
-const { title, description = SITE.description } = Astro.props;
+const {
+  title,
+  description = SITE.description,
+  type = 'website',
+  publishedAt,
+} = Astro.props;
 
 const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
 const base = Astro.site ?? Astro.url;
@@ -57,7 +65,12 @@ const path = Astro.url.pathname;
     <meta name="theme-color" content="#fdfaf4" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#120f0c" media="(prefers-color-scheme: dark)" />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
+    {
+      publishedAt && (
+        <meta property="article:published_time" content={publishedAt.toISOString()} />
+      )
+    }
     <meta property="og:site_name" content={SITE.title} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
