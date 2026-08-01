@@ -6,9 +6,13 @@ import { KIND_LABEL, formatDate, type ContentItem } from '../lib/content';
 type Props = {
   item: ContentItem;
   showKind?: boolean;
+  /** El nivel depende de qué encabezado tenga arriba en cada página. */
+  level?: 2 | 3 | 4;
 };
 
-const { item, showKind = false } = Astro.props;
+const { item, showKind = false, level = 3 } = Astro.props;
+
+const Heading = `h${level}` as const;
 ---
 
 <article class="entry">
@@ -19,9 +23,9 @@ const { item, showKind = false } = Astro.props;
     <span>{item.readingMinutes} min</span>
   </div>
 
-  <h3 class="entry-title">
+  <Heading class="entry-title">
     <a href={item.href} class="entry-link">{item.title}</a>
-  </h3>
+  </Heading>
 
   {
     item.author && (

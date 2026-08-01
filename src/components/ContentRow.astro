@@ -4,16 +4,19 @@ import { formatDate, slugifyTag, type ContentItem } from '../lib/content';
 
 type Props = {
   item: ContentItem;
+  /** El nivel depende de qué encabezado tenga arriba en cada página. */
+  level?: 3 | 4;
 };
 
-const { item } = Astro.props;
+const { item, level = 3 } = Astro.props;
 
+const Heading = `h${level}` as const;
 const tagSlugs = item.tags.map(slugifyTag).join(' ');
 ---
 
 <li class="row" data-entry-tags={tagSlugs}>
   <a href={item.href} class="block py-4">
-    <h3 class="row-title">{item.title}</h3>
+    <Heading class="row-title">{item.title}</Heading>
 
     <div class="meta-row mt-1">
       {

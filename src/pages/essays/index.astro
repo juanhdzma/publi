@@ -24,7 +24,7 @@ const tags = [...new Set(items.flatMap((item) => item.tags))].sort((a, b) =>
   </header>
 
   <div class="mt-8 grid gap-4 sm:grid-cols-2">
-    {items.map((item) => <ContentCard item={item} />)}
+    {items.map((item) => <ContentCard item={item} level={2} />)}
   </div>
 
   {
