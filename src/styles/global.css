@@ -199,33 +199,25 @@
      Fila compacta: listas de dos columnas y el índice de categorías.
      --------------------------------------------------------------------- */
   .row {
-    @apply relative border-b border-line last:border-0 dark:border-line-dark;
+    @apply relative border-b border-line dark:border-line-dark;
+  }
+
+  /* El filtro esconde filas con [hidden], y `:last-child` es estructural: sin
+     esto queda un borde colgando bajo la última fila visible. */
+  .row:not([hidden]):not(:has(~ .row:not([hidden]))) {
+    @apply border-b-0;
   }
 
   .row-title {
     @apply font-serif text-lg leading-snug text-pretty transition-colors;
   }
 
-  .row-name {
-    @apply font-serif text-2xl leading-tight transition-colors;
-  }
-
-  .row:hover .row-title,
-  .row:hover .row-name {
+  .row:hover .row-title {
     @apply text-accent;
   }
 
-  .dark .row:hover .row-title,
-  .dark .row:hover .row-name {
+  .dark .row:hover .row-title {
     @apply text-accent-dark;
-  }
-
-  .row-aside {
-    @apply hidden text-xs tracking-[0.08em] text-ink-muted uppercase sm:inline dark:text-ink-muted-dark;
-  }
-
-  .row-count {
-    @apply w-8 text-right font-serif text-xl tabular-nums text-ink-muted dark:text-ink-muted-dark;
   }
 
   /* ---------------------------------------------------------------------
