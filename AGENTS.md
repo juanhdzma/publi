@@ -87,6 +87,17 @@ Si agregás un campo al schema, actualizá también el README — es la referenc
 
 ---
 
+## Íconos
+
+`public/favicon.svg` es la fuente; `npm run icons` regenera `favicon.ico` y
+`apple-touch-icon.png` desde ahí. No editar los binarios a mano.
+
+El PNG de Apple se aplana sin canal alpha a propósito: iOS rellena cualquier
+transparencia con blanco o negro por su cuenta, y el ícono queda con un borde que no
+corresponde.
+
+---
+
 ## Convenciones
 
 - **Código en inglés** (archivos, variables, funciones, slugs de rutas). **Contenido en

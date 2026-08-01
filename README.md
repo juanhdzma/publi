@@ -136,6 +136,19 @@ docker compose up -d --build   # → localhost:8002
 
 ---
 
+## Íconos
+
+`public/favicon.svg` es la fuente de verdad del logo. Los binarios se generan de ahí:
+
+```sh
+npm run icons
+```
+
+Emite `favicon.ico` (16/32/48) y `apple-touch-icon.png` (180×180, sin canal alpha, que es
+lo que pide iOS). Correrlo cada vez que cambie el SVG y commitear los tres archivos.
+
+---
+
 ## Estilos
 
 **Todo el estilo vive en `src/styles/global.css`.** Las páginas componen layout (grid, gaps,
