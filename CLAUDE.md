@@ -32,6 +32,18 @@ docker compose up -d --build   # → localhost:8002
 reverse proxy, contra `publi:80`. El `8002` sale de `docker-compose.override.yml`, que
 Compose mergea solo en local.
 
+**`add_header` de nginx no se hereda.** Un `location` que declara su propio `add_header`
+pierde todos los del `server`. Por eso los headers de seguridad viven en
+`nginx-security-headers.conf` y cada `location` hace `include`. Si agregás un `location`,
+agregale el include o queda sirviendo sin `nosniff` ni `X-Frame-Options`. Se verifica así:
+
+```sh
+curl -sI http://localhost:8002/_astro/<hash>.css | grep -i x-frame
+```
+
+El HTML va con `Cache-Control: no-cache` a propósito: es lo único que no puede cachearse,
+porque referencia los `/_astro/` hasheados y un deploy nuevo los renombra.
+
 **`npm run check` no alcanza si tocaste `global.css`.** Las directivas inválidas de Tailwind
 solo aparecen en `build`. Ya pasó dos veces: `check` daba 0 errores y `build` fallaba.
 
@@ -87,6 +99,11 @@ citas y reading time. **Las páginas no llaman `getCollection` directo** salvo e
 La atribución de una cita se infiere: por defecto el autor del libro, o el del sitio en un
 ensayo. `source` solo se usa cuando la frase es de un tercero.
 
+`getAllTags()` recorre entradas **y** citas sueltas, y devuelve los dos contadores por
+separado (`count` / `quoteCount`). Están separados porque el filtro del home solo puede
+esconder entradas: si el chip mostrara el total, el número no coincidiría con lo que filtra.
+Para el total hay `tagTotal()`.
+
 Si agregás un campo al schema, actualizá también el README — es la referencia de publicación.
 
 ---
@@ -97,9 +114,14 @@ Dos familias self-hosted vía `@fontsource-variable`: **Crimson Pro** (serif) e 
 (sans). Se importan las variantes `wght`, no las `opsz` — la mitad de KB y el eje óptico no
 se usa.
 
-**Cambiar una font toca dos archivos**: el `@import` en `global.css` y el `import` del
-preload en `BaseLayout.astro`. Tocar solo el primero deja precargando la font anterior, y
-no falla el build ni el check.
+**`src/styles/fonts.css` es generado, no editarlo.** Sale de `npm run fonts`, que filtra los
+CSS de fontsource y deja solo `latin` y `latin-ext` (8 `@font-face` en vez de 20). El CI
+corre el script y compara contra lo commiteado, así que una actualización de fontsource que
+cambie los `unicode-range` falla en vez de pasar silenciosa.
+
+**Cambiar una font toca tres lugares**: `SOURCES` en `scripts/generate-fonts.mjs`, el
+`@theme` de `global.css` y el `import` del preload en `BaseLayout.astro`. Tocar solo el
+primero deja precargando la font anterior, y no falla el build ni el check.
 
 ---
 
@@ -134,9 +156,20 @@ corresponde.
   deprecada (`z.string().url()` → `z.url()`).
 - El **filtro de categorías del home** es JS vanilla en `TagFilter.astro`. Usa `aria-pressed`
   como fuente de verdad del estado: el estilo sale del atributo, no de una clase paralela.
-- **El contenido de ejemplo es placeholder.** Las 64 citas incluyen paráfrasis atribuidas a
+  El estado se refleja en `?tags=` con `replaceState` — con `pushState` cada click sería una
+  entrada de historial y salir del home costaría N backs.
+- El filtro esconde filas con `[hidden]`, y `:last-child` **es estructural**: no salta las
+  escondidas. Por eso el borde de la última fila se resuelve con
+  `.row:not([hidden]):not(:has(~ .row:not([hidden])))` y no con `last:border-0`.
+- **Los headings salen por prop, no fijos.** `ContentCard` y `ContentRow` reciben `level`
+  porque cuelgan de encabezados distintos según la página. Si los ponés fijos, alguna página
+  salta de `h1` a `h3`.
+- **El contenido de ejemplo es placeholder.** Las citas incluyen paráfrasis atribuidas a
   autores reales con números de capítulo aproximados. No tratarlas como verificadas ni
   agregar más en ese tono sin avisar.
+- El **color de la barra del browser** vive en `THEME_COLOR` (`src/config.ts`) y viaja al
+  cliente en los `data-light` / `data-dark` del `<meta name="theme-color">`. El toggle lee de
+  ahí: no hardcodear los hex en el script, se desincronizan.
 - `dist/` local se desactualiza si corrés `check` pero no `build`. Al comparar HTML servido
   contra `dist/`, buildear primero.
 

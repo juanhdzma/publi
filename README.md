@@ -47,6 +47,10 @@ tags: ["software"]      # opcional
 ---
 ```
 
+Los `tags` de una cita cuentan igual que los de una entrada: aparecen como chips en
+`/quotes/`, suman en `/tags/` y la cita se lista en la página de cada categoría. Un tag que
+solo existe en citas igual tiene su página.
+
 ### Red de seguridad
 
 Si a un archivo le falta un campo requerido **el build falla** nombrando el archivo y el
@@ -169,8 +173,25 @@ Se importan las variantes **`wght`**, que traen solo el eje de peso: la mitad de
 
 Los stacks del sistema quedan de fallback, así que si la font no carga el sitio sigue legible.
 
-> Cambiar una font toca **dos** archivos: el `@import` en `global.css` y el `import` del
-> preload en `BaseLayout.astro`. Si se actualiza solo el primero, se precarga la font vieja.
+### `src/styles/fonts.css` es generado
+
+fontsource publica un solo CSS por eje con los **ocho** subsets adentro (cyrillic, greek,
+vietnamese…). El browser baja solo el que necesita gracias a `unicode-range`, pero los ocho
+se emiten igual al bundle.
+
+```sh
+npm run fonts    # → src/styles/fonts.css, solo latin y latin-ext
+```
+
+Deja 8 `@font-face` en vez de 20 y saca ~200 KB del bundle. El archivo se commitea y **no se
+edita a mano**; el CI corre el script y falla si el resultado difiere de lo commiteado, que
+es lo que detecta una actualización de fontsource que cambie los `unicode-range`.
+
+`latin` cubre el español entero; `latin-ext` está para los nombres propios (Dvořák, Erdős).
+
+> Cambiar una font toca **tres** lugares: `SOURCES` en `scripts/generate-fonts.mjs`, el
+> `@theme` de `global.css` y el `import` del preload en `BaseLayout.astro`. Si se actualiza
+> solo el primero, se precarga la font vieja.
 
 ---
 
@@ -182,12 +203,13 @@ Cambiar cómo se ve un título en todo el sitio es editar una regla.
 
 | Grupo      | Clases                                                              |
 | ---------- | ------------------------------------------------------------------- |
+| Chrome     | `skip-link` `main`                                                   |
 | Marca      | `site-brand` `site-mark`                                             |
 | Página     | `page-header` `page-title` `page-intro`                              |
 | Sección    | `section-header` `section-title` `section-title-sub` `section-link`  |
 | Metadatos  | `meta-row` `meta-kind`                                               |
 | Entrada    | `entry` `entry-title` `entry-link` `entry-byline` `entry-summary`    |
-| Fila       | `row` `row-title` `row-name` `row-aside` `row-count`                 |
+| Fila       | `row` `row-title`                                                    |
 | Chips      | `chip` `chip-sm` `chip-md` `chip-count`                              |
 | Citas      | `quote` `quote-text` `quote-author` `quote-origin`                   |
 | Contadores | `stat-band` `stat` `stat-value` `stat-label`                         |
@@ -200,10 +222,26 @@ Los colores y las tipografías son tokens en `@theme`: `ink`, `ink-muted`, `pape
 
 ---
 
+## Rutas generadas aparte del contenido
+
+| Ruta                 | Qué es                                                          |
+| -------------------- | --------------------------------------------------------------- |
+| `/rss.xml`           | Feed de libros y ensayos, más nuevo primero                      |
+| `/robots.txt`        | Apunta al sitemap; la URL absoluta sale de `SITE_URL`             |
+| `/sitemap-index.xml` | Lo genera `@astrojs/sitemap`                                     |
+| `/404.html`          | Lo sirve nginx vía `error_page`                                  |
+
+Las tres primeras son endpoints (`src/pages/*.ts`), no archivos en `public/`: necesitan
+`Astro.site` para armar URLs absolutas y eso solo se conoce al buildear.
+
+---
+
 ## Deploy
 
-Push a `main` → el Action corre `astro check`, buildea la imagen y la sube a
+Push a `main` → el Action corre `astro check` + `astro build`, buildea la imagen y la sube a
 `ghcr.io/juanhdzma/publi:latest` → Portainer hace pull.
+
+Los PRs contra `main` corren los mismos checks pero no publican imagen.
 
 ```sh
 docker build -t publi --build-arg SITE_URL=https://tu-dominio .
@@ -257,6 +295,8 @@ src/
 ├── layouts/             BaseLayout (chrome) · ProseLayout (lectura)
 ├── components/          tarjetas, filas, citas, chips, filtro
 ├── pages/               home, listados, [...slug], tags, quotes, 404
+│   ├── rss.xml.ts       feed
+│   └── robots.txt.ts    robots + link al sitemap
 └── styles/global.css    ← el sistema de estilos completo
 
 public/                  servido tal cual desde la raíz
@@ -266,7 +306,11 @@ public/                  servido tal cual desde la raíz
 └── og.png               generado
 
 scripts/
-└── generate-icons.mjs   npm run icons
+├── generate-icons.mjs   npm run icons
+└── generate-fonts.mjs   npm run fonts
+
+nginx.conf                     server block
+nginx-security-headers.conf    snippet que cada location incluye
 ```
 
 ---
@@ -275,6 +319,4 @@ scripts/
 
 - **Las citas de ejemplo están sin verificar.** Varias son paráfrasis y los números de
   capítulo son aproximados. Contrastar contra el original antes de publicar.
-- El tag `literatura` (de la cita de Borges) no tiene página: `/tags/` solo recorre libros y
-  ensayos, no las citas sueltas.
 - TLS y exposición a internet del server casero. Mientras sea LAN no hace falta.
