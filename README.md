@@ -183,9 +183,22 @@ docker build -t publi --build-arg SITE_URL=https://tu-dominio .
 docker run -p 8002:80 publi
 ```
 
-`SITE_URL` define las URLs absolutas del sitemap y los `<link rel="canonical">`. Se configura
-en GitHub como **repository variable** (`Settings → Secrets and variables → Actions →
-Variables`), no como secret. Sin ese valor el build usa `http://localhost:4321`.
+### Detrás de un reverse proxy
+
+Nginx escucha en el **80** dentro del container. El `8002:80` del compose solo publica el
+puerto en el host, así que un proxy en la misma red de Docker apunta a **`publi:80`** —
+`publi:8002` no responde. Si el acceso es solo vía proxy, el `ports:` es opcional.
+
+### SITE_URL
+
+No afecta el ruteo: define las URLs absolutas que se hornean en el HTML al buildear
+(`og:image`, `<link rel="canonical">` y el sitemap). Sin ese valor el build usa
+`http://localhost:4321`.
+
+Para un sitio interno da igual. Solo importa si lo exponés a internet y querés que la
+preview al compartir el link cargue y que los buscadores lo indexen bien. En ese caso se
+configura en GitHub como **repository variable** (`Settings → Secrets and variables →
+Actions → Variables`), no como secret.
 
 ---
 
