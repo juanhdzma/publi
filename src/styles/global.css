@@ -300,8 +300,11 @@
   /* ---------------------------------------------------------------------
      Cita suelta en la grilla de /quotes/.
      --------------------------------------------------------------------- */
+  /* El separador va como padding y no como margen: en multicol, el margen
+     inferior de la última cita de una columna se arrastra al tope de la
+     siguiente y la desalinea. Dentro del box no se arrastra. */
   .quote {
-    @apply relative mb-10 break-inside-avoid border-t-2 border-ink/10 pt-5 dark:border-ink-dark/15;
+    @apply relative break-inside-avoid border-t-2 border-ink/10 pt-5 pb-10 dark:border-ink-dark/15;
   }
 
   .quote-text {
