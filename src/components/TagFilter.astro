@@ -9,7 +9,12 @@ type Props = {
 const { tags, total } = Astro.props;
 ---
 
-<div class="flex flex-wrap items-center gap-2" data-tag-filter>
+<div
+  class="flex flex-wrap items-center gap-2"
+  role="group"
+  aria-label="Filtrar el archivo por categoría"
+  data-tag-filter
+>
   <button type="button" data-tag="" aria-pressed="true" class="chip chip-md">
     Todas
     <span class="chip-count">{total}</span>
@@ -37,10 +42,25 @@ const { tags, total } = Astro.props;
     const buttons = [...root.querySelectorAll<HTMLButtonElement>('button[data-tag]')];
     const items = [...document.querySelectorAll<HTMLElement>('[data-entry-tags]')];
     const lists = [...document.querySelectorAll<HTMLElement>('[data-filterable]')];
-    const active = new Set<string>();
+    const known = new Set(buttons.map((button) => button.dataset.tag!).filter(Boolean));
+    const params = new URLSearchParams(location.search);
+    const active = new Set(
+      (params.get('tags') ?? '')
+        .split(',')
+        .filter((tag) => known.has(tag)),
+    );
 
     const isPressed = (button: HTMLButtonElement) =>
       button.dataset.tag === '' ? active.size === 0 : active.has(button.dataset.tag!);
+
+    /* replaceState y no pushState: el filtro es un ajuste de vista, no un
+       destino. Con push, salir del home costaría un back por cada click. */
+    function syncUrl() {
+      const url = new URL(location.href);
+      if (active.size > 0) url.searchParams.set('tags', [...active].join(','));
+      else url.searchParams.delete('tags');
+      history.replaceState(null, '', url);
+    }
 
     function apply() {
       for (const item of items) {
@@ -70,7 +90,10 @@ const { tags, total } = Astro.props;
         else if (active.has(tag)) active.delete(tag);
         else active.add(tag);
         apply();
+        syncUrl();
       });
     }
+
+    apply();
   }
 </script>
