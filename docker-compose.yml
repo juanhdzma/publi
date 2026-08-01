@@ -3,5 +3,3 @@ services:
     image: ghcr.io/juanhdzma/publi:latest
     container_name: publi
     restart: unless-stopped
-    ports:
-      - "8002:80"
