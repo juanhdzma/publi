@@ -28,6 +28,10 @@ npm run build                  # lo único que valida Tailwind
 docker compose up -d --build   # → localhost:8002
 ```
 
+`docker-compose.yml` no publica puertos: en el server el acceso es por la red de Docker vía
+reverse proxy, contra `publi:80`. El `8002` sale de `docker-compose.override.yml`, que
+Compose mergea solo en local.
+
 **`npm run check` no alcanza si tocaste `global.css`.** Las directivas inválidas de Tailwind
 solo aparecen en `build`. Ya pasó dos veces: `check` daba 0 errores y `build` fallaba.
 
@@ -87,14 +91,29 @@ Si agregás un campo al schema, actualizá también el README — es la referenc
 
 ---
 
+## Tipografía
+
+Dos familias self-hosted vía `@fontsource-variable`: **Crimson Pro** (serif) e **Inter**
+(sans). Se importan las variantes `wght`, no las `opsz` — la mitad de KB y el eje óptico no
+se usa.
+
+**Cambiar una font toca dos archivos**: el `@import` en `global.css` y el `import` del
+preload en `BaseLayout.astro`. Tocar solo el primero deja precargando la font anterior, y
+no falla el build ni el check.
+
+---
+
 ## Íconos
 
-`public/favicon.svg` es la fuente; `npm run icons` regenera `favicon.ico` y
-`apple-touch-icon.png` desde ahí. No editar los binarios a mano.
+`public/favicon.svg` es la fuente; `npm run icons` regenera `favicon.ico`,
+`apple-touch-icon.png` y `og.png` desde ahí. No editar los binarios a mano.
 
 El PNG de Apple se aplana sin canal alpha a propósito: iOS rellena cualquier
 transparencia con blanco o negro por su cuenta, y el ícono queda con un borde que no
 corresponde.
+
+`og.png` es la preview al compartir el link. Su URL en el `<head>` tiene que ser absoluta
+—las redes no resuelven rutas relativas— y sale de `Astro.site`, o sea de `SITE_URL`.
 
 ---
 

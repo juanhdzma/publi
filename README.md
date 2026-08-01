@@ -144,8 +144,33 @@ docker compose up -d --build   # → localhost:8002
 npm run icons
 ```
 
-Emite `favicon.ico` (16/32/48) y `apple-touch-icon.png` (180×180, sin canal alpha, que es
-lo que pide iOS). Correrlo cada vez que cambie el SVG y commitear los tres archivos.
+Emite tres archivos:
+
+| Archivo                | Qué es                                                        |
+| ---------------------- | ------------------------------------------------------------- |
+| `favicon.ico`          | 16/32/48, fallback para navegadores sin favicon vectorial      |
+| `apple-touch-icon.png` | 180×180 sin canal alpha — iOS rellena la transparencia solo    |
+| `og.png`               | 1200×630, la imagen que aparece al compartir el link           |
+
+Correrlo cada vez que cambie el SVG y commitear los cuatro archivos.
+
+---
+
+## Tipografía
+
+Dos familias, ambas self-hosted vía `@fontsource-variable`: Vite las empaqueta en `/_astro/`
+con hash y las sirve el mismo nginx, sin pedidos externos.
+
+- **Crimson Pro** — títulos, citas y todo lo que use `font-serif`
+- **Inter** — cuerpo, navegación y metadatos
+
+Se importan las variantes **`wght`**, que traen solo el eje de peso: la mitad de KB que las
+`opsz`, cuyo eje óptico no se usa. Primera visita: ~96 KB (48 + 48), cacheados para siempre.
+
+Los stacks del sistema quedan de fallback, así que si la font no carga el sitio sigue legible.
+
+> Cambiar una font toca **dos** archivos: el `@import` en `global.css` y el `import` del
+> preload en `BaseLayout.astro`. Si se actualiza solo el primero, se precarga la font vieja.
 
 ---
 
@@ -155,18 +180,20 @@ lo que pide iOS). Correrlo cada vez que cambie el SVG y commitear los tres archi
 márgenes) y usan las clases del sistema; no llevan utilities de tipografía ni de color.
 Cambiar cómo se ve un título en todo el sitio es editar una regla.
 
-| Grupo      | Clases                                                          |
-| ---------- | --------------------------------------------------------------- |
-| Página     | `page-header` `page-title` `page-intro`                          |
-| Sección    | `section-header` `section-title` `section-title-sub` `section-link` |
-| Metadatos  | `meta-row` `meta-kind`                                           |
-| Entrada    | `entry` `entry-title` `entry-link` `entry-byline` `entry-summary` |
-| Fila       | `row` `row-title` `row-name` `row-aside` `row-count`             |
-| Chips      | `chip` `chip-sm` `chip-md` `chip-count`                          |
-| Citas      | `quote` `quote-text` `quote-author` `quote-origin`               |
-| Contadores | `stat-band` `stat` `stat-value` `stat-label`                     |
-| Nube       | `tag-cloud` `cloud-tag` `cloud-count` `tag-section*`             |
-| Cuerpo     | `prose-publi`                                                    |
+| Grupo      | Clases                                                              |
+| ---------- | ------------------------------------------------------------------- |
+| Marca      | `site-brand` `site-mark`                                             |
+| Página     | `page-header` `page-title` `page-intro`                              |
+| Sección    | `section-header` `section-title` `section-title-sub` `section-link`  |
+| Metadatos  | `meta-row` `meta-kind`                                               |
+| Entrada    | `entry` `entry-title` `entry-link` `entry-byline` `entry-summary`    |
+| Fila       | `row` `row-title` `row-name` `row-aside` `row-count`                 |
+| Chips      | `chip` `chip-sm` `chip-md` `chip-count`                              |
+| Citas      | `quote` `quote-text` `quote-author` `quote-origin`                   |
+| Contadores | `stat-band` `stat` `stat-value` `stat-label`                         |
+| Nube       | `tag-cloud` `cloud-tag` `cloud-count`                                |
+| Tag        | `tag-section` `tag-section-title` `tag-section-name` `tag-section-count` |
+| Cuerpo     | `prose-publi`                                                        |
 
 Los colores y las tipografías son tokens en `@theme`: `ink`, `ink-muted`, `paper`, `line`,
 `accent`, cada uno con su variante `-dark`.
@@ -231,6 +258,15 @@ src/
 ├── components/          tarjetas, filas, citas, chips, filtro
 ├── pages/               home, listados, [...slug], tags, quotes, 404
 └── styles/global.css    ← el sistema de estilos completo
+
+public/                  servido tal cual desde la raíz
+├── favicon.svg          ← fuente de verdad del logo
+├── favicon.ico          generado
+├── apple-touch-icon.png generado
+└── og.png               generado
+
+scripts/
+└── generate-icons.mjs   npm run icons
 ```
 
 ---
