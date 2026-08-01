@@ -3,6 +3,8 @@ name: build
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 env:
@@ -19,9 +21,20 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      # check no compila CSS: las directivas inválidas de Tailwind solo
+      # aparecen acá.
+      - run: npm run build
+
+      # fonts.css sale de los CSS de fontsource: si una actualización cambia
+      # los unicode-range, el archivo commiteado queda viejo en silencio.
+      - name: fonts.css al día
+        run: |
+          npm run fonts
+          git diff --exit-code -- src/styles/fonts.css
 
   build:
     needs: check
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
