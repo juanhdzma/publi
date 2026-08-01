@@ -21,6 +21,15 @@
 
   toggle?.addEventListener('click', () => {
     const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+    /* Los hex viven en el meta, que es la única fuente: duplicarlos acá los
+       desincroniza en el próximo cambio de paleta. */
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    const next = isDark ? meta?.dataset.dark : meta?.dataset.light;
+    if (next) meta?.setAttribute('content', next);
+
+    try {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    } catch {}
   });
 </script>

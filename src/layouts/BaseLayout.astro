@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
-import { SITE } from '../config';
+import { SITE, THEME_COLOR } from '../config';
 
 /* Solo los subsets latin en peso normal: son los únicos que un lector en
    español baja al entrar, y precargarlos evita el flash con la font de
@@ -62,8 +62,14 @@ const path = Astro.url.pathname;
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#fdfaf4" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#120f0c" media="(prefers-color-scheme: dark)" />
+    {/* Sin `media`: el tema puede estar forzado por el toggle, y entonces
+        prefers-color-scheme dice lo contrario. Lo resuelve el script de abajo. */}
+    <meta
+      name="theme-color"
+      content={THEME_COLOR.light}
+      data-light={THEME_COLOR.light}
+      data-dark={THEME_COLOR.dark}
+    />
 
     <meta property="og:type" content={type} />
     {
@@ -83,11 +89,21 @@ const path = Astro.url.pathname;
     <meta name="twitter:image" content={ogImage} />
 
     <script is:inline>
-      const stored = localStorage.getItem('theme');
+      /* localStorage tira en Safari private y en iframes con third-party
+         cookies bloqueadas. Sin el try, el sitio se queda sin tema. */
+      let stored = null;
+      try {
+        stored = localStorage.getItem('theme');
+      } catch {}
+
       const dark = stored
         ? stored === 'dark'
         : matchMedia('(prefers-color-scheme: dark)').matches;
+
       document.documentElement.classList.toggle('dark', dark);
+
+      const meta = document.querySelector('meta[name="theme-color"]');
+      meta?.setAttribute('content', dark ? meta.dataset.dark : meta.dataset.light);
     </script>
   </head>
 
