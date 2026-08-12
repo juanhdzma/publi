@@ -97,6 +97,33 @@ Tres colecciones en `src/content.config.ts`, todas con schema Zod:
 - `essays` — ensayos propios
 - `quotes` — citas sueltas, una por archivo, sin entrada detrás
 
+### Dos árboles: `content/` y `content-demo/`
+
+Cada colección se lee de los dos, y **los dos se buildean**. El botón `demo` del header
+elige cuál se muestra; el modo sale del `id` que arma el loader (`content/books/x` vs
+`content-demo/books/x`) y lo resuelve `parseId()`.
+
+**El patrón para agregar UI que dependa del modo: renderizar las dos versiones y marcar el
+contenedor con `data-mode`.** El CSS esconde el que no corresponde. No filtrar en JS por
+página — el modo ya está resuelto antes del primer paint por el script inline del head.
+
+```astro
+{MODES.map((mode) => <div data-mode={mode}>{/* la versión de ese modo */}</div>)}
+```
+
+Marcar el **contenedor** y no cada tarjeta: si se marcan los elementos sueltos, se mezclan
+los dos modos dentro de la misma lista y se rompen `:last-child`, el `:has` del borde de
+`.row` y el balanceo de las columnas de `/quotes/`.
+
+Ojo con los `id`: al estar los dos modos en el DOM, un `id` por ítem se duplica. En `/tags/`
+se resuelve prefijando con el modo (`anchor()`).
+
+Las fichas de prueba **no salen del sitio**: fuera del feed y del sitemap, bajo `/books/demo/`
+y con un aviso arriba. Pero su HTML igual viaja al visitante.
+
+`src/content/_templates/` son las plantillas de publicación. Astro ignora todo lo que empieza
+con `_`, así que no se buildean. Si cambia un schema, actualizar la plantilla que toque.
+
 `src/lib/content.ts` centraliza las queries: filtrado de `draft`, orden por fecha, tags,
 citas y reading time. **Las páginas no llaman `getCollection` directo** salvo en
 `getStaticPaths`, donde hace falta la entrada cruda para `render()`.
@@ -104,10 +131,11 @@ citas y reading time. **Las páginas no llaman `getCollection` directo** salvo e
 La atribución de una cita se infiere: por defecto el autor del libro, o el del sitio en un
 ensayo. `source` solo se usa cuando la frase es de un tercero.
 
-`getAllTags()` recorre entradas **y** citas sueltas, y devuelve los dos contadores por
-separado (`count` / `quoteCount`). Están separados porque el filtro del home solo puede
-esconder entradas: si el chip mostrara el total, el número no coincidiría con lo que filtra.
-Para el total hay `tagTotal()`.
+`getAllTags()` recorre entradas **y** citas sueltas, y devuelve los contadores partidos por
+modo y por tipo (`tag.real.entries`, `tag.demo.quotes`). Entradas y citas van separadas
+porque el filtro del home solo puede esconder entradas: si el chip mostrara el total, el
+número no coincidiría con lo que filtra. Para el total de un modo hay `tagTotal(tag, mode)`,
+y `tagEmpty()` dice si el tag no existe en ese modo y hay que esconderlo entero.
 
 Si agregás un campo al schema, actualizá también el README — es la referencia de publicación.
 
@@ -178,9 +206,14 @@ corresponde.
 - **Los headings salen por prop, no fijos.** `ContentCard` y `ContentRow` reciben `level`
   porque cuelgan de encabezados distintos según la página. Si los ponés fijos, alguna página
   salta de `h1` a `h3`.
-- **El contenido de ejemplo es placeholder.** Las citas incluyen paráfrasis atribuidas a
-  autores reales con números de capítulo aproximados. No tratarlas como verificadas ni
-  agregar más en ese tono sin avisar.
+- **El contenido de `content-demo/` es placeholder.** Las citas incluyen paráfrasis
+  atribuidas a autores reales con números de capítulo aproximados. No tratarlas como
+  verificadas ni agregar más en ese tono sin avisar. Nada de eso va a `content/`.
+- **`textContent` no respeta `display:none`.** Al verificar qué modo se está viendo, medir
+  con `innerText` o `offsetParent`: `textContent` devuelve también el texto del modo
+  escondido y hace parecer que el toggle no funciona.
+- El modo vive en `localStorage` y **persiste entre páginas**. Al testear varias páginas
+  seguidas hay que resetearlo por caso, o los resultados salen corridos una posición.
 - El **color de la barra del browser** vive en `THEME_COLOR` (`src/config.ts`) y viaja al
   cliente en los `data-light` / `data-dark` del `<meta name="theme-color">`. El toggle lee de
   ahí: no hardcodear los hex en el script, se desincronizan.

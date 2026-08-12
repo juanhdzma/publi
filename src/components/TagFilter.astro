@@ -1,12 +1,13 @@
 ---
-import type { TagSummary } from '../lib/content';
+import type { TagSummary, Mode } from '../lib/content';
 
 type Props = {
   tags: TagSummary[];
   total: number;
+  mode: Mode;
 };
 
-const { tags, total } = Astro.props;
+const { tags, total, mode } = Astro.props;
 ---
 
 <div
@@ -22,32 +23,28 @@ const { tags, total } = Astro.props;
 
   {
     tags.map((tag) => (
-      <button
-        type="button"
-        data-tag={tag.slug}
-        aria-pressed="false"
-        class="chip chip-md"
-      >
+      <button type="button" data-tag={tag.slug} aria-pressed="false" class="chip chip-md">
         {tag.name}
-        <span class="chip-count">{tag.count}</span>
+        <span class="chip-count">{tag[mode].entries}</span>
       </button>
     ))
   }
 </div>
 
 <script>
-  const root = document.querySelector<HTMLElement>('[data-tag-filter]');
+  /* Hay un filtro por modo de contenido y los dos están en el DOM, así que
+     cada uno solo puede tocar las filas de su propio bloque. */
+  for (const root of document.querySelectorAll<HTMLElement>('[data-tag-filter]')) {
+    const scope = root.closest<HTMLElement>('[data-mode]') ?? document.body;
 
-  if (root) {
     const buttons = [...root.querySelectorAll<HTMLButtonElement>('button[data-tag]')];
-    const items = [...document.querySelectorAll<HTMLElement>('[data-entry-tags]')];
-    const lists = [...document.querySelectorAll<HTMLElement>('[data-filterable]')];
+    const items = [...scope.querySelectorAll<HTMLElement>('[data-entry-tags]')];
+    const lists = [...scope.querySelectorAll<HTMLElement>('[data-filterable]')];
+
     const known = new Set(buttons.map((button) => button.dataset.tag!).filter(Boolean));
     const params = new URLSearchParams(location.search);
     const active = new Set(
-      (params.get('tags') ?? '')
-        .split(',')
-        .filter((tag) => known.has(tag)),
+      (params.get('tags') ?? '').split(',').filter((tag) => known.has(tag)),
     );
 
     const isPressed = (button: HTMLButtonElement) =>

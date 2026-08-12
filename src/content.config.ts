@@ -27,8 +27,20 @@ const shared = {
   references: z.array(reference).default([]),
 };
 
+/**
+ * Cada colección se lee de dos árboles: `content/` es lo real y `content-demo/`
+ * el set de pruebas. Los dos se buildean y el botón del header elige cuál se
+ * muestra, así que el `id` arranca con el directorio y de ahí sale el modo.
+ * Los `_templates` quedan afuera: Astro ignora todo lo que empieza con `_`.
+ */
+const bothTrees = (kind: string) =>
+  glob({
+    pattern: [`content/${kind}/**/*.md`, `content-demo/${kind}/**/*.md`],
+    base: './src',
+  });
+
 const books = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/books' }),
+  loader: bothTrees('books'),
   schema: z.object({
     ...shared,
     author: z.string(),
@@ -37,13 +49,13 @@ const books = defineCollection({
 });
 
 const essays = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/essays' }),
+  loader: bothTrees('essays'),
   schema: z.object(shared),
 });
 
 /** Citas sueltas, sin libro ni ensayo detrás. */
 const quotes = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/quotes' }),
+  loader: bothTrees('quotes'),
   schema: z.object({
     text: z.string(),
     author: z.string(),

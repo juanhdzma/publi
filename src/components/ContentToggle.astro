@@ -1,0 +1,38 @@
+---
+/**
+ * Alterna entre el contenido real y el set de pruebas. Los dos se buildean;
+ * lo que cambia es qué se muestra, y de eso se encarga el CSS mirando el
+ * `data-content` de <html>.
+ */
+---
+
+<button
+  id="content-toggle"
+  type="button"
+  class="mode-chip"
+  aria-pressed="false"
+  aria-label="Mostrar contenido de pruebas"
+>
+  demo
+</button>
+
+<script>
+  const toggle = document.getElementById('content-toggle');
+
+  /* El modo ya lo dejó resuelto el script inline del head; acá solo se refleja
+     en el botón, que se renderiza sin saberlo. */
+  toggle?.setAttribute(
+    'aria-pressed',
+    String(document.documentElement.dataset.content === 'demo'),
+  );
+
+  toggle?.addEventListener('click', () => {
+    const demo = document.documentElement.dataset.content !== 'demo';
+    document.documentElement.dataset.content = demo ? 'demo' : 'real';
+    toggle.setAttribute('aria-pressed', String(demo));
+
+    try {
+      localStorage.setItem('content', demo ? 'demo' : 'real');
+    } catch {}
+  });
+</script>

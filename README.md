@@ -11,6 +11,15 @@ Astro 7 + Tailwind v4 → HTML estático servido por nginx en un container.
 
 Un archivo markdown en la carpeta que corresponda. El nombre del archivo es la URL.
 
+**Hay plantillas listas en `src/content/_templates/`** — `libro.md`, `ensayo.md` y `cita.md`,
+con todos los campos y un comentario en cada uno. Copiar la que toque a su carpeta, borrar
+los comentarios y escribir. Astro ignora todo lo que empieza con `_`, así que las plantillas
+no se publican.
+
+```sh
+cp src/content/_templates/libro.md src/content/books/sapiens.md
+```
+
 ### Libro → `src/content/books/<slug>.md`
 
 ```markdown
@@ -62,8 +71,8 @@ campo, con exit code 1. Un `.md` mal formado no llega a producción.
 
 ## Citas y referencias
 
-Tres mecanismos dentro de una entrada, combinables. Ver `src/content/books/sapiens.md`, que
-usa los tres.
+Tres mecanismos dentro de una entrada, combinables. Ver `src/content-demo/books/sapiens.md`,
+que usa los tres.
 
 **1. Citas de la entrada** — lista en el frontmatter. La marcada `featured: true` se
 renderiza grande entre el header y el cuerpo; el resto va en una sección al final. Todas
@@ -203,7 +212,7 @@ Cambiar cómo se ve un título en todo el sitio es editar una regla.
 
 | Grupo      | Clases                                                              |
 | ---------- | ------------------------------------------------------------------- |
-| Chrome     | `skip-link` `main`                                                   |
+| Chrome     | `skip-link` `main` `mode-chip` `demo-note`                           |
 | Marca      | `site-brand` `site-mark`                                             |
 | Página     | `page-header` `page-title` `page-intro`                              |
 | Sección    | `section-header` `section-title` `section-title-sub` `section-link`  |
@@ -219,6 +228,32 @@ Cambiar cómo se ve un título en todo el sitio es editar una regla.
 
 Los colores y las tipografías son tokens en `@theme`: `ink`, `ink-muted`, `paper`, `line`,
 `accent`, cada uno con su variante `-dark`.
+
+---
+
+## Contenido real y contenido de pruebas
+
+Hay dos árboles y los dos se buildean:
+
+```
+src/content/          ← lo real, lo que se publica
+├── books/  essays/  quotes/
+└── _templates/       ← plantillas, no se publican
+
+src/content-demo/     ← set de pruebas
+└── books/  essays/  quotes/
+```
+
+El botón **demo** del header alterna cuál se muestra. El estado queda en `localStorage`, así
+que sobrevive la navegación y la recarga.
+
+Sirve para ver cómo queda el sitio lleno mientras el contenido real está vacío o corto, y
+para probar un cambio de diseño contra material variado sin publicar nada.
+
+**El set de pruebas no se publica en ningún lado:** queda fuera del feed y del sitemap, sus
+fichas viven bajo `/books/demo/...` y llevan un aviso arriba. Sin JavaScript el sitio muestra
+solo lo real. Aun así, el HTML de las fichas de prueba viaja al visitante — no poner ahí nada
+que no pueda verse.
 
 ---
 
@@ -291,11 +326,13 @@ Actions → Variables`), no como secret.
 src/
 ├── content.config.ts    schemas de las 3 colecciones
 ├── config.ts            título, tagline, descripción, autor
-├── lib/content.ts       queries, drafts, tags, citas, reading time
-├── content/
+├── lib/content.ts       queries, drafts, tags, citas, modo, reading time
+├── content/             ← lo real
 │   ├── books/           ← resúmenes
 │   ├── essays/          ← ensayos
-│   └── quotes/          ← citas sueltas, una por archivo
+│   ├── quotes/          ← citas sueltas, una por archivo
+│   └── _templates/      ← plantillas para copiar, no se publican
+├── content-demo/        ← set de pruebas, mismo layout que content/
 ├── layouts/             BaseLayout (chrome) · ProseLayout (lectura)
 ├── components/          tarjetas, filas, citas, chips, filtro
 ├── pages/               home, listados, [...slug], tags, quotes, 404

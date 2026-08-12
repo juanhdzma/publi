@@ -1,14 +1,14 @@
 ---
 import { getCollection, render } from 'astro:content';
 import ProseLayout from '../../layouts/ProseLayout.astro';
-import { getPublished } from '../../lib/content';
+import { getPublished, parseId } from '../../lib/content';
 
 export async function getStaticPaths() {
   const items = await getPublished('essays');
   const entries = await getCollection('essays', ({ data }: any) => !data.draft);
 
   return entries.map((entry: any) => ({
-    params: { slug: entry.id },
+    params: { slug: parseId(entry.id).slug },
     props: { entry, item: items.find((i) => i.id === entry.id)! },
   }));
 }
@@ -23,6 +23,7 @@ const { Content } = await render(entry);
   summary={entry.data.summary}
   publishedAt={entry.data.publishedAt}
   tags={entry.data.tags}
+  mode={item.mode}
   readingMinutes={item.readingMinutes}
   references={entry.data.references}
   quotes={item.quotes}

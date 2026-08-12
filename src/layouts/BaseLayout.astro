@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import ContentToggle from '../components/ContentToggle.astro';
 import { SITE, THEME_COLOR } from '../config';
 
 /* Solo los subsets latin en peso normal: son los únicos que un lector en
@@ -42,7 +43,8 @@ const nav = [
 const path = Astro.url.pathname;
 ---
 
-<html lang="es" class="h-full">
+{/* `real` de arranque: sin JS, el sitio muestra el contenido real y nada más. */}
+<html lang="es" class="h-full" data-content="real">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -104,6 +106,17 @@ const path = Astro.url.pathname;
 
       const meta = document.querySelector('meta[name="theme-color"]');
       meta?.setAttribute('content', dark ? meta.dataset.dark : meta.dataset.light);
+
+      /* El modo se resuelve antes del paint: si no, el contenido del modo
+         inactivo parpadea. Una URL /demo/ lo fuerza, para que un link directo
+         a una ficha de pruebas no caiga en una página que se ve vacía. */
+      let content = null;
+      try {
+        content = localStorage.getItem('content');
+      } catch {}
+
+      if (location.pathname.split('/').includes('demo')) content = 'demo';
+      document.documentElement.dataset.content = content === 'demo' ? 'demo' : 'real';
     </script>
   </head>
 
@@ -131,6 +144,7 @@ const path = Astro.url.pathname;
               </a>
             ))
           }
+          <ContentToggle />
           <ThemeToggle />
         </nav>
       </div>

@@ -2,32 +2,45 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContentCard from '../../components/ContentCard.astro';
 import TagList from '../../components/TagList.astro';
-import { getPublished } from '../../lib/content';
+import { getPublished, splitByMode, MODES } from '../../lib/content';
 
-const items = await getPublished('books');
+const byMode = splitByMode(await getPublished('books'));
 
-const tags = [...new Set(items.flatMap((item) => item.tags))].sort((a, b) =>
-  a.localeCompare(b, 'es'),
-);
+const tagsOf = (items: typeof byMode.real) =>
+  [...new Set(items.flatMap((item) => item.tags))].sort((a, b) => a.localeCompare(b, 'es'));
 ---
 
 <BaseLayout title="Libros" description="Resúmenes de libros.">
   <header class="page-header">
     <h1 class="page-title">Libros</h1>
-    <p class="page-intro">Resúmenes de lo que voy leyendo. {items.length} en total.</p>
 
-    <div class="mt-6">
-      <TagList tags={tags} size="md" />
-    </div>
+    <p class="page-intro">
+      Resúmenes de lo que voy leyendo.
+      {MODES.map((mode) => <span data-mode={mode}>{byMode[mode].length} en total.</span>)}
+    </p>
+
+    {
+      MODES.map((mode) => (
+        <div class="mt-6" data-mode={mode}>
+          <TagList tags={tagsOf(byMode[mode])} size="md" />
+        </div>
+      ))
+    }
   </header>
 
-  <div class="mt-8 grid gap-4 sm:grid-cols-2">
-    {items.map((item) => <ContentCard item={item} level={2} />)}
-  </div>
-
   {
-    items.length === 0 && (
-      <p class="mt-8 text-ink-muted dark:text-ink-muted-dark">Todavía no hay libros.</p>
-    )
+    MODES.map((mode) => (
+      <div data-mode={mode}>
+        {byMode[mode].length === 0 ? (
+          <p class="mt-8 text-ink-muted dark:text-ink-muted-dark">Todavía no hay libros.</p>
+        ) : (
+          <div class="mt-8 grid gap-4 sm:grid-cols-2">
+            {byMode[mode].map((item) => (
+              <ContentCard item={item} level={2} />
+            ))}
+          </div>
+        )}
+      </div>
+    ))
   }
 </BaseLayout>

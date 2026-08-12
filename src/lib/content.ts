@@ -3,6 +3,11 @@ import { SITE } from '../config';
 
 export type Kind = 'books' | 'essays';
 
+/** Los dos árboles de contenido. El botón del header elige cuál se ve. */
+export type Mode = 'real' | 'demo';
+
+export const MODES: Mode[] = ['real', 'demo'];
+
 export const KIND_LABEL: Record<Kind, string> = {
   books: 'Libro',
   essays: 'Ensayo',
@@ -20,6 +25,7 @@ export const KIND_PATH: Record<Kind, string> = {
 
 export type ContentItem = {
   kind: Kind;
+  mode: Mode;
   id: string;
   href: string;
   title: string;
@@ -32,18 +38,20 @@ export type ContentItem = {
   rating?: number;
 };
 
+/** Cuántas entradas y cuántas citas sueltas hay con un tag, en un modo. */
+export type TagCounts = { entries: number; quotes: number };
+
 export type TagSummary = {
   name: string;
   slug: string;
-  /** Entradas (libros + ensayos) con este tag. */
-  count: number;
-  /** Citas sueltas con este tag. Un tag puede existir solo por citas. */
-  quoteCount: number;
   kinds: Kind[];
+  real: TagCounts;
+  demo: TagCounts;
 };
 
 export type Quote = {
   text: string;
+  mode: Mode;
   page?: string;
   featured: boolean;
   publishedAt: Date;
@@ -58,6 +66,21 @@ export type Quote = {
   kind?: Kind;
   tags: string[];
 };
+
+const DEMO_ROOT = 'content-demo';
+
+/**
+ * El `id` que arma el loader arranca con el árbol: `content/books/sapiens` o
+ * `content-demo/books/sapiens`. De ahí sale el modo, y el slug del demo va
+ * bajo `demo/` para que nunca choque con una entrada real del mismo nombre.
+ */
+export function parseId(id: string): { mode: Mode; slug: string } {
+  const [root, , ...rest] = id.split('/');
+  const mode: Mode = root === DEMO_ROOT ? 'demo' : 'real';
+  const slug = rest.join('/');
+
+  return { mode, slug: mode === 'demo' ? `demo/${slug}` : slug };
+}
 
 export function slugifyTag(tag: string): string {
   return tag
@@ -79,19 +102,29 @@ function readingMinutes(body: string | undefined): number {
   return Math.max(1, Math.round(words / WORDS_PER_MINUTE));
 }
 
-const byNewest = (a: ContentItem, b: ContentItem) =>
+const byNewest = (a: { publishedAt: Date }, b: { publishedAt: Date }) =>
   b.publishedAt.valueOf() - a.publishedAt.valueOf();
+
+/** Separa una lista en los dos modos, para renderizar ambos y esconder uno. */
+export function splitByMode<T extends { mode: Mode }>(items: T[]): Record<Mode, T[]> {
+  return {
+    real: items.filter((item) => item.mode === 'real'),
+    demo: items.filter((item) => item.mode === 'demo'),
+  };
+}
 
 export async function getPublished(kind: Kind): Promise<ContentItem[]> {
   const entries = await getCollection(kind, ({ data }: any) => !data.draft);
 
   return entries
     .map((entry: any) => {
-      const href = `${KIND_PATH[kind]}/${entry.id}/`;
+      const { mode, slug } = parseId(entry.id);
+      const href = `${KIND_PATH[kind]}/${slug}/`;
       const defaultAttribution = entry.data.author ?? SITE.author;
 
       return {
         kind,
+        mode,
         id: entry.id,
         href,
         title: entry.data.title,
@@ -103,6 +136,7 @@ export async function getPublished(kind: Kind): Promise<ContentItem[]> {
         rating: entry.data.rating,
         quotes: entry.data.quotes.map((q: any) => ({
           text: q.text,
+          mode,
           page: q.page,
           featured: q.featured,
           publishedAt: entry.data.publishedAt,
@@ -124,6 +158,7 @@ export async function getStandaloneQuotes(): Promise<Quote[]> {
   return entries
     .map((entry: any) => ({
       text: entry.data.text,
+      mode: parseId(entry.id).mode,
       featured: false,
       publishedAt: entry.data.publishedAt,
       attribution: entry.data.author,
@@ -132,7 +167,7 @@ export async function getStandaloneQuotes(): Promise<Quote[]> {
       external: Boolean(entry.data.url),
       tags: entry.data.tags,
     }))
-    .sort((a, b) => b.publishedAt.valueOf() - a.publishedAt.valueOf());
+    .sort(byNewest);
 }
 
 export async function getAllQuotes(): Promise<Quote[]> {
@@ -141,9 +176,7 @@ export async function getAllQuotes(): Promise<Quote[]> {
     getStandaloneQuotes(),
   ]);
 
-  return [...items.flatMap((item) => item.quotes), ...standalone].sort(
-    (a, b) => b.publishedAt.valueOf() - a.publishedAt.valueOf(),
-  );
+  return [...items.flatMap((item) => item.quotes), ...standalone].sort(byNewest);
 }
 
 export async function getAllPublished(): Promise<ContentItem[]> {
@@ -154,8 +187,13 @@ export async function getAllPublished(): Promise<ContentItem[]> {
   return [...books, ...essays].sort(byNewest);
 }
 
-export function tagTotal(tag: TagSummary): number {
-  return tag.count + tag.quoteCount;
+export function tagTotal(tag: TagSummary, mode: Mode): number {
+  return tag[mode].entries + tag[mode].quotes;
+}
+
+/** true cuando el tag no existe en ese modo y hay que esconderlo entero. */
+export function tagEmpty(tag: TagSummary, mode: Mode): boolean {
+  return tagTotal(tag, mode) === 0;
 }
 
 export async function getAllTags(): Promise<TagSummary[]> {
@@ -167,7 +205,13 @@ export async function getAllTags(): Promise<TagSummary[]> {
     let summary = bySlug.get(slug);
 
     if (!summary) {
-      summary = { name: tag, slug, count: 0, quoteCount: 0, kinds: [] };
+      summary = {
+        name: tag,
+        slug,
+        kinds: [],
+        real: { entries: 0, quotes: 0 },
+        demo: { entries: 0, quotes: 0 },
+      };
       bySlug.set(slug, summary);
     }
 
@@ -177,17 +221,19 @@ export async function getAllTags(): Promise<TagSummary[]> {
   for (const item of items) {
     for (const tag of item.tags) {
       const summary = ensure(tag);
-      summary.count += 1;
+      summary[item.mode].entries += 1;
       if (!summary.kinds.includes(item.kind)) summary.kinds.push(item.kind);
     }
   }
 
   for (const quote of quotes) {
-    for (const tag of quote.tags) ensure(tag).quoteCount += 1;
+    for (const tag of quote.tags) ensure(tag)[quote.mode].quotes += 1;
   }
 
   return [...bySlug.values()].sort(
-    (a, b) => tagTotal(b) - tagTotal(a) || a.name.localeCompare(b.name, 'es'),
+    (a, b) =>
+      tagTotal(b, 'real') + tagTotal(b, 'demo') - (tagTotal(a, 'real') + tagTotal(a, 'demo')) ||
+      a.name.localeCompare(b.name, 'es'),
   );
 }
 

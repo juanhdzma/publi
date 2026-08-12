@@ -4,7 +4,8 @@ import { getAllPublished, KIND_LABEL } from '../lib/content';
 import { SITE } from '../config';
 
 export async function GET(context: APIContext) {
-  const items = await getAllPublished();
+  /* El feed es público: el set de pruebas no sale de la UI del sitio. */
+  const items = (await getAllPublished()).filter((item) => item.mode === 'real');
 
   return rss({
     title: `${SITE.title} — ${SITE.tagline}`,

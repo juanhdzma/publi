@@ -1,28 +1,43 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContentRow from '../../components/ContentRow.astro';
-import { getAllTags, getByTag, tagTotal } from '../../lib/content';
+import {
+  getAllTags,
+  getByTag,
+  splitByMode,
+  tagTotal,
+  tagEmpty,
+  MODES,
+  type Mode,
+  type TagSummary,
+} from '../../lib/content';
 
 const tags = await getAllTags();
 
 const sections = await Promise.all(
-  tags.map(async (tag) => ({ ...tag, items: await getByTag(tag.slug) })),
+  tags.map(async (tag) => ({ ...tag, items: splitByMode(await getByTag(tag.slug)) })),
 );
 
-const totals = tags.map(tagTotal);
-const min = Math.min(...totals, 0);
-const max = Math.max(...totals, 1);
-
 /** 0 para la menos usada, 1 para la más usada. El tamaño lo resuelve el CSS. */
-function weight(total: number): number {
+function weight(tag: TagSummary, mode: Mode): number {
+  const totals = tags.filter((t) => !tagEmpty(t, mode)).map((t) => tagTotal(t, mode));
+  const min = Math.min(...totals, 0);
+  const max = Math.max(...totals, 1);
+
   if (max === min) return 1;
-  return Number(((total - min) / (max - min)).toFixed(3));
+  return Number(((tagTotal(tag, mode) - min) / (max - min)).toFixed(3));
 }
 
-function summarize(count: number, quoteCount: number): string {
+/* Los dos modos están en el DOM a la vez: sin prefijo habría dos secciones con
+   el mismo id y las anclas irían siempre a la del primer modo. */
+const anchor = (slug: string, mode: Mode) => (mode === 'real' ? slug : `${mode}-${slug}`);
+
+function summarize(tag: TagSummary, mode: Mode): string {
+  const { entries, quotes } = tag[mode];
+
   return [
-    count > 0 && `${count} ${count === 1 ? 'entrada' : 'entradas'}`,
-    quoteCount > 0 && `${quoteCount} ${quoteCount === 1 ? 'cita' : 'citas'}`,
+    entries > 0 && `${entries} ${entries === 1 ? 'entrada' : 'entradas'}`,
+    quotes > 0 && `${quotes} ${quotes === 1 ? 'cita' : 'citas'}`,
   ]
     .filter(Boolean)
     .join(' · ');
@@ -32,58 +47,72 @@ function summarize(count: number, quoteCount: number): string {
 <BaseLayout title="Categorías" description="Todas las categorías del sitio.">
   <header class="page-header">
     <h1 class="page-title">Categorías</h1>
-    <p class="page-intro">
-      {tags.length} categorías. El tamaño indica cuánto se usa cada una. Una entrada puede
-      estar en varias.
-    </p>
+
+    {
+      MODES.map((mode) => {
+        const visible = tags.filter((tag) => !tagEmpty(tag, mode));
+
+        return (
+          <p class="page-intro" data-mode={mode}>
+            {visible.length === 0
+              ? 'Todavía no hay categorías.'
+              : `${visible.length} categorías. El tamaño indica cuánto se usa cada una. Una entrada puede estar en varias.`}
+          </p>
+        );
+      })
+    }
   </header>
 
   {
-    tags.length === 0 ? (
-      <p class="mt-10 text-ink-muted dark:text-ink-muted-dark">Todavía no hay categorías.</p>
-    ) : (
-      <>
+    MODES.map((mode) => (
+      <div data-mode={mode}>
         <nav class="tag-cloud mt-12" aria-label="Índice de categorías">
-          {tags.map((tag) => (
-            <a href={`#${tag.slug}`} class="cloud-tag" style={`--weight:${weight(tagTotal(tag))}`}>
-              {tag.name}
-              <span class="cloud-count">{tagTotal(tag)}</span>
-            </a>
-          ))}
+          {tags
+            .filter((tag) => !tagEmpty(tag, mode))
+            .map((tag) => (
+              <a
+                href={`#${anchor(tag.slug, mode)}`}
+                class="cloud-tag"
+                style={`--weight:${weight(tag, mode)}`}
+              >
+                {tag.name}
+                <span class="cloud-count">{tagTotal(tag, mode)}</span>
+              </a>
+            ))}
         </nav>
 
         <div class="mt-16 grid gap-x-10 gap-y-12 sm:grid-cols-2">
-          {sections.map((section) => (
-            <section id={section.slug} class="tag-section">
-              <h2 class="tag-section-title">
-                <a
-                  href={`/tags/${section.slug}/`}
-                  class="tag-section-name transition-colors hover:text-accent dark:hover:text-accent-dark"
-                >
-                  {section.name}
-                </a>
-                <span class="tag-section-count">
-                  {summarize(section.count, section.quoteCount)}
-                </span>
-              </h2>
+          {sections
+            .filter((section) => !tagEmpty(section, mode))
+            .map((section) => (
+              <section id={anchor(section.slug, mode)} class="tag-section">
+                <h2 class="tag-section-title">
+                  <a
+                    href={`/tags/${section.slug}/`}
+                    class="tag-section-name transition-colors hover:text-accent dark:hover:text-accent-dark"
+                  >
+                    {section.name}
+                  </a>
+                  <span class="tag-section-count">{summarize(section, mode)}</span>
+                </h2>
 
-              {section.items.length > 0 && (
-                <ul class="mt-1">
-                  {section.items.map((item) => (
-                    <ContentRow item={item} />
-                  ))}
-                </ul>
-              )}
+                {section.items[mode].length > 0 && (
+                  <ul class="mt-1">
+                    {section.items[mode].map((item) => (
+                      <ContentRow item={item} />
+                    ))}
+                  </ul>
+                )}
 
-              {section.quoteCount > 0 && (
-                <a href={`/tags/${section.slug}/`} class="section-link mt-3 inline-block">
-                  Ver {section.quoteCount === 1 ? 'la cita' : `las ${section.quoteCount} citas`}
-                </a>
-              )}
-            </section>
-          ))}
+                {section[mode].quotes > 0 && (
+                  <a href={`/tags/${section.slug}/`} class="section-link mt-3 inline-block">
+                    Ver {section[mode].quotes === 1 ? 'la cita' : `las ${section[mode].quotes} citas`}
+                  </a>
+                )}
+              </section>
+            ))}
         </div>
-      </>
-    )
+      </div>
+    ))
   }
 </BaseLayout>
