@@ -16,6 +16,8 @@ type Props = {
   /** `article` en las entradas; el resto del sitio es `website`. */
   type?: 'website' | 'article';
   publishedAt?: Date;
+  /** Fichas de prueba: linkeadas en el HTML, pero no para buscadores. */
+  noindex?: boolean;
 };
 
 const {
@@ -23,6 +25,7 @@ const {
   description = SITE.description,
   type = 'website',
   publishedAt,
+  noindex = false,
 } = Astro.props;
 
 const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
@@ -51,6 +54,7 @@ const path = Astro.url.pathname;
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link
       rel="alternate"
       type="application/rss+xml"

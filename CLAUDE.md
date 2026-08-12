@@ -118,8 +118,13 @@ los dos modos dentro de la misma lista y se rompen `:last-child`, el `:has` del 
 Ojo con los `id`: al estar los dos modos en el DOM, un `id` por ítem se duplica. En `/tags/`
 se resuelve prefijando con el modo (`anchor()`).
 
-Las fichas de prueba **no salen del sitio**: fuera del feed y del sitemap, bajo `/books/demo/`
-y con un aviso arriba. Pero su HTML igual viaja al visitante.
+Las fichas de prueba **no salen del sitio**: fuera del feed y del sitemap, bajo `/books/demo/`,
+con un aviso arriba y con `noindex, nofollow`. El `noindex` hace falta además del sitemap: sus
+links viven en el HTML publicado aunque el CSS los esconda, así que un crawler los sigue igual
+y el sitemap solo dice "no las sugiero", no "no las indexes". Por lo mismo **no** van a
+`robots.txt`: un `Disallow` impediría leer el `noindex`.
+
+Aun así su HTML viaja al visitante.
 
 `src/content/_templates/` son las plantillas de publicación. Astro ignora todo lo que empieza
 con `_`, así que no se buildean. Si cambia un schema, actualizar la plantilla que toque.

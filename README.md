@@ -251,7 +251,7 @@ Sirve para ver cómo queda el sitio lleno mientras el contenido real está vací
 para probar un cambio de diseño contra material variado sin publicar nada.
 
 **El set de pruebas no se publica en ningún lado:** queda fuera del feed y del sitemap, sus
-fichas viven bajo `/books/demo/...` y llevan un aviso arriba. Sin JavaScript el sitio muestra
+fichas viven bajo `/books/demo/...`, llevan un aviso arriba y van con `noindex`. Sin JavaScript el sitio muestra
 solo lo real. Aun así, el HTML de las fichas de prueba viaja al visitante — no poner ahí nada
 que no pueda verse.
 
