@@ -4,8 +4,8 @@
    Las variantes `wght` traen solo el eje de peso — pesan la mitad que las
    `opsz`, que además cargan el eje óptico que no usamos.
 
-   fonts.css lo genera `npm run fonts` desde los CSS de fontsource, quedándose
-   con los subsets latin. No editarlo a mano. */
+   fonts.css es el CSS de fontsource recortado a los subsets latin y latin-ext
+   (8 `@font-face` en vez de 20). Si se actualiza fontsource, rehacer el recorte. */
 @import "./fonts.css";
 
 @plugin "@tailwindcss/typography";

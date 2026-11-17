@@ -24,13 +24,6 @@ jobs:
       - run: npm ci
       - run: npm run check
 
-      # fonts.css sale de los CSS de fontsource: si una actualización cambia
-      # los unicode-range, el archivo commiteado queda viejo en silencio.
-      - name: fonts.css al día
-        run: |
-          npm run fonts
-          git diff --exit-code -- src/styles/fonts.css
-
       - uses: docker/setup-buildx-action@v3
 
       - uses: docker/login-action@v3

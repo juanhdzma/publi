@@ -138,14 +138,12 @@ Para verificar contra nginx, ver el `docker build` / `docker run` de la sección
 
 ## Íconos y tipografía
 
-`public/favicon.svg` es la fuente de verdad del logo: `npm run icons` regenera de ahí
-`favicon.ico`, `apple-touch-icon.png` (180×180, sin alpha) y `og.png` (1200×630, la imagen al
-compartir el link). Correrlo y commitear los binarios cada vez que cambie el SVG.
+`public/favicon.svg` es el logo; `favicon.ico`, `apple-touch-icon.png` (180×180, sin alpha) y
+`og.png` (1200×630, la imagen al compartir el link) se hacen a mano a partir de él.
 
 Dos familias self-hosted vía `@fontsource-variable`, variantes `wght`: **Crimson Pro**
-(títulos y citas) e **Inter** (cuerpo y navegación). `src/styles/fonts.css` es generado por
-`npm run fonts` (solo `latin` y `latin-ext`) y no se edita a mano; el CI falla si difiere de lo
-commiteado.
+(títulos y citas) e **Inter** (cuerpo y navegación). `src/styles/fonts.css` es el CSS de fontsource
+recortado a `latin` y `latin-ext`.
 
 ---
 
@@ -222,8 +220,7 @@ src/
 ├── components/          tarjetas, filas, citas, chips, filtro
 ├── pages/               home, [kind] (listado y entrada), tags, quotes, 404, rss, robots
 └── styles/global.css    el sistema de estilos completo
-public/                  favicon.svg (fuente) y binarios generados
-scripts/                 generate-icons.mjs · generate-fonts.mjs
+public/                  favicon.svg y los íconos derivados
 docker/nginx.conf        server block, headers y cache
 ```
 

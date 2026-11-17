@@ -123,21 +123,21 @@ Dos familias self-hosted vía `@fontsource-variable`: **Crimson Pro** (serif) e 
 (sans). Se importan las variantes `wght`, no las `opsz` — la mitad de KB y el eje óptico no
 se usa.
 
-**`src/styles/fonts.css` es generado, no editarlo.** Sale de `npm run fonts`, que filtra los
-CSS de fontsource y deja solo `latin` y `latin-ext` (8 `@font-face` en vez de 20). El CI
-corre el script y compara contra lo commiteado, así que una actualización de fontsource que
-cambie los `unicode-range` falla en vez de pasar silenciosa.
+**`src/styles/fonts.css` es el CSS de fontsource recortado a mano** a `latin` y `latin-ext`
+(8 `@font-face` en vez de 20). Ya no hay script ni chequeo en CI: si se actualiza
+fontsource y cambian los `unicode-range`, hay que rehacer el recorte.
 
-**Cambiar una font toca tres lugares**: `SOURCES` en `scripts/generate-fonts.mjs`, el
-`@theme` de `global.css` y el `import` del preload en `BaseLayout.astro`. Tocar solo el
-primero deja precargando la font anterior, y no falla el build ni el check.
+**Cambiar una font toca tres lugares**: `fonts.css`, el `@theme` de `global.css` y el
+`import` del preload en `BaseLayout.astro`. Tocar solo el último deja precargando la font
+anterior, y no falla el build ni el check.
 
 ---
 
 ## Íconos
 
-`public/favicon.svg` es la fuente; `npm run icons` regenera `favicon.ico`,
-`apple-touch-icon.png` y `og.png` desde ahí. No editar los binarios a mano.
+`public/favicon.svg` es la fuente de `favicon.ico`, `apple-touch-icon.png` y `og.png`. Ya
+no hay script que los regenere: si cambia el logo, rehacer los tres a mano (180×180 y
+1200×630).
 
 El PNG de Apple se aplana sin canal alpha a propósito: iOS rellena cualquier
 transparencia con blanco o negro por su cuenta, y el ícono queda con un borde que no
