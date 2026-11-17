@@ -350,8 +350,8 @@ scripts/
 ├── generate-icons.mjs   npm run icons
 └── generate-fonts.mjs   npm run fonts
 
-nginx.conf                     server block
-nginx-security-headers.conf    snippet que cada location incluye
+docker/nginx.conf              server block
+docker/nginx-security-headers.conf  snippet que cada location incluye
 ```
 
 ---

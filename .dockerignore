@@ -3,7 +3,6 @@ dist
 .astro
 .git
 .github
-.vscode
 .DS_Store
 *.log
 README.md

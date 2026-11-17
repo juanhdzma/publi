@@ -34,7 +34,7 @@ Compose mergea solo en local.
 
 **`add_header` de nginx no se hereda.** Un `location` que declara su propio `add_header`
 pierde todos los del `server`. Por eso los headers de seguridad viven en
-`nginx-security-headers.conf` y cada `location` hace `include`. Si agregás un `location`,
+`docker/nginx-security-headers.conf` y cada `location` hace `include`. Si agregás un `location`,
 agregale el include o queda sirviendo sin `nosniff` ni `X-Frame-Options`. Se verifica así:
 
 ```sh
