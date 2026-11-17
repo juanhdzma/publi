@@ -10,31 +10,20 @@ const { quotes } = Astro.props;
 
 {
   quotes.length > 0 && (
-    <section class="mt-14 border-t border-line pt-8 dark:border-line-dark">
-      <h2 class="text-sm font-medium tracking-wide text-ink-muted uppercase dark:text-ink-muted-dark">
-        Citas
-      </h2>
+    <section class="aside-section">
+      <h2 class="aside-title">Citas</h2>
 
       <ul class="mt-5 space-y-6">
         {quotes.map((quote) => (
-          <li class="border-l-2 border-line pl-5 dark:border-line-dark">
-            <blockquote class="font-serif leading-snug text-pretty">{quote.text}</blockquote>
+          <li class="quote-item">
+            <blockquote class="quote-item-text">{quote.text}</blockquote>
 
-            {quote.page && (
-              <p class="mt-1.5 text-sm text-ink-muted dark:text-ink-muted-dark">
-                {quote.page}
-              </p>
-            )}
+            {quote.page && <p class="muted mt-1.5 text-sm">{quote.page}</p>}
           </li>
         ))}
       </ul>
 
-      <a
-        href="/quotes/"
-        class="mt-6 inline-block text-sm text-ink-muted transition-colors hover:text-accent dark:text-ink-muted-dark dark:hover:text-accent-dark"
-      >
-        Ver todas las citas del sitio
-      </a>
+      <a href="/quotes/" class="section-link mt-6 inline-block">Ver todas las citas del sitio</a>
     </section>
   )
 }

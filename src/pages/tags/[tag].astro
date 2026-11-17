@@ -6,6 +6,7 @@ import SectionHeader from '../../components/SectionHeader.astro';
 import {
   getAllTags,
   getByTag,
+  countLabel,
   getQuotesByTag,
   splitByMode,
   MODES,
@@ -40,17 +41,11 @@ const { name, items, quotes } = Astro.props;
 
     {
       MODES.map((mode) => {
-        const entries = items[mode].length;
-        const loose = quotes[mode].length;
-
-        const parts = [
-          entries > 0 && `${entries} ${entries === 1 ? 'entrada' : 'entradas'}`,
-          loose > 0 && `${loose} ${loose === 1 ? 'cita' : 'citas'}`,
-        ].filter(Boolean);
+        const label = countLabel(items[mode].length, quotes[mode].length);
 
         return (
           <p class="page-intro" data-mode={mode}>
-            {parts.length === 0 ? 'Nada en esta categoría.' : parts.join(' · ')}
+            {label || 'Nada en esta categoría.'}
           </p>
         );
       })

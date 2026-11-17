@@ -4,6 +4,7 @@ import ContentRow from '../../components/ContentRow.astro';
 import {
   getAllTags,
   getByTag,
+  countLabel,
   splitByMode,
   tagTotal,
   tagEmpty,
@@ -32,16 +33,6 @@ function weight(tag: TagSummary, mode: Mode): number {
    el mismo id y las anclas irían siempre a la del primer modo. */
 const anchor = (slug: string, mode: Mode) => (mode === 'real' ? slug : `${mode}-${slug}`);
 
-function summarize(tag: TagSummary, mode: Mode): string {
-  const { entries, quotes } = tag[mode];
-
-  return [
-    entries > 0 && `${entries} ${entries === 1 ? 'entrada' : 'entradas'}`,
-    quotes > 0 && `${quotes} ${quotes === 1 ? 'cita' : 'citas'}`,
-  ]
-    .filter(Boolean)
-    .join(' · ');
-}
 ---
 
 <BaseLayout title="Categorías" description="Todas las categorías del sitio.">
@@ -86,14 +77,14 @@ function summarize(tag: TagSummary, mode: Mode): string {
             .filter((section) => !tagEmpty(section, mode))
             .map((section) => (
               <section id={anchor(section.slug, mode)} class="tag-section">
-                <h2 class="tag-section-title">
+                <h2 class="section-header">
                   <a
                     href={`/tags/${section.slug}/`}
-                    class="tag-section-name transition-colors hover:text-accent dark:hover:text-accent-dark"
+                    class="tag-section-name hover-accent"
                   >
                     {section.name}
                   </a>
-                  <span class="tag-section-count">{summarize(section, mode)}</span>
+                  <span class="tag-section-count">{countLabel(section[mode].entries, section[mode].quotes)}</span>
                 </h2>
 
                 {section.items[mode].length > 0 && (

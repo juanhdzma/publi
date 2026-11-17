@@ -1,4 +1,4 @@
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import { SITE } from '../config';
 
 export type Kind = 'books' | 'essays';
@@ -18,6 +18,11 @@ export const KIND_PLURAL: Record<Kind, string> = {
   essays: 'Ensayos',
 };
 
+export const KIND_INTRO: Record<Kind, { description: string; intro: string }> = {
+  books: { description: 'Resúmenes de libros.', intro: 'Resúmenes de lo que voy leyendo.' },
+  essays: { description: 'Ensayos.', intro: 'Textos propios, cuando tengo algo que decir.' },
+};
+
 export const KIND_PATH: Record<Kind, string> = {
   books: '/books',
   essays: '/essays',
@@ -27,6 +32,7 @@ export type ContentItem = {
   kind: Kind;
   mode: Mode;
   id: string;
+  slug: string;
   href: string;
   title: string;
   summary: string;
@@ -36,15 +42,15 @@ export type ContentItem = {
   quotes: Quote[];
   author?: string;
   rating?: number;
+  entry: CollectionEntry<Kind>;
 };
 
 /** Cuántas entradas y cuántas citas sueltas hay con un tag, en un modo. */
-export type TagCounts = { entries: number; quotes: number };
+type TagCounts = { entries: number; quotes: number };
 
 export type TagSummary = {
   name: string;
   slug: string;
-  kinds: Kind[];
   real: TagCounts;
   demo: TagCounts;
 };
@@ -126,6 +132,7 @@ export async function getPublished(kind: Kind): Promise<ContentItem[]> {
         kind,
         mode,
         id: entry.id,
+        slug,
         href,
         title: entry.data.title,
         summary: entry.data.summary,
@@ -134,6 +141,7 @@ export async function getPublished(kind: Kind): Promise<ContentItem[]> {
         readingMinutes: readingMinutes(entry.body),
         author: entry.data.author,
         rating: entry.data.rating,
+        entry,
         quotes: entry.data.quotes.map((q: any) => ({
           text: q.text,
           mode,
@@ -152,7 +160,7 @@ export async function getPublished(kind: Kind): Promise<ContentItem[]> {
 }
 
 /** Citas sueltas: viven en su propia colección, sin entrada detrás. */
-export async function getStandaloneQuotes(): Promise<Quote[]> {
+async function getStandaloneQuotes(): Promise<Quote[]> {
   const entries = await getCollection('quotes', ({ data }) => !data.draft);
 
   return entries
@@ -191,6 +199,8 @@ export function tagTotal(tag: TagSummary, mode: Mode): number {
   return tag[mode].entries + tag[mode].quotes;
 }
 
+const tagGrandTotal = (tag: TagSummary) => tagTotal(tag, 'real') + tagTotal(tag, 'demo');
+
 /** true cuando el tag no existe en ese modo y hay que esconderlo entero. */
 export function tagEmpty(tag: TagSummary, mode: Mode): boolean {
   return tagTotal(tag, mode) === 0;
@@ -208,7 +218,6 @@ export async function getAllTags(): Promise<TagSummary[]> {
       summary = {
         name: tag,
         slug,
-        kinds: [],
         real: { entries: 0, quotes: 0 },
         demo: { entries: 0, quotes: 0 },
       };
@@ -222,7 +231,6 @@ export async function getAllTags(): Promise<TagSummary[]> {
     for (const tag of item.tags) {
       const summary = ensure(tag);
       summary[item.mode].entries += 1;
-      if (!summary.kinds.includes(item.kind)) summary.kinds.push(item.kind);
     }
   }
 
@@ -231,20 +239,37 @@ export async function getAllTags(): Promise<TagSummary[]> {
   }
 
   return [...bySlug.values()].sort(
-    (a, b) =>
-      tagTotal(b, 'real') + tagTotal(b, 'demo') - (tagTotal(a, 'real') + tagTotal(a, 'demo')) ||
-      a.name.localeCompare(b.name, 'es'),
+    (a, b) => tagGrandTotal(b) - tagGrandTotal(a) || a.name.localeCompare(b.name, 'es'),
   );
 }
 
+const hasTag = (item: { tags: string[] }, slug: string) =>
+  item.tags.some((tag) => slugifyTag(tag) === slug);
+
 export async function getByTag(slug: string): Promise<ContentItem[]> {
-  const items = await getAllPublished();
-  return items.filter((item) => item.tags.some((tag) => slugifyTag(tag) === slug));
+  return (await getAllPublished()).filter((item) => hasTag(item, slug));
 }
 
 export async function getQuotesByTag(slug: string): Promise<Quote[]> {
-  const quotes = await getStandaloneQuotes();
-  return quotes.filter((quote) => quote.tags.some((tag) => slugifyTag(tag) === slug));
+  return (await getStandaloneQuotes()).filter((quote) => hasTag(quote, slug));
+}
+
+export function uniqueTags(items: { tags: string[] }[]): string[] {
+  return [...new Set(items.flatMap((item) => item.tags))].sort((a, b) =>
+    a.localeCompare(b, 'es'),
+  );
+}
+
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+
+/** "2 entradas · 1 cita", sin las partes en cero. */
+export function countLabel(entries: number, quotes: number): string {
+  return [
+    entries > 0 && plural(entries, 'entrada', 'entradas'),
+    quotes > 0 && plural(quotes, 'cita', 'citas'),
+  ]
+    .filter(Boolean)
+    .join(' · ');
 }
 
 export function formatDate(date: Date): string {

@@ -55,9 +55,9 @@ const statsOf = (mode: Mode) => [
     {
       MODES.map((mode) => (
         <dl class="stat-band" data-mode={mode}>
-          {statsOf(mode).map(({ href, count, label }, i) => (
+          {statsOf(mode).map(({ href, count, label }) => (
             <div>
-              <a href={href} class={`stat ${i === 0 ? 'pr-6' : 'px-6'}`}>
+              <a href={href} class="stat">
                 <dt class="stat-label">{label}</dt>
                 <dd class="stat-value">{count}</dd>
               </a>
@@ -75,9 +75,7 @@ const statsOf = (mode: Mode) => [
       MODES.map((mode) => (
         <div data-mode={mode}>
           {allBy[mode].length === 0 ? (
-            <p class="mt-4 text-ink-muted dark:text-ink-muted-dark">
-              Todavía no hay nada publicado.
-            </p>
+            <p class="empty-note mt-4">Todavía no hay nada publicado.</p>
           ) : (
             <div class="mt-5 grid gap-4 sm:grid-cols-2">
               {allBy[mode].slice(0, 4).map((item) => (
@@ -105,13 +103,8 @@ const statsOf = (mode: Mode) => [
           <div class="mt-8 grid gap-x-10 gap-y-12 sm:grid-cols-2">
             {columnsOf(mode).map(({ kind, title, items }) => (
               <div>
-                <h3 class="section-title-sub border-b border-line pb-2 dark:border-line-dark">
-                  <a
-                    href={`${KIND_PATH[kind]}/`}
-                    class="transition-colors hover:text-accent dark:hover:text-accent-dark"
-                  >
-                    {title}
-                  </a>
+                <h3 class="section-header section-title-sub">
+                  <a href={`${KIND_PATH[kind]}/`} class="hover-accent">{title}</a>
                 </h3>
 
                 <ul class="mt-1" data-filterable>
@@ -120,11 +113,7 @@ const statsOf = (mode: Mode) => [
                   ))}
                 </ul>
 
-                <p
-                  class="mt-4 text-sm text-ink-muted dark:text-ink-muted-dark"
-                  data-empty
-                  hidden={items.length > 0}
-                >
+                <p class="empty-note mt-4" data-empty hidden={items.length > 0}>
                   {items.length === 0
                     ? `Todavía no hay ${title.toLowerCase()}.`
                     : `Nada en ${title.toLowerCase()} con este filtro.`}

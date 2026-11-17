@@ -15,7 +15,7 @@ const linked = Boolean(quote.originHref);
 <figure class="quote">
   <blockquote class="quote-text">{quote.text}</blockquote>
 
-  <figcaption class="mt-3.5 text-sm">
+  <figcaption class="quote-caption">
     <cite class="quote-author">{quote.attribution}</cite>
 
     {
@@ -26,15 +26,11 @@ const linked = Boolean(quote.originHref);
           class="quote-origin"
         >
           {quote.kind && (
-            <span class="text-[0.7rem] tracking-[0.08em] uppercase">
-              {KIND_LABEL[quote.kind]}
-            </span>
+            <span class="quote-kind">{KIND_LABEL[quote.kind]}</span>
           )}
           <span>{locator}</span>
           {quote.external && (
-            <span class="text-xs" aria-hidden="true">
-              ↗
-            </span>
+            <span class="quote-arrow" aria-hidden="true">↗</span>
           )}
         </a>
       )
@@ -42,7 +38,7 @@ const linked = Boolean(quote.originHref);
 
     {
       locator && !linked && (
-        <span class="mt-1 block text-ink-muted dark:text-ink-muted-dark">{locator}</span>
+        <span class="muted mt-1 block">{locator}</span>
       )
     }
   </figcaption>

@@ -16,7 +16,7 @@ const { tags, size = 'sm' } = Astro.props;
         <li>
           <a
             href={tagHref(tag)}
-            class={`chip ${size === 'sm' ? 'chip-sm' : 'chip-md'} text-ink-muted dark:text-ink-muted-dark`}
+            class={`chip ${size === 'sm' ? 'chip-sm' : 'chip-md'}`}
           >
             {tag}
           </a>

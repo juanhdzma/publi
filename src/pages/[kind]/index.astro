@@ -2,27 +2,30 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContentCard from '../../components/ContentCard.astro';
 import TagList from '../../components/TagList.astro';
-import { getPublished, splitByMode, MODES } from '../../lib/content';
+import { getPublished, splitByMode, uniqueTags, KIND_PLURAL, KIND_INTRO, MODES, type Kind } from '../../lib/content';
 
-const byMode = splitByMode(await getPublished('essays'));
+export function getStaticPaths() {
+  return (Object.keys(KIND_PLURAL) as Kind[]).map((kind) => ({ params: { kind }, props: { kind } }));
+}
 
-const tagsOf = (items: typeof byMode.real) =>
-  [...new Set(items.flatMap((item) => item.tags))].sort((a, b) => a.localeCompare(b, 'es'));
+const { kind } = Astro.props;
+const title = KIND_PLURAL[kind];
+const byMode = splitByMode(await getPublished(kind));
 ---
 
-<BaseLayout title="Ensayos" description="Ensayos.">
+<BaseLayout title={title} description={KIND_INTRO[kind].description}>
   <header class="page-header">
-    <h1 class="page-title">Ensayos</h1>
+    <h1 class="page-title">{title}</h1>
 
     <p class="page-intro">
-      Textos propios, cuando tengo algo que decir.
+      {KIND_INTRO[kind].intro}
       {MODES.map((mode) => <span data-mode={mode}>{byMode[mode].length} en total.</span>)}
     </p>
 
     {
       MODES.map((mode) => (
         <div class="mt-6" data-mode={mode}>
-          <TagList tags={tagsOf(byMode[mode])} size="md" />
+          <TagList tags={uniqueTags(byMode[mode])} size="md" />
         </div>
       ))
     }
@@ -32,7 +35,7 @@ const tagsOf = (items: typeof byMode.real) =>
     MODES.map((mode) => (
       <div data-mode={mode}>
         {byMode[mode].length === 0 ? (
-          <p class="mt-8 text-ink-muted dark:text-ink-muted-dark">Todavía no hay ensayos.</p>
+          <p class="empty-note mt-8">Todavía no hay {title.toLowerCase()}.</p>
         ) : (
           <div class="mt-8 grid gap-4 sm:grid-cols-2">
             {byMode[mode].map((item) => (

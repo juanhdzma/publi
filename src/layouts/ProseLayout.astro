@@ -87,7 +87,7 @@ const rest = quotes.filter((q) => q !== featured);
 
       {
         author && (
-          <p class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-ink-muted dark:text-ink-muted-dark">
+          <p class="muted mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
             <span>{author}</span>
             {rating && <Rating value={rating} />}
           </p>

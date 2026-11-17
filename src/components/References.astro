@@ -16,39 +16,29 @@ const { references } = Astro.props;
 
 {
   references.length > 0 && (
-    <section class="mt-14 border-t border-line pt-8 dark:border-line-dark">
-      <h2 class="text-sm font-medium tracking-wide text-ink-muted uppercase dark:text-ink-muted-dark">
-        Referencias
-      </h2>
+    <section class="aside-section">
+      <h2 class="aside-title">Referencias</h2>
 
       <ol class="mt-5 space-y-4 text-sm">
         {references.map((ref, i) => (
           <li class="grid grid-cols-[1.75rem_1fr] items-baseline">
-            <span class="tabular-nums text-ink-muted dark:text-ink-muted-dark">
-              [{i + 1}]
-            </span>
+            <span class="ref-index">[{i + 1}]</span>
 
             <span>
               {ref.author && <span>{ref.author}. </span>}
 
               {ref.url ? (
-                <a
-                  href={ref.url}
-                  rel="noopener noreferrer"
-                  class="text-accent decoration-accent/40 underline underline-offset-2 hover:decoration-accent dark:text-accent-dark dark:decoration-accent-dark/40 dark:hover:decoration-accent-dark"
-                >
+                <a href={ref.url} rel="noopener noreferrer" class="ref-link">
                   <cite class="not-italic">{ref.title}</cite>
                 </a>
               ) : (
                 <cite>{ref.title}</cite>
               )}
 
-              {ref.year && <span class="text-ink-muted dark:text-ink-muted-dark"> ({ref.year})</span>}
+              {ref.year && <span class="muted"> ({ref.year})</span>}
 
               {ref.note && (
-                <span class="mt-0.5 block text-ink-muted dark:text-ink-muted-dark">
-                  {ref.note}
-                </span>
+                <span class="muted mt-0.5 block">{ref.note}</span>
               )}
             </span>
           </li>
