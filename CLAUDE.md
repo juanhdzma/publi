@@ -95,7 +95,10 @@ Tres colecciones en `src/content.config.ts`, todas con schema Zod:
 
 - `books` — resúmenes, con `author` y `rating`
 - `essays` — ensayos propios
-- `quotes` — citas sueltas, una por archivo, sin entrada detrás
+- `quotes` y `quotesDemo` — citas sueltas, una lista YAML por árbol (`quotes.yml`, cada
+  cita con su `id`), sin entrada detrás. Son dos colecciones y no una porque `file()` lee un
+  solo path; el modo sale de cuál colección es. Mientras `content/quotes.yml` esté vacío,
+  `astro build` avisa "collection quotes is empty": es esperado.
 
 ### Dos árboles: `content/` y `content-demo/`
 

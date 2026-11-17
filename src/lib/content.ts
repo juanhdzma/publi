@@ -159,23 +159,32 @@ export async function getPublished(kind: Kind): Promise<ContentItem[]> {
     .sort(byNewest);
 }
 
-/** Citas sueltas: viven en su propia colección, sin entrada detrás. */
+/** Citas sueltas: una colección por árbol, sin entrada detrás. */
 async function getStandaloneQuotes(): Promise<Quote[]> {
-  const entries = await getCollection('quotes', ({ data }) => !data.draft);
+  const sources = [
+    ['real', 'quotes'],
+    ['demo', 'quotesDemo'],
+  ] as const;
 
-  return entries
-    .map((entry: any) => ({
-      text: entry.data.text,
-      mode: parseId(entry.id).mode,
-      featured: false,
-      publishedAt: entry.data.publishedAt,
-      attribution: entry.data.author,
-      origin: entry.data.source,
-      originHref: entry.data.url,
-      external: Boolean(entry.data.url),
-      tags: entry.data.tags,
-    }))
-    .sort(byNewest);
+  const lists = await Promise.all(
+    sources.map(async ([mode, name]) => {
+      const entries = await getCollection(name, ({ data }) => !data.draft);
+
+      return entries.map(({ data }) => ({
+        text: data.text,
+        mode,
+        featured: false,
+        publishedAt: data.publishedAt,
+        attribution: data.author,
+        origin: data.source,
+        originHref: data.url,
+        external: Boolean(data.url),
+        tags: data.tags,
+      }));
+    }),
+  );
+
+  return lists.flat().sort(byNewest);
 }
 
 export async function getAllQuotes(): Promise<Quote[]> {

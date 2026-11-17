@@ -40,20 +40,19 @@ El resumen en markdown.
 
 Mismos campos, sin `author` ni `rating`.
 
-### Cita suelta → `src/content/quotes/<slug>.md`
+### Cita suelta → `src/content/quotes.yml`
 
 Para frases que no vienen de ningún libro ni ensayo del sitio. Aparecen en `/quotes/` junto
 a las demás.
 
-```markdown
----
-text: "La simplicidad es un prerrequisito de la confiabilidad."
-author: "Edsger W. Dijkstra"
-source: "EWD498"        # opcional, la obra
-url: "https://..."      # opcional, vuelve la fuente un link externo
-publishedAt: 2026-07-31
-tags: ["software"]      # opcional
----
+```yaml
+- id: dijkstra-simplicidad          # único dentro del archivo
+  text: "La simplicidad es un prerrequisito de la confiabilidad."
+  author: "Edsger W. Dijkstra"
+  source: "EWD498"                  # opcional, la obra
+  url: "https://..."                # opcional, vuelve la fuente un link externo
+  publishedAt: 2026-07-31
+  tags: ["software"]                # opcional
 ```
 
 Los `tags` de una cita cuentan igual que los de una entrada: aparecen como chips en
@@ -166,11 +165,11 @@ Hay dos árboles y los dos se buildean:
 
 ```
 src/content/          ← lo real, lo que se publica
-├── books/  essays/  quotes/
+├── books/  essays/  quotes.yml
 └── _templates/       ← plantillas, no se publican
 
 src/content-demo/     ← set de pruebas
-└── books/  essays/  quotes/
+└── books/  essays/  quotes.yml
 ```
 
 El botón **demo** del header alterna cuál se muestra. El estado queda en `localStorage`, así
@@ -245,7 +244,7 @@ src/
 ├── content.config.ts    schemas de las 3 colecciones
 ├── config.ts            título, tagline, descripción, autor
 ├── lib/content.ts       queries, drafts, tags, citas, modo, reading time
-├── content/             lo real (books, essays, quotes, _templates)
+├── content/             lo real (books, essays, quotes.yml, _templates)
 ├── content-demo/        set de pruebas, mismo layout
 ├── layouts/             BaseLayout (chrome) · ProseLayout (lectura)
 ├── components/          tarjetas, filas, citas, chips, filtro

@@ -1,5 +1,5 @@
 import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 const quote = z.object({
@@ -53,18 +53,21 @@ const essays = defineCollection({
   schema: z.object(shared),
 });
 
-/** Citas sueltas, sin libro ni ensayo detrás. */
-const quotes = defineCollection({
-  loader: bothTrees('quotes'),
-  schema: z.object({
-    text: z.string(),
-    author: z.string(),
-    source: z.string().optional(),
-    url: z.url().optional(),
-    publishedAt: z.coerce.date(),
-    tags: z.array(z.string()).default([]),
-    draft: z.boolean().default(false),
-  }),
+/** Citas sueltas, sin libro ni ensayo detrás: una lista por árbol, cada cita con su `id`. */
+const quoteSchema = z.object({
+  text: z.string(),
+  author: z.string(),
+  source: z.string().optional(),
+  url: z.url().optional(),
+  publishedAt: z.coerce.date(),
+  tags: z.array(z.string()).default([]),
+  draft: z.boolean().default(false),
 });
 
-export const collections = { books, essays, quotes };
+const quotes = defineCollection({ loader: file('./src/content/quotes.yml'), schema: quoteSchema });
+const quotesDemo = defineCollection({
+  loader: file('./src/content-demo/quotes.yml'),
+  schema: quoteSchema,
+});
+
+export const collections = { books, essays, quotes, quotesDemo };
