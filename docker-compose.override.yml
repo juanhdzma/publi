@@ -1,9 +1,0 @@
-services:
-  publi:
-    build:
-      context: .
-      args:
-        SITE_URL: http://localhost:8002
-    pull_policy: build
-    ports:
-      - "8002:80"

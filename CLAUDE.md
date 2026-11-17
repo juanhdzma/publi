@@ -25,12 +25,13 @@ Sin eso falla con `Node.js v20.17.0 is out-of-date and unsupported!`.
 ```sh
 npm run check                  # tipos — NO compila CSS
 npm run build                  # lo único que valida Tailwind
-docker compose up -d --build   # → localhost:8002
+docker rm -f publi; docker build -t publi --build-arg SITE_URL=http://localhost:8002 . \
+  && docker run -d --name publi -p 8002:80 publi   # → localhost:8002
 ```
 
 `docker-compose.yml` no publica puertos: en el server el acceso es por la red de Docker vía
-reverse proxy, contra `publi:80`. El `8002` sale de `docker-compose.override.yml`, que
-Compose mergea solo en local.
+reverse proxy, contra `publi:80`. El `8002` solo existe en el `docker run` local; no hay
+override de Compose a propósito, para que ningún puerto pueda viajar al server.
 
 **`add_header` de nginx no se hereda.** Un `location` que declara su propio `add_header`
 pierde todos los del `server`. Por eso los headers de seguridad viven en

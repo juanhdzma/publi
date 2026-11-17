@@ -141,11 +141,12 @@ npm run preview
 ### Verificar en el container
 
 ```sh
-docker compose up -d --build   # → localhost:8002
+docker rm -f publi; docker build -t publi --build-arg SITE_URL=http://localhost:8002 . \
+  && docker run -d --name publi -p 8002:80 publi   # → localhost:8002
 ```
 
-`docker-compose.override.yml` hace que Compose buildee desde el source en local.
-`docker-compose.yml` queda limpio con la imagen de GHCR para que Portainer solo haga pull.
+`docker-compose.yml` es solo para el server: imagen de GHCR, sin puertos, Portainer solo
+hace pull.
 
 ---
 
@@ -291,8 +292,7 @@ docker run -p 8002:80 publi
 
 Nginx escucha en el **80** dentro del container, así que un proxy en la misma red de Docker
 apunta a `publi:80`. `docker-compose.yml` no publica puertos al host: el acceso es solo por
-la red de Docker. El `8002` vive en `docker-compose.override.yml`, que Compose mergea únicamente
-en local.
+la red de Docker.
 
 El proxy tiene que compartir red con el container. Si corre en otro stack, agregarle a este
 la red externa que use:
