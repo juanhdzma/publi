@@ -132,102 +132,30 @@ npm run check    # astro check (tipos)
 npm run preview
 ```
 
-> ⚠️ En la máquina de Juan, `node` sale de miniconda (v20) y tapa al de Homebrew. Prefijar:
-> `export PATH="/opt/homebrew/bin:$PATH"`
-
-> ⚠️ `npm run check` **no compila CSS**. Después de tocar `src/styles/global.css` hay que
-> correr `npm run build`, que es el único que valida las directivas de Tailwind.
-
-### Verificar en el container
-
-```sh
-docker rm -f publi; docker build -t publi --build-arg SITE_URL=http://localhost:8002 . \
-  && docker run -d --name publi -p 8002:80 publi   # → localhost:8002
-```
-
-`docker-compose.yml` es solo para el server: imagen de GHCR, sin puertos, Portainer solo
-hace pull.
+Para verificar contra nginx, ver el `docker build` / `docker run` de la sección Deploy.
 
 ---
 
-## Íconos
-
-`public/favicon.svg` es la fuente de verdad del logo. Los binarios se generan de ahí:
-
-```sh
-npm run icons
-```
-
-Emite tres archivos:
-
-| Archivo                | Qué es                                                        |
-| ---------------------- | ------------------------------------------------------------- |
-| `favicon.ico`          | 16/32/48, fallback para navegadores sin favicon vectorial      |
-| `apple-touch-icon.png` | 180×180 sin canal alpha — iOS rellena la transparencia solo    |
-| `og.png`               | 1200×630, la imagen que aparece al compartir el link           |
-
-Correrlo cada vez que cambie el SVG y commitear los cuatro archivos.
-
 ---
 
-## Tipografía
+## Íconos y tipografía
 
-Dos familias, ambas self-hosted vía `@fontsource-variable`: Vite las empaqueta en `/_astro/`
-con hash y las sirve el mismo nginx, sin pedidos externos.
+`public/favicon.svg` es la fuente de verdad del logo: `npm run icons` regenera de ahí
+`favicon.ico`, `apple-touch-icon.png` (180×180, sin alpha) y `og.png` (1200×630, la imagen al
+compartir el link). Correrlo y commitear los binarios cada vez que cambie el SVG.
 
-- **Crimson Pro** — títulos, citas y todo lo que use `font-serif`
-- **Inter** — cuerpo, navegación y metadatos
-
-Se importan las variantes **`wght`**, que traen solo el eje de peso: la mitad de KB que las
-`opsz`, cuyo eje óptico no se usa. Primera visita: ~96 KB (48 + 48), cacheados para siempre.
-
-Los stacks del sistema quedan de fallback, así que si la font no carga el sitio sigue legible.
-
-### `src/styles/fonts.css` es generado
-
-fontsource publica un solo CSS por eje con los **ocho** subsets adentro (cyrillic, greek,
-vietnamese…). El browser baja solo el que necesita gracias a `unicode-range`, pero los ocho
-se emiten igual al bundle.
-
-```sh
-npm run fonts    # → src/styles/fonts.css, solo latin y latin-ext
-```
-
-Deja 8 `@font-face` en vez de 20 y saca ~200 KB del bundle. El archivo se commitea y **no se
-edita a mano**; el CI corre el script y falla si el resultado difiere de lo commiteado, que
-es lo que detecta una actualización de fontsource que cambie los `unicode-range`.
-
-`latin` cubre el español entero; `latin-ext` está para los nombres propios (Dvořák, Erdős).
-
-> Cambiar una font toca **tres** lugares: `SOURCES` en `scripts/generate-fonts.mjs`, el
-> `@theme` de `global.css` y el `import` del preload en `BaseLayout.astro`. Si se actualiza
-> solo el primero, se precarga la font vieja.
+Dos familias self-hosted vía `@fontsource-variable`, variantes `wght`: **Crimson Pro**
+(títulos y citas) e **Inter** (cuerpo y navegación). `src/styles/fonts.css` es generado por
+`npm run fonts` (solo `latin` y `latin-ext`) y no se edita a mano; el CI falla si difiere de lo
+commiteado.
 
 ---
 
 ## Estilos
 
-**Todo el estilo vive en `src/styles/global.css`.** Las páginas componen layout (grid, gaps,
-márgenes) y usan las clases del sistema; no llevan utilities de tipografía ni de color.
-Cambiar cómo se ve un título en todo el sitio es editar una regla.
-
-| Grupo      | Clases                                                              |
-| ---------- | ------------------------------------------------------------------- |
-| Chrome     | `skip-link` `main` `mode-chip` `demo-note`                           |
-| Marca      | `site-brand` `site-mark`                                             |
-| Página     | `page-header` `page-title` `page-intro`                              |
-| Sección    | `section-header` `section-title` `section-title-sub` `section-link`  |
-| Metadatos  | `meta-row` `meta-kind`                                               |
-| Entrada    | `entry` `entry-title` `entry-link` `entry-byline` `entry-summary`    |
-| Fila       | `row` `row-title`                                                    |
-| Chips      | `chip` `chip-sm` `chip-md` `chip-count`                              |
-| Citas      | `quote` `quote-text` `quote-author` `quote-origin`                   |
-| Contadores | `stat-band` `stat` `stat-value` `stat-label`                         |
-| Nube       | `tag-cloud` `cloud-tag` `cloud-count`                                |
-| Tag        | `tag-section` `tag-section-title` `tag-section-name` `tag-section-count` |
-| Cuerpo     | `prose-publi`                                                        |
-
-Los colores y las tipografías son tokens en `@theme`: `ink`, `ink-muted`, `paper`, `line`,
+Todo el estilo vive en `src/styles/global.css`, bajo `@layer components`. Las páginas
+componen layout (grid, gaps, márgenes) y usan esas clases; no llevan utilities de tipografía
+ni de color. Los colores son tokens en `@theme`: `ink`, `ink-muted`, `paper`, `line`,
 `accent`, cada uno con su variante `-dark`.
 
 ---
@@ -280,13 +208,13 @@ El flujo es commit directo a `main` — sin ramas ni PRs. Push a `main` → el A
 
 **Pushear es deployar.** No hay paso intermedio ni aprobación.
 
-El workflow también corre en PRs contra `main`, sin publicar imagen, por si alguna vez hace
-falta validar algo antes de mergear.
-
 ```sh
 docker build -t publi --build-arg SITE_URL=https://tu-dominio .
 docker run -p 8002:80 publi
 ```
+
+`docker-compose.yml` es solo para el server: imagen de GHCR, sin puertos, Portainer solo hace
+pull.
 
 ### Detrás de un reverse proxy
 
@@ -294,18 +222,8 @@ Nginx escucha en el **80** dentro del container, así que un proxy en la misma r
 apunta a `publi:80`. `docker-compose.yml` no publica puertos al host: el acceso es solo por
 la red de Docker.
 
-El proxy tiene que compartir red con el container. Si corre en otro stack, agregarle a este
-la red externa que use:
-
-```yaml
-services:
-  publi:
-    networks: [proxy]
-
-networks:
-  proxy:
-    external: true
-```
+El proxy tiene que compartir red con el container; si corre en otro stack, agregarle a este
+la red externa que use.
 
 ### SITE_URL
 
@@ -327,31 +245,15 @@ src/
 ├── content.config.ts    schemas de las 3 colecciones
 ├── config.ts            título, tagline, descripción, autor
 ├── lib/content.ts       queries, drafts, tags, citas, modo, reading time
-├── content/             ← lo real
-│   ├── books/           ← resúmenes
-│   ├── essays/          ← ensayos
-│   ├── quotes/          ← citas sueltas, una por archivo
-│   └── _templates/      ← plantillas para copiar, no se publican
-├── content-demo/        ← set de pruebas, mismo layout que content/
+├── content/             lo real (books, essays, quotes, _templates)
+├── content-demo/        set de pruebas, mismo layout
 ├── layouts/             BaseLayout (chrome) · ProseLayout (lectura)
 ├── components/          tarjetas, filas, citas, chips, filtro
-├── pages/               home, listados, [...slug], tags, quotes, 404
-│   ├── rss.xml.ts       feed
-│   └── robots.txt.ts    robots + link al sitemap
-└── styles/global.css    ← el sistema de estilos completo
-
-public/                  servido tal cual desde la raíz
-├── favicon.svg          ← fuente de verdad del logo
-├── favicon.ico          generado
-├── apple-touch-icon.png generado
-└── og.png               generado
-
-scripts/
-├── generate-icons.mjs   npm run icons
-└── generate-fonts.mjs   npm run fonts
-
-docker/nginx.conf              server block
-docker/nginx-security-headers.conf  snippet que cada location incluye
+├── pages/               home, [kind] (listado y entrada), tags, quotes, 404, rss, robots
+└── styles/global.css    el sistema de estilos completo
+public/                  favicon.svg (fuente) y binarios generados
+scripts/                 generate-icons.mjs · generate-fonts.mjs
+docker/nginx.conf        server block, headers y cache
 ```
 
 ---

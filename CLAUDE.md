@@ -33,16 +33,15 @@ docker rm -f publi; docker build -t publi --build-arg SITE_URL=http://localhost:
 reverse proxy, contra `publi:80`. El `8002` solo existe en el `docker run` local; no hay
 override de Compose a propósito, para que ningún puerto pueda viajar al server.
 
-**`add_header` de nginx no se hereda.** Un `location` que declara su propio `add_header`
-pierde todos los del `server`. Por eso los headers de seguridad viven en
-`docker/nginx-security-headers.conf` y cada `location` hace `include`. Si agregás un `location`,
-agregale el include o queda sirviendo sin `nosniff` ni `X-Frame-Options`. Se verifica así:
+Los headers de seguridad y el cache viven a nivel `server` en `docker/nginx.conf`. Un `location`
+que declare su propio `add_header` pierde los del `server`: si agregás uno, no le pongas
+`add_header` o repetí los tres. Se verifica así:
 
 ```sh
 curl -sI http://localhost:8002/_astro/<hash>.css | grep -i x-frame
 ```
 
-El HTML va con `Cache-Control: no-cache` a propósito: es lo único que no puede cachearse,
+El HTML sale con `expires -1` (`Cache-Control: no-cache`) a propósito: es lo único que no puede cachearse,
 porque referencia los `/_astro/` hasheados y un deploy nuevo los renombra.
 
 **`npm run check` no alcanza si tocaste `global.css`.** Las directivas inválidas de Tailwind
@@ -131,8 +130,8 @@ Aun así su HTML viaja al visitante.
 con `_`, así que no se buildean. Si cambia un schema, actualizar la plantilla que toque.
 
 `src/lib/content.ts` centraliza las queries: filtrado de `draft`, orden por fecha, tags,
-citas y reading time. **Las páginas no llaman `getCollection` directo** salvo en
-`getStaticPaths`, donde hace falta la entrada cruda para `render()`.
+citas y reading time. **Las páginas no llaman `getCollection` directo**: `ContentItem.entry`
+trae la entrada cruda para `render()`.
 
 La atribución de una cita se infiere: por defecto el autor del libro, o el del sitio en un
 ensayo. `source` solo se usa cuando la frase es de un tercero.
