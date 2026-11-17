@@ -114,7 +114,7 @@ export function splitByMode<T extends { mode: Mode }>(items: T[]): Record<Mode, 
 }
 
 export async function getPublished(kind: Kind): Promise<ContentItem[]> {
-  const entries = await getCollection(kind, ({ data }: any) => !data.draft);
+  const entries = await getCollection(kind, ({ data }) => !data.draft);
 
   return entries
     .map((entry: any) => {
@@ -153,7 +153,7 @@ export async function getPublished(kind: Kind): Promise<ContentItem[]> {
 
 /** Citas sueltas: viven en su propia colección, sin entrada detrás. */
 export async function getStandaloneQuotes(): Promise<Quote[]> {
-  const entries = await getCollection('quotes', ({ data }: any) => !data.draft);
+  const entries = await getCollection('quotes', ({ data }) => !data.draft);
 
   return entries
     .map((entry: any) => ({
