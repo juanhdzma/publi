@@ -27,20 +27,11 @@ const shared = {
   references: z.array(reference).default([]),
 };
 
-/**
- * Cada colección se lee de dos árboles: `content/` es lo real y `content-demo/`
- * el set de pruebas. Los dos se buildean y el botón del header elige cuál se
- * muestra, así que el `id` arranca con el directorio y de ahí sale el modo.
- * Los `_templates` quedan afuera: Astro ignora todo lo que empieza con `_`.
- */
-const bothTrees = (kind: string) =>
-  glob({
-    pattern: [`content/${kind}/**/*.md`, `content-demo/${kind}/**/*.md`],
-    base: './src',
-  });
+/** Los `_templates` quedan afuera: Astro ignora todo lo que empieza con `_`. */
+const markdown = (kind: string) => glob({ pattern: `${kind}/**/*.md`, base: './src/content' });
 
 const books = defineCollection({
-  loader: bothTrees('books'),
+  loader: markdown('books'),
   schema: z.object({
     ...shared,
     author: z.string(),
@@ -49,25 +40,22 @@ const books = defineCollection({
 });
 
 const essays = defineCollection({
-  loader: bothTrees('essays'),
+  loader: markdown('essays'),
   schema: z.object(shared),
 });
 
-/** Citas sueltas, sin libro ni ensayo detrás: una lista por árbol, cada cita con su `id`. */
-const quoteSchema = z.object({
-  text: z.string(),
-  author: z.string(),
-  source: z.string().optional(),
-  url: z.url().optional(),
-  publishedAt: z.coerce.date(),
-  tags: z.array(z.string()).default([]),
-  draft: z.boolean().default(false),
+/** Citas sueltas, sin libro ni ensayo detrás: una lista, cada cita con su `id`. */
+const quotes = defineCollection({
+  loader: file('./src/content/quotes.yml'),
+  schema: z.object({
+    text: z.string(),
+    author: z.string(),
+    source: z.string().optional(),
+    url: z.url().optional(),
+    publishedAt: z.coerce.date(),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+  }),
 });
 
-const quotes = defineCollection({ loader: file('./src/content/quotes.yml'), schema: quoteSchema });
-const quotesDemo = defineCollection({
-  loader: file('./src/content-demo/quotes.yml'),
-  schema: quoteSchema,
-});
-
-export const collections = { books, essays, quotes, quotesDemo };
+export const collections = { books, essays, quotes };

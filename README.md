@@ -70,8 +70,7 @@ campo, con exit code 1. Un `.md` mal formado no llega a producción.
 
 ## Citas y referencias
 
-Tres mecanismos dentro de una entrada, combinables. Ver `src/content-demo/books/sapiens.md`,
-que usa los tres.
+Tres mecanismos dentro de una entrada, combinables entre sí.
 
 **1. Citas de la entrada** — lista en el frontmatter. La marcada `featured: true` se
 renderiza grande entre el header y el cuerpo; el resto va en una sección al final. Todas
@@ -159,32 +158,6 @@ ni de color. Los colores son tokens en `@theme`: `ink`, `ink-muted`, `paper`, `l
 
 ---
 
-## Contenido real y contenido de pruebas
-
-Hay dos árboles y los dos se buildean:
-
-```
-src/content/          ← lo real, lo que se publica
-├── books/  essays/  quotes.yml
-└── _templates/       ← plantillas, no se publican
-
-src/content-demo/     ← set de pruebas
-└── books/  essays/  quotes.yml
-```
-
-El botón **demo** del header alterna cuál se muestra. El estado queda en `localStorage`, así
-que sobrevive la navegación y la recarga.
-
-Sirve para ver cómo queda el sitio lleno mientras el contenido real está vacío o corto, y
-para probar un cambio de diseño contra material variado sin publicar nada.
-
-**El set de pruebas no se publica en ningún lado:** queda fuera del feed y del sitemap, sus
-fichas viven bajo `/books/demo/...`, llevan un aviso arriba y van con `noindex`. Sin JavaScript el sitio muestra
-solo lo real. Aun así, el HTML de las fichas de prueba viaja al visitante — no poner ahí nada
-que no pueda verse.
-
----
-
 ## Rutas generadas aparte del contenido
 
 | Ruta                 | Qué es                                                          |
@@ -243,9 +216,8 @@ Actions → Variables`), no como secret.
 src/
 ├── content.config.ts    schemas de las 3 colecciones
 ├── config.ts            título, tagline, descripción, autor
-├── lib/content.ts       queries, drafts, tags, citas, modo, reading time
-├── content/             lo real (books, essays, quotes.yml, _templates)
-├── content-demo/        set de pruebas, mismo layout
+├── lib/content.ts       queries, drafts, tags, citas, reading time
+├── content/             books/, essays/, quotes.yml, _templates/
 ├── layouts/             BaseLayout (chrome) · ProseLayout (lectura)
 ├── components/          tarjetas, filas, citas, chips, filtro
 ├── pages/               home, [kind] (listado y entrada), tags, quotes, 404, rss, robots

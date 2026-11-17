@@ -4,16 +4,7 @@ import ContentCard from '../components/ContentCard.astro';
 import ContentRow from '../components/ContentRow.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import TagFilter from '../components/TagFilter.astro';
-import {
-  getAllPublished,
-  getPublished,
-  getAllTags,
-  splitByMode,
-  tagEmpty,
-  KIND_PATH,
-  MODES,
-  type Mode,
-} from '../lib/content';
+import { getAllPublished, getPublished, getAllTags, KIND_PATH } from '../lib/content';
 import { SITE } from '../config';
 
 const [all, books, essays, tags] = await Promise.all([
@@ -23,28 +14,19 @@ const [all, books, essays, tags] = await Promise.all([
   getAllTags(),
 ]);
 
-const allBy = splitByMode(all);
-const booksBy = splitByMode(books);
-const essaysBy = splitByMode(essays);
+/* El filtro solo esconde entradas, así que un tag que solo existe por citas
+   sueltas daría un chip que no hace nada. */
+const topTags = tags.filter((tag) => tag.entries > 0).slice(0, 8);
 
-/* El filtro solo esconde entradas, así que un tag que en este modo solo existe
-   por citas sueltas daría un chip que no hace nada. */
-const topTagsOf = (mode: Mode) =>
-  tags.filter((tag) => tag[mode].entries > 0).slice(0, 8);
-
-const columnsOf = (mode: Mode) => [
-  { kind: 'books' as const, title: 'Libros', items: booksBy[mode] },
-  { kind: 'essays' as const, title: 'Ensayos', items: essaysBy[mode] },
+const columns = [
+  { kind: 'books' as const, title: 'Libros', items: books },
+  { kind: 'essays' as const, title: 'Ensayos', items: essays },
 ];
 
-const statsOf = (mode: Mode) => [
-  { href: '/books/', count: booksBy[mode].length, label: 'libros' },
-  { href: '/essays/', count: essaysBy[mode].length, label: 'ensayos' },
-  {
-    href: '/tags/',
-    count: tags.filter((tag) => !tagEmpty(tag, mode)).length,
-    label: 'categorías',
-  },
+const stats = [
+  { href: '/books/', count: books.length, label: 'libros' },
+  { href: '/essays/', count: essays.length, label: 'ensayos' },
+  { href: '/tags/', count: tags.length, label: 'categorías' },
 ];
 ---
 
@@ -52,39 +34,33 @@ const statsOf = (mode: Mode) => [
   <section>
     <h1 class="sr-only">{SITE.title} — {SITE.tagline}</h1>
 
-    {
-      MODES.map((mode) => (
-        <dl class="stat-band" data-mode={mode}>
-          {statsOf(mode).map(({ href, count, label }) => (
-            <div>
-              <a href={href} class="stat">
-                <dt class="stat-label">{label}</dt>
-                <dd class="stat-value">{count}</dd>
-              </a>
-            </div>
-          ))}
-        </dl>
-      ))
-    }
+    <dl class="stat-band">
+      {
+        stats.map(({ href, count, label }) => (
+          <div>
+            <a href={href} class="stat">
+              <dt class="stat-label">{label}</dt>
+              <dd class="stat-value">{count}</dd>
+            </a>
+          </div>
+        ))
+      }
+    </dl>
   </section>
 
   <section class="mt-10">
     <SectionHeader title="Lo más reciente" />
 
     {
-      MODES.map((mode) => (
-        <div data-mode={mode}>
-          {allBy[mode].length === 0 ? (
-            <p class="empty-note mt-4">Todavía no hay nada publicado.</p>
-          ) : (
-            <div class="mt-5 grid gap-4 sm:grid-cols-2">
-              {allBy[mode].slice(0, 4).map((item) => (
-                <ContentCard item={item} showKind />
-              ))}
-            </div>
-          )}
+      all.length === 0 ? (
+        <p class="empty-note mt-4">Todavía no hay nada publicado.</p>
+      ) : (
+        <div class="mt-5 grid gap-4 sm:grid-cols-2">
+          {all.slice(0, 4).map((item) => (
+            <ContentCard item={item} showKind />
+          ))}
         </div>
-      ))
+      )
     }
   </section>
 
@@ -92,37 +68,35 @@ const statsOf = (mode: Mode) => [
     <SectionHeader title="Todo el archivo" href="/tags/" linkLabel="Ver categorías" />
 
     {
-      MODES.map((mode) => (
-        <div data-mode={mode}>
-          {allBy[mode].length > 0 && (
-            <div class="mt-5">
-              <TagFilter tags={topTagsOf(mode)} total={allBy[mode].length} mode={mode} />
-            </div>
-          )}
-
-          <div class="mt-8 grid gap-x-10 gap-y-12 sm:grid-cols-2">
-            {columnsOf(mode).map(({ kind, title, items }) => (
-              <div>
-                <h3 class="section-header section-title-sub">
-                  <a href={`${KIND_PATH[kind]}/`} class="hover-accent">{title}</a>
-                </h3>
-
-                <ul class="mt-1" data-filterable>
-                  {items.map((item) => (
-                    <ContentRow item={item} level={4} />
-                  ))}
-                </ul>
-
-                <p class="empty-note mt-4" data-empty hidden={items.length > 0}>
-                  {items.length === 0
-                    ? `Todavía no hay ${title.toLowerCase()}.`
-                    : `Nada en ${title.toLowerCase()} con este filtro.`}
-                </p>
-              </div>
-            ))}
-          </div>
+      all.length > 0 && (
+        <div class="mt-5">
+          <TagFilter tags={topTags} total={all.length} />
         </div>
-      ))
+      )
     }
+
+    <div class="mt-8 grid gap-x-10 gap-y-12 sm:grid-cols-2">
+      {
+        columns.map(({ kind, title, items }) => (
+          <div>
+            <h3 class="section-header section-title-sub">
+              <a href={`${KIND_PATH[kind]}/`} class="hover-accent">{title}</a>
+            </h3>
+
+            <ul class="mt-1" data-filterable>
+              {items.map((item) => (
+                <ContentRow item={item} level={4} />
+              ))}
+            </ul>
+
+            <p class="empty-note mt-4" data-empty hidden={items.length > 0}>
+              {items.length === 0
+                ? `Todavía no hay ${title.toLowerCase()}.`
+                : `Nada en ${title.toLowerCase()} con este filtro.`}
+            </p>
+          </div>
+        ))
+      }
+    </div>
   </section>
 </BaseLayout>

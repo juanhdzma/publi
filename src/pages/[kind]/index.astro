@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContentCard from '../../components/ContentCard.astro';
 import TagList from '../../components/TagList.astro';
-import { getPublished, splitByMode, uniqueTags, KIND_PLURAL, KIND_INTRO, MODES, type Kind } from '../../lib/content';
+import { getPublished, uniqueTags, KIND_PLURAL, KIND_INTRO, type Kind } from '../../lib/content';
 
 export function getStaticPaths() {
   return (Object.keys(KIND_PLURAL) as Kind[]).map((kind) => ({ params: { kind }, props: { kind } }));
@@ -10,40 +10,29 @@ export function getStaticPaths() {
 
 const { kind } = Astro.props;
 const title = KIND_PLURAL[kind];
-const byMode = splitByMode(await getPublished(kind));
+const items = await getPublished(kind);
 ---
 
 <BaseLayout title={title} description={KIND_INTRO[kind].description}>
   <header class="page-header">
     <h1 class="page-title">{title}</h1>
 
-    <p class="page-intro">
-      {KIND_INTRO[kind].intro}
-      {MODES.map((mode) => <span data-mode={mode}>{byMode[mode].length} en total.</span>)}
-    </p>
+    <p class="page-intro">{KIND_INTRO[kind].intro} {items.length} en total.</p>
 
-    {
-      MODES.map((mode) => (
-        <div class="mt-6" data-mode={mode}>
-          <TagList tags={uniqueTags(byMode[mode])} size="md" />
-        </div>
-      ))
-    }
+    <div class="mt-6">
+      <TagList tags={uniqueTags(items)} size="md" />
+    </div>
   </header>
 
   {
-    MODES.map((mode) => (
-      <div data-mode={mode}>
-        {byMode[mode].length === 0 ? (
-          <p class="empty-note mt-8">Todavía no hay {title.toLowerCase()}.</p>
-        ) : (
-          <div class="mt-8 grid gap-4 sm:grid-cols-2">
-            {byMode[mode].map((item) => (
-              <ContentCard item={item} level={2} />
-            ))}
-          </div>
-        )}
+    items.length === 0 ? (
+      <p class="empty-note mt-8">Todavía no hay {title.toLowerCase()}.</p>
+    ) : (
+      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+        {items.map((item) => (
+          <ContentCard item={item} level={2} />
+        ))}
       </div>
-    ))
+    )
   }
 </BaseLayout>

@@ -10,7 +10,6 @@ import {
   KIND_PLURAL,
   formatDate,
   type Kind,
-  type Mode,
   type Quote,
 } from '../lib/content';
 
@@ -24,7 +23,6 @@ type Reference = {
 
 type Props = {
   kind: Kind;
-  mode: Mode;
   title: string;
   summary: string;
   publishedAt: Date;
@@ -38,7 +36,6 @@ type Props = {
 
 const {
   kind,
-  mode,
   title,
   summary,
   publishedAt,
@@ -59,21 +56,11 @@ const rest = quotes.filter((q) => q !== featured);
   description={summary}
   type="article"
   publishedAt={publishedAt}
-  noindex={mode === 'demo'}
 >
   <a href={`${KIND_PATH[kind]}/`} class="section-link">
     <span aria-hidden="true">←</span>
     {KIND_PLURAL[kind]}
   </a>
-
-  {
-    mode === 'demo' && (
-      <p class="demo-note mt-6">
-        Ficha de ejemplo. No es contenido publicado — sirve para ver cómo queda una
-        entrada real.
-      </p>
-    )
-  }
 
   <article class="mx-auto max-w-[68ch]">
     <header class="page-header mt-6">

@@ -13,7 +13,5 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  // Las fichas de prueba se buildean para el botón del header, pero no se
-  // indexan: /books/demo/... y /essays/demo/... quedan fuera del sitemap.
-  integrations: [sitemap({ filter: (page) => !/\/demo\//.test(page) })],
+  integrations: [sitemap()],
 });

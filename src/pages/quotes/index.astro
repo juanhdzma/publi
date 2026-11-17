@@ -1,15 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import QuoteCard from '../../components/QuoteCard.astro';
-import { getAllQuotes, splitByMode, MODES } from '../../lib/content';
+import { getAllQuotes } from '../../lib/content';
 
-const byMode = splitByMode(await getAllQuotes());
-
-const summary = (quotes: typeof byMode.real) => ({
-  total: quotes.length,
-  authors: new Set(quotes.map((q) => q.attribution)).size,
-  loose: quotes.filter((q) => !q.kind).length,
-});
+const quotes = await getAllQuotes();
+const authors = new Set(quotes.map((q) => q.attribution)).size;
+const loose = quotes.filter((q) => !q.kind).length;
 ---
 
 <BaseLayout
@@ -19,28 +15,16 @@ const summary = (quotes: typeof byMode.real) => ({
   <header class="page-header">
     <h1 class="page-title">Citas</h1>
 
-    {
-      MODES.map((mode) => {
-        const { total, authors, loose } = summary(byMode[mode]);
-
-        return (
-          <p class="page-intro" data-mode={mode}>
-            {total === 0
-              ? 'Todavía no hay citas.'
-              : `${total} frases de ${authors} ${authors === 1 ? 'autor' : 'autores'}. ${loose} sueltas, el resto salió de los libros y ensayos del sitio.`}
-          </p>
-        );
-      })
-    }
+    <p class="page-intro">
+      {
+        quotes.length === 0
+          ? 'Todavía no hay citas.'
+          : `${quotes.length} frases de ${authors} ${authors === 1 ? 'autor' : 'autores'}. ${loose} sueltas, el resto salió de los libros y ensayos del sitio.`
+      }
+    </p>
   </header>
 
-  {
-    MODES.map((mode) => (
-      <div class="mt-10 gap-x-12 sm:columns-2" data-mode={mode}>
-        {byMode[mode].map((quote) => (
-          <QuoteCard quote={quote} />
-        ))}
-      </div>
-    ))
-  }
+  <div class="mt-10 gap-x-12 sm:columns-2">
+    {quotes.map((quote) => <QuoteCard quote={quote} />)}
+  </div>
 </BaseLayout>

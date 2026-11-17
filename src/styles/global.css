@@ -61,22 +61,6 @@
 }
 
 @layer components {
-  /* ---------------------------------------------------------------------
-     Modo de contenido. Los dos árboles se buildean y acá se esconde el que
-     no corresponde, así que todo lo que dependa del modo lleva `data-mode`
-     y basta con marcarlo — sin JS por página.
-     --------------------------------------------------------------------- */
-  html[data-content='real'] [data-mode='demo'],
-  html[data-content='demo'] [data-mode='real'] {
-    display: none !important;
-  }
-
-  .mode-chip {
-    @apply cursor-pointer rounded-full border border-line px-2 py-0.5 text-xs tracking-wide text-ink-muted transition-colors;
-    @apply hover:border-accent/40 hover:text-accent;
-    @apply dark:border-line-dark dark:text-ink-muted-dark dark:hover:border-accent-dark/40 dark:hover:text-accent-dark;
-  }
-
   .muted {
     @apply text-ink-muted dark:text-ink-muted-dark;
   }
@@ -87,11 +71,6 @@
 
   .empty-note {
     @apply text-ink-muted dark:text-ink-muted-dark;
-  }
-
-  .demo-note {
-    @apply rounded-md border border-accent/30 bg-accent/[0.06] px-4 py-2.5 text-sm text-ink-muted;
-    @apply dark:border-accent-dark/30 dark:bg-accent-dark/[0.09] dark:text-ink-muted-dark;
   }
 
   /* ---------------------------------------------------------------------
@@ -309,7 +288,6 @@
     @apply cursor-pointer;
   }
 
-  .mode-chip[aria-pressed='true'],
   .chip[aria-pressed='true'] {
     @apply border-accent bg-accent text-paper hover:text-paper;
     @apply dark:border-accent-dark dark:bg-accent-dark dark:text-paper-dark dark:hover:text-paper-dark;

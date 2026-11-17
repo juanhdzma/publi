@@ -1,7 +1,6 @@
 ---
 import '../styles/global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
-import ContentToggle from '../components/ContentToggle.astro';
 import { SITE, THEME_COLOR } from '../config';
 
 /* Solo los subsets latin en peso normal: son los únicos que un lector en
@@ -16,8 +15,6 @@ type Props = {
   /** `article` en las entradas; el resto del sitio es `website`. */
   type?: 'website' | 'article';
   publishedAt?: Date;
-  /** Fichas de prueba: linkeadas en el HTML, pero no para buscadores. */
-  noindex?: boolean;
 };
 
 const {
@@ -25,7 +22,6 @@ const {
   description = SITE.description,
   type = 'website',
   publishedAt,
-  noindex = false,
 } = Astro.props;
 
 const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
@@ -46,15 +42,13 @@ const nav = [
 const path = Astro.url.pathname;
 ---
 
-{/* `real` de arranque: sin JS, el sitio muestra el contenido real y nada más. */}
-<html lang="es" class="h-full" data-content="real">
+<html lang="es" class="h-full">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link
       rel="alternate"
       type="application/rss+xml"
@@ -110,17 +104,6 @@ const path = Astro.url.pathname;
 
       const meta = document.querySelector('meta[name="theme-color"]');
       meta?.setAttribute('content', dark ? meta.dataset.dark : meta.dataset.light);
-
-      /* El modo se resuelve antes del paint: si no, el contenido del modo
-         inactivo parpadea. Una URL /demo/ lo fuerza, para que un link directo
-         a una ficha de pruebas no caiga en una página que se ve vacía. */
-      let content = null;
-      try {
-        content = localStorage.getItem('content');
-      } catch {}
-
-      if (location.pathname.split('/').includes('demo')) content = 'demo';
-      document.documentElement.dataset.content = content === 'demo' ? 'demo' : 'real';
     </script>
   </head>
 
@@ -148,7 +131,6 @@ const path = Astro.url.pathname;
               </a>
             ))
           }
-          <ContentToggle />
           <ThemeToggle />
         </nav>
       </div>
