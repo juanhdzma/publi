@@ -109,6 +109,22 @@ trae la entrada cruda para `render()`.
 La atribución de una cita se infiere: por defecto el autor del libro, o el del sitio en un
 ensayo. `source` solo se usa cuando la frase es de un tercero.
 
+**Reglas de atribución y publicación de citas:**
+
+- **`source: null` = autor desconocido.** Distinto de `source` ausente, que hereda el autor
+  de la entrada: la lógica compara con `=== undefined`, no con `??`, y el schema es
+  `.nullable().optional()`. En `quotes.yml`, `author` pasa a opcional y ausente o `null`
+  significa lo mismo.
+- **El texto de `null` vive en un solo lugar**: una constante en `src/config.ts` (valor
+  `Desconocido`). Páginas, RSS y tags leen de ahí; no hardcodear el texto.
+- **`publish: false` en una cita del frontmatter la deja solo dentro de la entrada**, fuera
+  de `/quotes/`. Por defecto se publica.
+- **Los blockquotes del cuerpo no entran a `/quotes/`.** Solo las citas del frontmatter y
+  las de `quotes.yml`.
+- **Sin campo `lang`.** Todo el contenido y la interfaz van en español.
+
+La lógica de atribución está en `src/lib/attribution.ts` (`npm test`, con `node --test`).
+
 `getAllTags()` recorre entradas **y** citas sueltas y devuelve `entries` y `quotes` por
 separado: el filtro del home solo puede esconder entradas, y si el chip mostrara el total el
 número no coincidiría con lo que filtra. El total es `tagTotal(tag)`.

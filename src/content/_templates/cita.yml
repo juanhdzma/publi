@@ -7,7 +7,7 @@
 
 - id: autor-tema # único dentro del archivo
   text: "La frase, sin comillas alrededor."
-  author: "Quien la dijo"
+  author: "Quien la dijo" # opcional; sin author (o null) se muestra "Desconocido"
   publishedAt: 2026-08-12
 
   source: "La obra de donde sale" # opcional

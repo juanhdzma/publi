@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { SITE } from '../config';
+import { SITE, UNKNOWN_AUTHOR } from '../config';
+import { resolveAttribution } from './attribution';
 
 export type Kind = 'books' | 'essays';
 
@@ -50,6 +51,8 @@ export type Quote = {
   text: string;
   page?: string;
   featured: boolean;
+  /** false: la cita se queda en su entrada y no sale en /quotes/. */
+  publish: boolean;
   publishedAt: Date;
   /** Quién dijo la frase. Por defecto el autor del libro, o el del ensayo. */
   attribution: string;
@@ -111,8 +114,9 @@ export async function getPublished(kind: Kind): Promise<ContentItem[]> {
           text: q.text,
           page: q.page,
           featured: q.featured,
+          publish: q.publish,
           publishedAt: entry.data.publishedAt,
-          attribution: q.source ?? defaultAttribution,
+          attribution: resolveAttribution(q.source, defaultAttribution, UNKNOWN_AUTHOR),
           origin: entry.data.title,
           originHref: href,
           kind,
@@ -131,8 +135,9 @@ async function getStandaloneQuotes(): Promise<Quote[]> {
     .map(({ data }) => ({
       text: data.text,
       featured: false,
+      publish: true,
       publishedAt: data.publishedAt,
-      attribution: data.author,
+      attribution: data.author ?? UNKNOWN_AUTHOR,
       origin: data.source,
       originHref: data.url,
       external: Boolean(data.url),
@@ -152,7 +157,7 @@ export async function getAllPublished(): Promise<ContentItem[]> {
 export async function getAllQuotes(): Promise<Quote[]> {
   const [items, standalone] = await Promise.all([getAllPublished(), getStandaloneQuotes()]);
 
-  return [...items.flatMap((item) => item.quotes), ...standalone].sort(byNewest);
+  return [...items.flatMap((item) => item.quotes.filter((q) => q.publish)), ...standalone].sort(byNewest);
 }
 
 export const tagTotal = (tag: TagSummary) => tag.entries + tag.quotes;

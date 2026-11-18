@@ -23,6 +23,10 @@ quotes:
     page: "cap. 5"
   - text: "Una frase de otra persona citada dentro del libro."
     source: "Otro autor" # opcional; por defecto se atribuye al author de arriba
+  - text: "Una frase de autor desconocido."
+    source: null # se muestra como "Desconocido"
+  - text: "Una frase que queda solo en esta entrada."
+    publish: false # opcional, default true; en false no sale en /quotes/
 
 # Fuentes al final de la entrada. Opcional. Solo title es obligatorio.
 references:

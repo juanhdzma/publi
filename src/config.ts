@@ -5,6 +5,8 @@ export const SITE = {
   author: 'Juan Hernández',
 } as const;
 
+export const UNKNOWN_AUTHOR = 'Desconocido';
+
 /* El color de la barra del browser. Va acá y no en `global.css` porque lo
    consume el `<meta>`, que no puede leer una custom property de CSS. */
 export const THEME_COLOR = {

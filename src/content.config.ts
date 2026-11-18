@@ -4,7 +4,8 @@ import { z } from 'astro/zod';
 
 const quote = z.object({
   text: z.string(),
-  source: z.string().optional(),
+  source: z.string().nullable().optional(),
+  publish: z.boolean().default(true),
   page: z.string().optional(),
   featured: z.boolean().default(false),
 });
@@ -49,7 +50,7 @@ const quotes = defineCollection({
   loader: file('./src/content/quotes.yml'),
   schema: z.object({
     text: z.string(),
-    author: z.string(),
+    author: z.string().nullable().optional(),
     source: z.string().optional(),
     url: z.url().optional(),
     publishedAt: z.coerce.date(),

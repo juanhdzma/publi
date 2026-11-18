@@ -48,7 +48,7 @@ a las demás.
 ```yaml
 - id: dijkstra-simplicidad          # único dentro del archivo
   text: "La simplicidad es un prerrequisito de la confiabilidad."
-  author: "Edsger W. Dijkstra"
+  author: "Edsger W. Dijkstra"      # opcional; sin author se muestra "Desconocido"
   source: "EWD498"                  # opcional, la obra
   url: "https://..."                # opcional, vuelve la fuente un link externo
   publishedAt: 2026-07-31
@@ -83,10 +83,16 @@ quotes:
     featured: true        # opcional, una por entrada
   - text: "Otra cita."
     source: "Otro autor"  # opcional; por defecto es el autor del libro
+  - text: "Una cita de autor desconocido."
+    source: null          # se muestra como "Desconocido"
+  - text: "Una cita que queda solo en la entrada."
+    publish: false        # opcional, default true; en false no sale en /quotes/
 ```
 
 `source` solo hace falta cuando la frase no es del autor de la entrada — por ejemplo si en
-un ensayo tuyo citás a otra persona.
+un ensayo tuyo citás a otra persona. Con `source: null` la atribución es `Desconocido`
+(la constante `UNKNOWN_AUTHOR` de `src/config.ts`); ausente, hereda el autor de la entrada.
+`publish: false` deja la cita visible en su entrada pero fuera de `/quotes/`.
 
 **2. Cita en el cuerpo** — blockquote de markdown. El `<cite>` es opcional y agrega el guión
 solo.
